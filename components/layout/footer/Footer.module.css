@@ -1,0 +1,7 @@
+.container {
+  @apply flex flex-col w-full text-[#676767] p-20;
+}
+
+.bottom_container {
+  @apply flex w-full items-end justify-between pt-10;
+}
