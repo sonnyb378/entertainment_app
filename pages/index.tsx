@@ -1,8 +1,9 @@
 import type { NextPage } from 'next';
+import { NextPageWithLayout } from './page';
 import Head from 'next/head';
 import Image from 'next/image';
 
-const Home: NextPage = () => {
+const Home: NextPageWithLayout = () => {
   return (
     <div>
       <Head>
@@ -20,3 +21,12 @@ const Home: NextPage = () => {
 };
 
 export default Home;
+
+
+Home.getLayout = (page) => {
+  return (
+      <div>
+        {page}
+      </div>
+  );
+};
