@@ -4,7 +4,25 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .image-container > span {
+    position: unset !important;
+  }
+}
+
 body {
   font-family: 'Manrope', sans-serif;
   font-size: 1rem;
+  color: #ededed;
+  background-color: #000000;
+}
+
+input:focus,
+input:not(:placeholder-shown) {
+  @apply text-blue-100 bg-black border-btnprimary;
+}
+
+input:focus ~ label,
+input:not(:placeholder-shown) ~ label {
+  @apply text-blue-300 -translate-y-5 -translate-x-[17px] scale-75 p-2;
 }

@@ -1,5 +1,5 @@
 .container {
-  @apply flex flex-col w-full text-[#676767] p-20;
+  @apply flex flex-col w-full p-20 py-24 relative text-[#676767];
 }
 
 .bottom_container {

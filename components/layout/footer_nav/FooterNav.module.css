@@ -1,0 +1,11 @@
+.container {
+  @apply flex flex-col items-start justify-end mr-[4rem];
+}
+
+.title {
+  @apply text-2xl text-[#afafaf] mb-6 h-[2rem];
+}
+
+.items {
+  @apply text-[#676767];
+}

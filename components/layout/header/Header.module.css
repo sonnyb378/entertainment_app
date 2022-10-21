@@ -1,7 +1,11 @@
 .container {
-  @apply flex items-center justify-center w-full p-3 text-[#676767];
+  @apply flex items-center justify-center w-full p-3 text-[#676767] relative;
 }
 
 .subcontainer {
-  @apply flex items-center justify-between w-full p-5 rounded-md bg-blue-900;
+  @apply flex items-center justify-between w-full py-5 px-8 rounded-md bg-primary;
+}
+
+.nav_container {
+  @apply flex flex-1 items-center justify-start;
 }

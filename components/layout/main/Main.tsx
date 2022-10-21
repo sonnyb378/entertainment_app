@@ -2,6 +2,7 @@ import Head from "next/head";
 import React from "react";
 import Footer from "../footer/Footer";
 import Header from "../header/Header";
+import Hero from "../hero/Hero";
 import styles from "./Main.module.css";
 
 export interface IMain {
@@ -9,22 +10,42 @@ export interface IMain {
         pageTitle: string;
         pageDescription: string;
     },
+    showHero: boolean;
     children?: React.ReactNode;
 }
 
-const Main: React.FC<IMain> = ({ children, meta}) => {
+const Main: React.FC<IMain> = ({ children, meta, showHero}) => {
     return (
         <div className={styles.container}>
+
             <Head>
                 <title>{meta.pageTitle}</title>
                 <meta name="description" content={`${meta.pageDescription}`} />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <Header />
-            <main className="flex-1">
-                {children}
-            </main>
-            <Footer />
+
+            {
+                showHero ? 
+                <>
+                    <Hero />                    
+                    <section className="flex flex-col items-start justify-start w-full">
+                        <Header />
+                        <main className={styles.main_section}>
+                            {children}
+                        </main>                                                                                                       
+                    </section>   
+                    <Footer />                        
+                </> :
+                <>
+                    <Header />
+                    <main className={styles.main_section}>
+                        {children}
+                    </main>   
+                    <Footer />
+                </>
+            }
+            
+
         </div>
        
     );
