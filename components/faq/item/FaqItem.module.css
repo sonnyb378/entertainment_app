@@ -3,7 +3,7 @@
 }
 
 .description_close {
-  @apply bg-gray-900 text-sm w-full h-0 duration-200;
+  @apply bg-gray-900 text-sm w-full h-0 duration-200 transition-all;
 }
 
 .description_close > p {
@@ -11,7 +11,7 @@
 }
 
 .description_open {
-  @apply bg-gray-900 text-sm w-full h-[5rem] duration-200;
+  @apply bg-gray-900 text-sm w-full h-auto duration-200 transition-all;
 }
 
 .description_open > p {
@@ -23,13 +23,13 @@
 }
 
 .icon_container_close {
-  @apply w-[1rem] h-[2px] inline-block bg-transparent relative 
-  before:w-[1rem] before:h-[2px] before:inline-block before:bg-white before:content-[""] before:absolute before:left-0 before:top-[5px] before:-rotate-45 before:transition-all before:duration-100
-  after:w-[1rem]  after:h-[2px]  after:inline-block  after:bg-white  after:content-[""]  after:absolute  after:-left-[10px] after:top-[5px] after:rotate-45 after:transition-all after:duration-100;
+  @apply w-[1.5rem] h-[2px] inline-block bg-transparent relative -mt-[10px]
+  before:w-[.8rem] before:h-[2px] before:inline-block before:bg-white before:content-[""] before:absolute before:left-0 before:top-[5px] before:-rotate-45 before:transition-all before:duration-100
+  after:w-[.8rem]  after:h-[2px]  after:inline-block  after:bg-white  after:content-[""]  after:absolute  after:-left-[8px] after:top-[5px] after:rotate-45 after:transition-all after:duration-100;
 }
 
 .icon_container_open {
-  @apply w-[1rem] h-[2px] inline-block bg-transparent relative
-  before:w-[1rem] before:h-[2px] before:inline-block before:bg-white before:content-[""] before:absolute before:-left-[5px] before:top-[5px] before:rotate-45  before:transition-all before:duration-100
-  after:w-[1rem]  after:h-[2px]  after:inline-block  after:bg-white  after:content-[""]  after:absolute  after:-left-[5px] after:top-[5px] after:-rotate-45  after:transition-all after:duration-100;
+  @apply w-[1.5rem] h-[2px] inline-block bg-transparent relative -mt-[10px]
+  before:w-[.8rem] before:h-[2px] before:inline-block before:bg-white before:content-[""] before:absolute before:-left-[5px] before:top-[5px] before:rotate-45  before:transition-all before:duration-100
+  after:w-[.8rem]  after:h-[2px]  after:inline-block  after:bg-white  after:content-[""]  after:absolute  after:-left-[5px] after:top-[5px] after:-rotate-45  after:transition-all after:duration-100;
 }

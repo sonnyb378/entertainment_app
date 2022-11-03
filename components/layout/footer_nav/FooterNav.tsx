@@ -7,14 +7,14 @@ export interface IItem {
     url: string;
 }
 export interface IFooterNav {
-    title: string;
+    title: string | null;
     items: IItem[];
 }
 
 const FooterNav: React.FC<IFooterNav> = ({ title, items }) => {
     return (
-        <div className={styles.container}>
-            <h1 className={styles.title}>{ title }</h1>
+        <div className={ title ? styles.container : styles.container_no_title }>
+            <h1 className={ title ? styles.title : styles.no_title}>{ title }</h1>       
             <ul className={styles.items}>
                 {
                     items.map((item) => {

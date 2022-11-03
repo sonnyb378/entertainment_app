@@ -1,7 +1,11 @@
 .container {
-  @apply flex-1 flex-col items-start justify-start w-full bg-black;
+  @apply flex-col items-center justify-center w-full bg-black;
 }
 
 .main_section {
   @apply flex items-center justify-center w-full p-3 relative;
+}
+
+.sub_container {
+  @apply flex-col relative items-start justify-start w-full;
 }

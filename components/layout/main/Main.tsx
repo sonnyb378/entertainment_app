@@ -27,14 +27,15 @@ const Main: React.FC<IMain> = ({ children, meta, showHero}) => {
             {
                 showHero ? 
                 <>
-                    <Hero />                    
-                    <section className="flex flex-col items-start justify-start w-full">
+                    <Hero />
+                    <section className={styles.sub_container}>
                         <Header />
                         <main className={styles.main_section}>
                             {children}
-                        </main>                                                                                                       
+                        </main>   
                     </section>   
-                    <Footer />                        
+                    <Footer />                                                                                                     
+                                          
                 </> :
                 <>
                     <Header />

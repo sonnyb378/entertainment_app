@@ -20,29 +20,32 @@ const Footer: React.FC<IFooter> = () => {
     const year = dt.getFullYear();
     return (
         <footer className={styles.container}>
-            <section className="flex items-start justify-start border-b-2 border-[#707070] py-8 w-full">
+            <section className="flex flex-col items-start justify-center border-b-2 border-[#707070] py-0 w-full md:flex-row md:justify-start md:pb-8">
 
                 <FooterNav title="About Us" items={aboutusNav} />
                 <FooterNav title="Browse" items={browseNav} />
                 <FooterNav title="Legal" items={legalNav} />
-                <FooterNav title=" " items={helpNav} />
+                <FooterNav title={null} items={helpNav} />
             
 
             </section>
             <section className={styles.bottom_container}>
                 <div className="flex flex-col items-start justify-center w-full">
-                    <div className="flex items-center justify-start gap-6 space-x-5 py-8  w-full">
+                    <div className="flex items-center justify-center gap-6 space-x-5 py-8 w-full
+                    lg:justify-start">
                         <Image src={youtube} alt="Youtube" width={35} height={35} className="object-contain" />
                         <Image src={twitter} alt="Twitter" width={25} height={25} className="object-contain" />
                         <Image src={instagram} alt="Instagram" width={25} height={25} className="object-contain" />
                         <Image src={facebook} alt="Facebook" width={25} height={25} className="object-contain" />
                     </div>
-                    <div>
+                    <div className="flex items-center justify-center w-full
+                    lg:justify-start">
                         { year } Wibix. All Rights Reserved.
                     </div>
                 </div>
-                <div>
-                    <LanguageSelector />
+                <div className="flex items-center justify-center w-full 
+                lg:justify-end">
+                    {/* <LanguageSelector /> */}
                 </div>
             </section>
         </footer>

@@ -10,7 +10,7 @@ const Hero:React.FC<IHero> = ({ children }) => {
     return (
         <>
             <section className={styles.container}>
-                <Image src={hero_image} alt="hero" layout="fill" className="object-cover relative" priority />
+                <Image src={hero_image} alt="hero" quality={50}  priority={true} layout="fill" className="object-cover relative" />
                 { children}
             </section>            
         </>

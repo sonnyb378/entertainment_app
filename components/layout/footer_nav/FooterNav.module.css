@@ -1,9 +1,17 @@
 .container {
-  @apply flex flex-col items-start justify-end mr-[4rem];
+  @apply flex flex-col items-start justify-end mr-[4rem] pb-4;
+}
+
+.container_no_title {
+  @apply flex flex-col items-start justify-end mr-[4rem] pb-8;
 }
 
 .title {
   @apply text-2xl text-[#afafaf] mb-6 h-[2rem];
+}
+
+.no_title {
+  @apply text-2xl h-[2rem];
 }
 
 .items {
