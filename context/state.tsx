@@ -7,8 +7,6 @@ export interface ContextState {
   scrollYValue: number;
 }  
 
-
-
 const initialState = {
   scrollYValue: 0
 };

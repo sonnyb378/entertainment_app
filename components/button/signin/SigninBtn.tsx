@@ -2,7 +2,7 @@ import styles from "./SigninBtn.module.css";
 
 export interface IButton {
     title: string;
-    onClick: () => void;
+    onClick?: () => void;
     className?: string;
     Icon?: React.ElementType;
 }

@@ -14,8 +14,6 @@ interface AppPropsWithLayout extends AppProps {
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
-  // const { store, props} = wrapper.useWrappedStore(pageProps);
-
   const getLayout = Component.getLayout || ((page) => page);
   
   return getLayout(

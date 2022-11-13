@@ -6,6 +6,8 @@ import { NextPageWithLayout } from "./page";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
+import { ArrowPathIcon } from "@heroicons/react/24/solid";
+
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 
@@ -25,10 +27,13 @@ const Register: NextPageWithLayout = () => {
     const [confirmEmail, setConfirmEmail] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
+    const [isSubmitted, setIsSubmitted] = useState(false);
+
     const [registerErrors, setRegisterErrors] = useState<IError[]>([]);
 
     const signupHandler = () => {
         let registerOk = true;
+        setIsSubmitted(true);
         setRegisterErrors([]);
         if (email === "") {
             setRegisterErrors((prevState) => [...prevState, {
@@ -55,6 +60,7 @@ const Register: NextPageWithLayout = () => {
         }
 
         if (registerOk) {
+
             createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 // Signed in 
@@ -62,6 +68,7 @@ const Register: NextPageWithLayout = () => {
 
                 user.getIdTokenResult()
                 .then((result) => {
+                    setIsSubmitted(false);
                     dispatch(setAuthData({
                         id: result.claims.user_id,
                         accessToken: result.token,
@@ -70,20 +77,18 @@ const Register: NextPageWithLayout = () => {
                 }).finally(() => {
                     router.replace("./movies")
                 })
-
             })
             .catch((error) => {
+                setIsSubmitted(false);
                 if (error.code === "auth/email-already-in-use") {
-                    const errorCode = error.code;
-                    const errorMessage = error.message;
                     setRegisterErrors([{ error: "Email address already in use!" }]);
+                    return;
                 }
+                setRegisterErrors([{ error: "All fields are required" }]);
             });
+        } else {
+            setIsSubmitted(false);
         }
-        
-
-        
-
     }
 
     const emailHandler = (e:React.ChangeEvent<HTMLInputElement>) => {
@@ -137,8 +142,27 @@ const Register: NextPageWithLayout = () => {
                     <InputField type="text" label="Confirm Email Address" id="confirm_email_address" placeholder=" " onChange={confirmEmailHandler} value={confirmEmail} />
                     <InputField type="password" label="Password" id="password" placeholder=" " onChange={passwordHandler} value={password} />
                     <InputField type="password" label="Confirm Password" id="confirm_password" placeholder=" " onChange={confirmPasswordHandler} value={confirmPassword} />
-                    <SigninBtn title="Sign Up" className="flex items-center justify-center py-5 px-5 text-2xl rounded-md bg-btnprimary text-white w-full
-      hover:text-yellow-200 hover:bg-btnhighlight mt-[2rem]" onClick={signupHandler}  />
+                    {
+                        !isSubmitted && email && confirmEmail && password && confirmPassword ?
+
+                        <SigninBtn title="Sign Up" className="flex items-center justify-center py-5 px-5 text-2xl rounded-md bg-btnprimary text-white w-full
+                        hover:text-yellow-200 hover:bg-btnhighlight mt-[2rem]" onClick={signupHandler}  />
+                        :
+                        <div title="Sign Up" className={`flex items-center justify-center py-5 px-5 text-2xl rounded-md bg-gray-500 text-btnprimary w-full
+                        mt-[2rem]`} >
+                            {
+                            isSubmitted ?
+                                <div className="flex items-center justify-center text-white">
+                                    <ArrowPathIcon className="w-[25px] h-[25px] animate-spin" />
+                                    <span className="ml-2">Creating your account...</span>
+                                </div> :
+                                <div className="flex items-center justify-center text-white">
+                                    Sign Up
+                                </div>
+                             }
+                        </div>
+                    }
+                   
                     
                 </div>
                 <div className="flex flex-1 flex-col items-start justify-center my-6

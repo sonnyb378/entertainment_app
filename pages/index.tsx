@@ -16,8 +16,6 @@ import { faq_list } from '../model/faq';
 import FaqList from '../components/faq/list/FaqList';
 
 
-
-
 const Home: NextPageWithLayout = () => {
 
   const getStartedHandler = () => {
@@ -26,8 +24,9 @@ const Home: NextPageWithLayout = () => {
 
   return (
     <div className="flex flex-col items-center justify-start w-full">      
-      <div className="flex flex-col items-start justify-start w-full h-screen py-20">
-        <section className="flex flex-col items-center justify-center w-full ">
+
+      <section className="flex flex-col items-start justify-start w-full h-screen py-20">
+        <div className="flex flex-col items-center justify-center w-full ">
           <div className="text-[3rem] text-center leading-none">All the TV Shows, All the Movies.</div>
           <div className="text-[1.8rem] text-center leading-none">Streamed to You!</div>
           <div className="text-[1.6rem] text-center mt-4">Watch Anywhere, Cancel Anytime</div>
@@ -36,12 +35,12 @@ const Home: NextPageWithLayout = () => {
             <SigninBtn title="Get Started" className="flex items-center justify-between py-5 px-5 text-md rounded-md bg-btnprimary text-white
       hover:text-yellow-200 hover:bg-btnhighlight mt-2" onClick={getStartedHandler} Icon={ChevronDoubleRightIcon} />
           </div>
-        </section>            
-      </div>
+        </div>            
+      </section>
     
 
       <section className="flex flex-col items-center justify-center w-full p-2 mt-12
-      lg:w-[90%]  2xl:w-[70%]">  
+        lg:w-[90%]  2xl:w-[70%]">  
         <div className="flex flex-1 flex-col items-center justify-center w-full
         lg:flex-row">
           <div className="flex-1">
@@ -87,7 +86,7 @@ const Home: NextPageWithLayout = () => {
               <Image src={iphone}  loading="lazy" alt="Stream on your phone" className="object-cover" />
             </div>
 
-            <div className="flex relative flex-col items-start justify-start border-0 border-orange-500  xl:flex-row">                 
+            <div className="flex relative flex-col items-start justify-start border-0 border-orange-500 xl:flex-row">                 
               <div className="image-container absolute w-full">
                 <Image src={imac_gloss}  loading="lazy" alt="Stream on your desktop" className="object-contain z-[101] !absolute !w-full !h-[unset]"/>
               </div>   

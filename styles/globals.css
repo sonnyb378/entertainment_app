@@ -26,5 +26,5 @@ input:not(:placeholder-shown) {
 
 input:focus ~ label,
 input:not(:placeholder-shown) ~ label {
-  @apply text-blue-300 -translate-y-5 -translate-x-[17px] scale-75 p-2;
+  @apply text-blue-300 -translate-y-5 -translate-x-[17px] text-xs p-0;
 }
