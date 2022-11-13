@@ -11,8 +11,9 @@ import React, { useEffect, useState } from "react";
 import googleLogo from "../assets/google_logo.svg";
 import Image from "next/image";
 
-import { auth } from "../firebase";
-import {signInWithEmailAndPassword} from "firebase/auth";
+import { auth, googleProvider } from "../firebase";
+
+import {signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signInWithRedirect} from "firebase/auth";
 
 
 import { useAppDispatch, useAppSelector } from "../app/hooks";
@@ -29,7 +30,7 @@ const Signin: NextPageWithLayout = () => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [rememberme, setRememberMe] = useState(false);
+    // const [rememberme, setRememberMe] = useState(false);
 
     const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -78,7 +79,7 @@ const Signin: NextPageWithLayout = () => {
         })
         .catch((error) => {
             setIsSubmitted(false);
-            console.log(error.code);
+            // console.log(error.code);
             if (error.code === "auth/user-not-found") {
               setSignInErrors([{error: "User does not exist! Please try again" }]);
               return;
@@ -97,9 +98,9 @@ const Signin: NextPageWithLayout = () => {
     const passwordHandler = (e:React.ChangeEvent<HTMLInputElement>) => {
         setPassword(e.target.value);
     }
-    const rememberHandler = (e:React.ChangeEvent<HTMLInputElement>) => {
-        setRememberMe(e.target.checked);
-    }
+    // const rememberHandler = (e:React.ChangeEvent<HTMLInputElement>) => {
+    //     setRememberMe(e.target.checked);
+    // }
 
     const createAccountHandler = () => {
         router.push("./register");
@@ -110,7 +111,34 @@ const Signin: NextPageWithLayout = () => {
     }
 
     const signInWithGoogleHandler = () => {
-      console.log("sign in with google handler");
+      // console.log("sign in with google handler");
+      // setSignInErrors([]);
+      googleProvider.setCustomParameters({
+        prompt: "select_account"
+      });
+
+      signInWithPopup(auth, googleProvider)
+      .then((result) => {
+        const user = result.user;
+        user.getIdTokenResult()
+          .then((result) => {
+              dispatch(setAuthData({
+                id: result.claims.user_id,
+                accessToken: result.token,
+                expiresAt: result.expirationTime
+              }))
+          }).finally(() => {
+              router.replace("./movies")
+          })
+      }).catch((error) => {
+        // console.log("google signin error: ", error.code);
+        // "auth/popup-closed-by-user"
+        // if (error.code === "auth/popup-closed-by-user") {
+        //   setSignInErrors([{error: "User closed Google signin window" }]);
+        //   return;
+        // }     
+      });
+      
     }
 
     return (
