@@ -1,9 +1,13 @@
 import styles from "./Navigation.module.css";
 
 
-const Navigation: React.FC = () => {
+export interface INavigation {
+    show: boolean;
+}
+
+const Navigation: React.FC<INavigation> = ({ show }) => {
     return (
-        <nav className={styles.container}>
+        <nav className={ show ? styles.container : styles.container_hidden}>
             Movies TV Shows My List
         </nav>
     )

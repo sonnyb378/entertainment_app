@@ -55,7 +55,7 @@ const Header: React.FC<IHeader> = () => {
                 <div className={styles.nav_container}>
                     <Logo />
                     {
-                        user && <Navigation />
+                        user && <Navigation show={!!user} />
                     }
                     {
                         !user ? <SigninBtn title={router.pathname === "/signin" ? "Register" : "Sign In"} onClick={ router.pathname === "/signin" ? registerHandler : signinHandler} /> : 
