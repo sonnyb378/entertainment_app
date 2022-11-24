@@ -16,6 +16,11 @@ yarn dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+To test the project:
+```
+yarn test
+```
+
 ## Project Description
 
 A somewhat clone of "Netflix", project idea found in [frontendmentor.io](https://www.frontendmentor.io/challenges/entertainment-web-app-J-UhgAW1X)
