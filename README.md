@@ -2,6 +2,11 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
+```bash
+1. Create .env.local
+2. Add env variables needed (check firebase.ts in the root directory for firebase config)
+```
+
 First, run the development server:
 
 ```bash
