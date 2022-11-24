@@ -7,8 +7,8 @@ export interface INavigation {
 
 const Navigation: React.FC<INavigation> = ({ show }) => {
     return (
-        <nav className={ show ? styles.container : styles.container_hidden}>
-            Movies TV Shows My List
+        <nav className={ show ? styles.container : styles.container_hidden} data-testid="navigation_container">
+            Home Movies TV Series My Shows
         </nav>
     )
 }

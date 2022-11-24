@@ -73,7 +73,7 @@ const Register: NextPageWithLayout = () => {
                         id: result.claims.user_id,
                         accessToken: result.token,
                         expiresAt: result.expirationTime
-                    }))
+                    }));
                 }).finally(() => {
                     router.replace("./movies")
                 })

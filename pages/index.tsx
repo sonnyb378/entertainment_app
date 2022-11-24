@@ -15,11 +15,15 @@ import imac_gloss from "../assets/imac_gloss.png";
 import { faq_list } from '../model/faq';
 import FaqList from '../components/faq/list/FaqList';
 
+import { useRouter } from "next/router"
+
 
 const Home: NextPageWithLayout = () => {
+  const router = useRouter();
 
   const getStartedHandler = () => {
     console.log("get started");
+    router.replace("./register");
   }
 
   return (
@@ -33,12 +37,11 @@ const Home: NextPageWithLayout = () => {
           <div className="flex flex-col w-full mt-10 lg:w-[60%] 2xl:w-[50%]">
             <InputField type="text" label="Email Address" id="email_address" placeholder=" " />
             <SigninBtn title="Get Started" className="flex items-center justify-between py-5 px-5 text-md rounded-md bg-btnprimary text-white
-      hover:text-yellow-200 hover:bg-btnhighlight mt-2" onClick={getStartedHandler} Icon={ChevronDoubleRightIcon} />
+      hover:text-yellow-200 hover:bg-btnhighlight mt-2" onClick={ getStartedHandler } Icon={ChevronDoubleRightIcon} />
           </div>
         </div>            
       </section>
     
-
       <section className="flex flex-col items-center justify-center w-full p-2 mt-12
         lg:w-[90%]  2xl:w-[70%]">  
         <div className="flex flex-1 flex-col items-center justify-center w-full

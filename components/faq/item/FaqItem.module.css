@@ -3,19 +3,19 @@
 }
 
 .description_close {
-  @apply bg-gray-900 text-sm w-full h-0 duration-200 transition-all;
+  @apply bg-gray-900 text-lg w-full h-0 duration-100 transition-all;
 }
 
 .description_close > p {
-  @apply p-5 delay-1000 transition-all hidden;
+  @apply p-5 delay-100 transition-all hidden overflow-hidden;
 }
 
 .description_open {
-  @apply bg-gray-900 text-sm w-full h-auto duration-200 transition-all;
+  @apply bg-gray-900 text-lg w-full h-auto duration-100 transition-all;
 }
 
 .description_open > p {
-  @apply p-5 delay-1000 transition-all;
+  @apply p-5 delay-100 transition-all overflow-hidden;
 }
 
 .faqli {

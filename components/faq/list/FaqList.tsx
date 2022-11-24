@@ -8,7 +8,7 @@ export interface IFaqList {
 
 const FaqList: React.FC<IFaqList> = ({ list }) => {
     return (
-        <ul className={styles.container}>
+        <ul className={styles.container} data-testid="faq_container">
         {
             list.map((faq) => {
                 return (

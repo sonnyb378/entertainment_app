@@ -13,7 +13,7 @@ import Image from "next/image";
 
 import { auth, googleProvider } from "../firebase";
 
-import {signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signInWithRedirect} from "firebase/auth";
+import {signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 
 
 import { useAppDispatch, useAppSelector } from "../app/hooks";
@@ -60,7 +60,7 @@ const Signin: NextPageWithLayout = () => {
            
 
       if (signInOk) {
-
+        console.log(signInOk, email, password);
         signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           // Signed in 
@@ -72,7 +72,7 @@ const Signin: NextPageWithLayout = () => {
                 id: result.claims.user_id,
                 accessToken: result.token,
                 expiresAt: result.expirationTime
-              }))
+              }));
           }).finally(() => {
               router.replace("./movies")
           })          
@@ -126,14 +126,14 @@ const Signin: NextPageWithLayout = () => {
                 id: result.claims.user_id,
                 accessToken: result.token,
                 expiresAt: result.expirationTime
-              }))
+              }));
           }).finally(() => {
               router.replace("./movies")
           })
       }).catch((error) => {
-        // console.log("google signin error: ", error.code);
+        // displays an error when the user closed the popup window
         // "auth/popup-closed-by-user"
-        // if (error.code === "auth/popup-closed-by-user") {
+        // if (error.code === "auth/popup-closed-by-user") { 
         //   setSignInErrors([{error: "User closed Google signin window" }]);
         //   return;
         // }     
