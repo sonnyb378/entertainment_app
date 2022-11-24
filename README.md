@@ -10,12 +10,13 @@ npm run dev
 yarn dev
 ```
 
-# Personal Project
+## Personal Project
 
 A somewhat clone of "Netflix", project idea found in [frontendmentor.io](https://www.frontendmentor.io/challenges/entertainment-web-app-J-UhgAW1X)
 
-# Tech used:
+### Tech used:
 1. NextJS
 2. TailwindCSS
 3. Firebase
 4. Jest, React Testing Library and Cypress for testing
+
