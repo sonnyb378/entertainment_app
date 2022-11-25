@@ -2,7 +2,7 @@
 import styles from "./Footer.module.css";
 
 import Image from "next/image";
-import FooterNav from "../footer_nav/FooterNav";
+import FooterNav from "../FooterNav/FooterNav";
 
 import { aboutusNav, browseNav, legalNav, helpNav } from "../../../model/footer_links";
 import youtube from "../../../assets/youtube.svg";

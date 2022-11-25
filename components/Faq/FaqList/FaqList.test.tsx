@@ -2,7 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import {within} from '@testing-library/dom';
 
-import FaqList from "../../../components/faq/list/FaqList"
+import FaqList from "./FaqList";
 
 // import {faq_list} from "../../../model/faq";
 

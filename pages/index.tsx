@@ -1,7 +1,7 @@
 import { NextPageWithLayout } from './page';
-import Main from '../components/layout/main/Main';
-import InputField from '../components/layout/Form/InputField/InputField';
-import SigninBtn from '../components/button/signin/SigninBtn';
+import Main from '../components/Layout/Main/Main';
+import InputField from '../components/Layout/Form/InputField/InputField';
+import SigninBtn from '../components/Button/Signin/SigninBtn';
 import { ChevronDoubleRightIcon, ChevronDownIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 
@@ -13,7 +13,7 @@ import imac from "../assets/IMac_vector.png";
 import imac_gloss from "../assets/imac_gloss.png"; 
 
 import { faq_list } from '../model/faq';
-import FaqList from '../components/faq/list/FaqList';
+import FaqList from '../components/Faq/FaqList/FaqList';
 
 import { useRouter } from "next/router"
 

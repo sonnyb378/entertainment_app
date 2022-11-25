@@ -1,6 +1,6 @@
-import FaqItem from "../item/FaqItem";
+import FaqItem from "../FaqItem/FaqItem";
 import styles from "./FaqList.module.css";
-import { IFaqItem } from "../item/FaqItem";
+import { IFaqItem } from "../FaqItem/FaqItem";
 
 export interface IFaqList {
     list: IFaqItem[];

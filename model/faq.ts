@@ -1,4 +1,4 @@
-import { IFaqItem } from "../components/faq/item/FaqItem";
+import { IFaqItem } from "../components/Faq/FaqItem/FaqItem";
 
 
 export const faq_list: IFaqItem[] = [

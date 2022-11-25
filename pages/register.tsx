@@ -1,6 +1,6 @@
-import SigninBtn from "../components/button/signin/SigninBtn";
-import InputField from "../components/layout/Form/InputField/InputField";
-import Main from "../components/layout/main/Main";
+import SigninBtn from "../components/Button/Signin/SigninBtn";
+import InputField from "../components/Layout/Form/InputField/InputField";
+import Main from "../components/Layout/Main/Main";
 import { NextPageWithLayout } from "./page";
 
 import { useRouter } from "next/router";

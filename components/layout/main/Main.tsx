@@ -1,8 +1,8 @@
 import Head from "next/head";
 import React from "react";
-import Footer from "../footer/Footer";
-import Header from "../header/Header";
-import Hero from "../hero/Hero";
+import Footer from "../Footer/Footer";
+import Header from "../Header/Header";
+import Hero from "../Hero/Hero";
 import styles from "./Main.module.css";
 
 export interface IMain {

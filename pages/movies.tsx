@@ -1,5 +1,5 @@
 
-import Main from "../components/layout/main/Main";
+import Main from "../components/Layout/Main/Main";
 import { NextPageWithLayout } from "./page";
 
 import { useRouter } from "next/router";

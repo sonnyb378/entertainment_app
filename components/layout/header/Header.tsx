@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Header.module.css";
 import Logo from "../../Logo";
-import SigninBtn from "../../button/signin/SigninBtn";
-import Navigation from "../navigation/Navigation";
+import SigninBtn from "../../Button/Signin/SigninBtn";
+import Navigation from "../Navigation/Navigation";
 
 import { useRouter } from "next/router";
 import { useAuthState } from "react-firebase-hooks/auth";
