@@ -1,0 +1,35 @@
+.container {
+  @apply flex items-center justify-between h-[75px] w-full text-white bg-btnhighlight py-2 px-5 rounded-sm cursor-pointer;
+}
+
+.description_close {
+  @apply bg-gray-900 text-lg w-full h-0 duration-100 transition-all;
+}
+
+.description_close > p {
+  @apply p-5 delay-100 transition-all hidden overflow-hidden;
+}
+
+.description_open {
+  @apply bg-gray-900 text-lg w-full h-auto duration-100 transition-all;
+}
+
+.description_open > p {
+  @apply p-5 delay-100 transition-all overflow-hidden;
+}
+
+.faqli {
+  @apply w-full border-0 border-white;
+}
+
+.icon_container_close {
+  @apply w-[1.5rem] h-[2px] inline-block bg-transparent relative -mt-[10px]
+  before:w-[.8rem] before:h-[2px] before:inline-block before:bg-white before:content-[""] before:absolute before:left-0 before:top-[5px] before:-rotate-45 before:transition-all before:duration-100
+  after:w-[.8rem]  after:h-[2px]  after:inline-block  after:bg-white  after:content-[""]  after:absolute  after:-left-[8px] after:top-[5px] after:rotate-45 after:transition-all after:duration-100;
+}
+
+.icon_container_open {
+  @apply w-[1.5rem] h-[2px] inline-block bg-transparent relative -mt-[10px]
+  before:w-[.8rem] before:h-[2px] before:inline-block before:bg-white before:content-[""] before:absolute before:-left-[5px] before:top-[5px] before:rotate-45  before:transition-all before:duration-100
+  after:w-[.8rem]  after:h-[2px]  after:inline-block  after:bg-white  after:content-[""]  after:absolute  after:-left-[5px] after:top-[5px] after:-rotate-45  after:transition-all after:duration-100;
+}
