@@ -1,3 +1,0 @@
-.container {
-  @apply flex flex-1 flex-col items-center justify-start w-full h-screen absolute border-b-4 border-btnhighlight;
-}
