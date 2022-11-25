@@ -1,4 +1,4 @@
-import SigninBtn from "../components/Button/Signin/SigninBtn";
+import SigninBtn from "../components/Button/SignIn/SigninBtn";
 import InputField from "../components/Layout/Form/InputField/InputField";
 import Main from "../components/Layout/Main/Main";
 import { NextPageWithLayout } from "./page";

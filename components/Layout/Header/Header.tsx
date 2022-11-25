@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Header.module.css";
 import Logo from "../../Logo";
-import SigninBtn from "../../Button/Signin/SigninBtn";
+import SigninBtn from "../../Button/SignIn/SigninBtn";
 import Navigation from "../Navigation/Navigation";
 
 import { useRouter } from "next/router";
