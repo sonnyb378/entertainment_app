@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Header.module.css";
-import Logo from "../../Logo";
+import Logo from "../../Logo/Logo";
 import SigninBtn from "../../Button/SignIn/SigninBtn";
 import Navigation from "../Navigation/Navigation";
 

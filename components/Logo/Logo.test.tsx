@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
-import Logo from "../components/Logo"
+import Logo from "./Logo"
 
 import { useRouter } from "next/router"
 
