@@ -30,7 +30,7 @@ const Signin: NextPageWithLayout = () => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    // const [rememberme, setRememberMe] = useState(false);
+    const [rememberme, setRememberMe] = useState(false);
 
     const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -98,9 +98,9 @@ const Signin: NextPageWithLayout = () => {
     const passwordHandler = (e:React.ChangeEvent<HTMLInputElement>) => {
         setPassword(e.target.value);
     }
-    // const rememberHandler = (e:React.ChangeEvent<HTMLInputElement>) => {
-    //     setRememberMe(e.target.checked);
-    // }
+    const rememberHandler = (e:React.ChangeEvent<HTMLInputElement>) => {
+        setRememberMe(e.target.checked);
+    }
 
     const createAccountHandler = () => {
         router.push("./register");
@@ -170,7 +170,8 @@ const Signin: NextPageWithLayout = () => {
                             </div>
                     }
                     <InputField type="text" label="Email Address" id="email_address" placeholder=" " onChange={emailHandler} value={email} />
-                    <InputField type="password" label="Password" id="password" placeholder=" " onChange={passwordHandler} value={password} />
+                    <InputField type="password" label="Password" id="password" placeholder=" " onChange={passwordHandler} value={password} /> 
+
                     {
                       !isSubmitted && email && password ?
 

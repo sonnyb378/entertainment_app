@@ -19,7 +19,7 @@ const Footer: React.FC<IFooter> = () => {
     const dt = new Date();
     const year = dt.getFullYear();
     return (
-        <footer className={styles.container}>
+        <footer className={styles.container} data-testid="footer_container">
             <section className="flex flex-col items-start justify-center border-b-2 border-[#707070] py-0 w-full md:flex-row md:justify-start md:pb-8">
 
                 <FooterNav title="About Us" items={aboutusNav} />
