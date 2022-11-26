@@ -1,16 +1,11 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import {within} from '@testing-library/dom';
 
 import { useAuthState } from "react-firebase-hooks/auth";
 
 import Navigation from "./Navigation";
 
 describe("<Navigation />", () => {
-
-    beforeAll(() => {
-        
-    })
 
     afterAll(() => {
         jest.clearAllMocks();
