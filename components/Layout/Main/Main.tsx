@@ -2,7 +2,7 @@ import Head from "next/head";
 import React from "react";
 import Footer from "../Footer/Footer";
 import Header from "../Header/Header";
-import Hero from "../Hero/Hero";
+import Hero from "../../Hero/Hero";
 import styles from "./Main.module.css";
 
 export interface IMain {
@@ -16,7 +16,7 @@ export interface IMain {
 
 const Main: React.FC<IMain> = ({ children, meta, showHero}) => {
     return (
-        <div className={styles.container}>
+        <div className={styles.container} data-testid="main_component">
 
             <Head>
                 <title>{meta.pageTitle}</title>

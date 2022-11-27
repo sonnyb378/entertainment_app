@@ -2,8 +2,8 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import {within} from '@testing-library/dom';
 
-import Footer from "../Footer/Footer";
-
+import Footer from "./Footer";
+import LanguageSelector from "../../LanguageSelector/LanguageSelector"
 
 describe("<Footer />", () => {
     afterAll(() => {
@@ -22,5 +22,13 @@ describe("<Footer />", () => {
         const footerNavComponent = within(footerComponent).getAllByTestId("footernav_container")
 
         expect(footerNavComponent.length > 0).toBeTruthy();
+    })
+
+    it("must display <LanguageSelector />", () => {
+        render(<Footer />)
+        const footerComponent = screen.getByTestId("footer_container")
+        const languageSelector = within(footerComponent).getByTestId("language_selector")
+
+        expect(languageSelector).toBeInTheDocument();
     })
 })

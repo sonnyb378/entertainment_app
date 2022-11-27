@@ -1,7 +1,7 @@
 import styles from "./Hero.module.css";
 import Image from "next/image";
 
-import hero_image from "../../../assets/hero_image.png";
+import hero_image from "../../assets/hero_image.png";
 
 export interface IHero {
     children?: React.ReactNode;

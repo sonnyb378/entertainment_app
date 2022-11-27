@@ -1,6 +1,6 @@
 import { NextPageWithLayout } from './page';
 import Main from '../components/Layout/Main/Main';
-import InputField from '../components/Layout/Form/InputField/InputField';
+import InputField from '../components/Form/InputField/InputField';
 import SigninBtn from '../components/Button/SignIn/SigninBtn';
 import { ChevronDoubleRightIcon, ChevronDownIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";

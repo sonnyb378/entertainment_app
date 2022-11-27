@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styles from "./Header.module.css";
 import Logo from "../../Logo/Logo";
 import SigninBtn from "../../Button/SignIn/SigninBtn";
-import Navigation from "../Navigation/Navigation";
+import Navigation from "../../Navigation/Navigation";
 
 import { useRouter } from "next/router";
 import { useAuthState } from "react-firebase-hooks/auth";

@@ -2,14 +2,15 @@
 import styles from "./Footer.module.css";
 
 import Image from "next/image";
-import FooterNav from "../FooterNav/FooterNav";
+import FooterNav from "./FooterNav/FooterNav";
 
 import { aboutusNav, browseNav, legalNav, helpNav } from "../../../model/footer_links";
 import youtube from "../../../assets/youtube.svg";
 import twitter from "../../../assets/twitter.svg";
 import instagram from "../../../assets/instagram.svg";
 import facebook from "../../../assets/facebook.svg";
-import LanguageSelector from "../LanguageSelector/LanguageSelector";
+
+import LanguageSelector from "../../LanguageSelector/LanguageSelector";
 
 export interface IFooter {
     children?: React.ReactNode;
@@ -45,7 +46,7 @@ const Footer: React.FC<IFooter> = () => {
                 </div>
                 <div className="flex items-center justify-center w-full 
                 lg:justify-end">
-                    {/* <LanguageSelector /> */}
+                    <LanguageSelector />
                 </div>
             </section>
         </footer>

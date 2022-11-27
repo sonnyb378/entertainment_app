@@ -4,7 +4,7 @@ import {within} from '@testing-library/dom';
 
 import userEvent from "@testing-library/user-event";
 
-import InputField from "../InputField/InputField";
+import InputField from "./InputField";
 
 describe("<InputField />", () => {
 

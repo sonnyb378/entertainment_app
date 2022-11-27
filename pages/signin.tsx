@@ -1,5 +1,5 @@
 import SigninBtn from "../components/Button/SignIn/SigninBtn";
-import InputField from "../components/Layout/Form/InputField/InputField";
+import InputField from "../components/Form/InputField/InputField";
 import Main from "../components/Layout/Main/Main";
 
 import { ArrowPathIcon } from "@heroicons/react/24/solid";
@@ -208,7 +208,7 @@ const Signin: NextPageWithLayout = () => {
                         <span className="tracking-wider">New to Wibix?</span>
                         <span className="text-btnhighlight ml-0 md:ml-2 hover:text-yellow-200 cursor-pointer" onClick={createAccountHandler} >Create an Account</span>
                     </div>                   
-                    <span className="hover:text-yellow-200 cursor-pointer mt-4 md:mt-0" onClick={forgotPasswordHandler} >Forgot Password</span>
+                    {/* <span className="hover:text-yellow-200 cursor-pointer mt-4 md:mt-0" onClick={forgotPasswordHandler} >Forgot Password</span> */}
                 </div>
 
 
