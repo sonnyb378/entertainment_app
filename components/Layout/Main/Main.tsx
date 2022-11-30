@@ -5,24 +5,25 @@ import Header from "../Header/Header";
 import Hero from "../../Hero/Hero";
 import styles from "./Main.module.css";
 
+import Seo from "../../SEO/Seo"
+
 export interface IMain {
-    meta: {
-        pageTitle: string;
-        pageDescription: string;
-    },
+    seo?: {
+        title: string;
+        description: string;
+    },    
     showHero: boolean;
     children?: React.ReactNode;
 }
 
-const Main: React.FC<IMain> = ({ children, meta, showHero}) => {
+const Main: React.FC<IMain> = ({ children, seo, showHero}) => {
+    // console.log("Main seo: ", seo)
     return (
         <div className={styles.container} data-testid="main_component">
 
-            <Head>
-                <title>{meta.pageTitle}</title>
-                <meta name="description" content={`${meta.pageDescription}`} />
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
+            {
+                seo && <Seo meta={seo} />
+            }
 
             {
                 showHero ? 

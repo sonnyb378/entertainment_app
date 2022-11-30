@@ -126,12 +126,12 @@ export default Home;
 
 
 Home.getLayout = (page) => {
-  const meta = {
-    pageTitle: "Streaming to you today - Wibix",
-    pageDescription: "Wibix, streaming entertainment company"
-  }
+  // const meta = {
+  //   title: "Streaming to you today - Wibix",
+  //   description: "Wibix, streaming entertainment company"
+  // }
   return (
-      <Main meta={meta} showHero={true}>
+      <Main showHero={true}>
         {page}   
       </Main>
   );

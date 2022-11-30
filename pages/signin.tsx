@@ -28,13 +28,12 @@ const Signin: NextPageWithLayout = () => {
     const router = useRouter();
     const dispatch = useAppDispatch();
 
+    const [isSubmitted, setIsSubmitted] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [rememberme, setRememberMe] = useState(false);
-
-    const [isSubmitted, setIsSubmitted] = useState(false);
-
     const [signInErrors, setSignInErrors] = useState<SignInErrors[]>([]);
+
+    const [rememberme, setRememberMe] = useState(false);
 
     const signinHandler = () => {
       let signInOk = true; 
@@ -60,13 +59,14 @@ const Signin: NextPageWithLayout = () => {
            
 
       if (signInOk) {
-        console.log(signInOk, email, password);
+        // console.log(signInOk, email, password);
         signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           // Signed in 
           const user = userCredential.user;
           user.getIdTokenResult()
           .then((result) => {
+              console.log("signin result: ", result);
               setIsSubmitted(false);
               dispatch(setAuthData({
                 id: result.claims.user_id,
@@ -110,34 +110,30 @@ const Signin: NextPageWithLayout = () => {
         router.push("./forgot_password");
     }
 
-    const signInWithGoogleHandler = () => {
+    const signInWithGoogleHandler = async () => {
       // console.log("sign in with google handler");
       // setSignInErrors([]);
+
       googleProvider.setCustomParameters({
         prompt: "select_account"
       });
 
-      signInWithPopup(auth, googleProvider)
-      .then((result) => {
-        const user = result.user;
-        user.getIdTokenResult()
-          .then((result) => {
-              dispatch(setAuthData({
-                id: result.claims.user_id,
-                accessToken: result.token,
-                expiresAt: result.expirationTime
-              }));
-          }).finally(() => {
-              router.replace("./movies")
-          })
-      }).catch((error) => {
-        // displays an error when the user closed the popup window
-        // "auth/popup-closed-by-user"
-        // if (error.code === "auth/popup-closed-by-user") { 
-        //   setSignInErrors([{error: "User closed Google signin window" }]);
-        //   return;
-        // }     
-      });
+      const result = await signInWithPopup(auth, googleProvider)
+        .then((userData) => {          
+          return userData.user.getIdTokenResult();        
+        }).then((user:any) => {          
+          return user;
+        })
+
+      if (result.token) {
+          dispatch(setAuthData({
+            id: result.claims.user_id,
+            accessToken: result.token,
+            expiresAt: result.expirationTime
+          }));
+          router.replace("./movies")
+      }
+
       
     }
 
@@ -148,7 +144,8 @@ const Signin: NextPageWithLayout = () => {
       lg:w-[60%]
       xl:w-[50%]
       2xl:w-[40%]
-      ">
+      "
+      data-testid="signin_container">
         <div className="flex flex-col items-center justify-start w-full">
           <section className="flex flex-col items-center justify-center w-full">
             
@@ -158,8 +155,8 @@ const Signin: NextPageWithLayout = () => {
                  ">Sign In</h1>
                 <div className="flex flex-1 flex-col items-start justify-start w-full">
                     {
-                        signInErrors && signInErrors.length>0 && 
-                            <div className="flex flex-col p-3 items-start justify-center w-full rounded-md bg-red-400 mt-4">
+                        signInErrors && signInErrors.length > 0 && 
+                            <div className="flex flex-col p-3 items-start justify-center w-full rounded-md bg-red-400 mt-4" data-testid="error_message">
                                 {
                                      signInErrors.map((error) => {
                                         return (
@@ -182,7 +179,7 @@ const Signin: NextPageWithLayout = () => {
                         mt-[2rem]`} >
                           {
                             isSubmitted ?
-                            <div className="flex items-center justify-center text-white">
+                            <div className="flex items-center justify-center text-white" data-testid="spinning_component">
                               <ArrowPathIcon className="w-[25px] h-[25px] animate-spin" />
                               <span className="ml-2">Logging In</span>
                             </div> :
@@ -195,7 +192,7 @@ const Signin: NextPageWithLayout = () => {
                     
                     <div className="flex flex-col items-center justify-center w-full mt-8">
                       <span className="text-gray-500">-or-</span>
-                      <button onClick={signInWithGoogleHandler} className="flex items-center justify-center rounded-lg bg-red-900 p-5 w-full mt-2">
+                      <button data-testid="google_signin" onClick={signInWithGoogleHandler} className="flex items-center justify-center rounded-lg bg-red-900 p-5 w-full mt-2">
                         <Image src={googleLogo} alt="Google" className="object-contain"/>
                         <span className="ml-2" >Sign In with Google</span>
                       </button>
@@ -227,8 +224,8 @@ const Signin: NextPageWithLayout = () => {
   
   Signin.getLayout = (page) => {
     const meta = {
-      pageTitle: "SignIn",
-      pageDescription: "Sign In - Wibix"
+      title: "SignIn",
+      description: "Sign In - Wibix"
     }
 
     const [pageIsLoading, setPageIsLoading] = useState(true);
@@ -246,7 +243,7 @@ const Signin: NextPageWithLayout = () => {
     if (pageIsLoading) return null;
 
     return (
-        <Main meta={meta} showHero={true}>
+        <Main seo={meta} showHero={true}>
           {page}   
         </Main>
     );

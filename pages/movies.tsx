@@ -24,8 +24,8 @@ const Movies: NextPageWithLayout = () => {
   
   Movies.getLayout = (page) => {
     const meta = {
-      pageTitle: "Movies",
-      pageDescription: "Movies - Wibix"
+      title: "Movies",
+      description: "Movies - Wibix"
     }
     const [pageIsLoading, setPageIsLoading] = useState(true);
     const user = useAppSelector<IAuthState>(selectAuth);
@@ -43,7 +43,7 @@ const Movies: NextPageWithLayout = () => {
     if (pageIsLoading) return null;
    
     return (
-      <Main meta={meta} showHero={false}>
+      <Main seo={meta} showHero={false}>
         {page}   
       </Main>
     );

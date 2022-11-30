@@ -21,14 +21,12 @@ interface IError {
 const Register: NextPageWithLayout = () => {
     const dispatch = useAppDispatch();
     const router = useRouter();
-
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmEmail, setConfirmEmail] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-
+    
     const [isSubmitted, setIsSubmitted] = useState(false);
-
+    const [email, setEmail] = useState("");
+    const [confirmEmail, setConfirmEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("")
     const [registerErrors, setRegisterErrors] = useState<IError[]>([]);
 
     const signupHandler = () => {
@@ -127,7 +125,7 @@ const Register: NextPageWithLayout = () => {
                 <div className="flex flex-col items-start justify-start w-full">
                     {
                         registerErrors && registerErrors.length>0 && 
-                            <div className="flex flex-col p-3 items-start justify-center w-full rounded-md bg-red-400 mt-4">
+                            <div className="flex flex-col p-3 items-start justify-center w-full rounded-md bg-red-400 mt-4" data-testid="error_message">
                                 {
                                      registerErrors.map((error) => {
                                         return (
@@ -152,7 +150,7 @@ const Register: NextPageWithLayout = () => {
                         mt-[2rem]`} >
                             {
                             isSubmitted ?
-                                <div className="flex items-center justify-center text-white">
+                                <div className="flex items-center justify-center text-white"  data-testid="spinning_component">
                                     <ArrowPathIcon className="w-[25px] h-[25px] animate-spin" />
                                     <span className="ml-2">Creating your account...</span>
                                 </div> :
@@ -189,8 +187,8 @@ const Register: NextPageWithLayout = () => {
   
   Register.getLayout = (page) => {
     const meta = {
-      pageTitle: "SignUp",
-      pageDescription: "Sign Up - Wibix"
+      title: "SignUp",
+      description: "Sign Up - Wibix"
     }
 
     const [pageIsLoading, setPageIsLoading] = useState(true);
@@ -209,7 +207,7 @@ const Register: NextPageWithLayout = () => {
 
     
     return (
-        <Main meta={meta} showHero={true}>
+        <Main seo={meta} showHero={true}>
           {page}   
         </Main>
     );
