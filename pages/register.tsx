@@ -29,7 +29,7 @@ const Register: NextPageWithLayout = () => {
     const [confirmPassword, setConfirmPassword] = useState("")
     const [registerErrors, setRegisterErrors] = useState<IError[]>([]);
 
-    const signupHandler = () => {
+    const signupHandler = async () => {
         let registerOk = true;
         setIsSubmitted(true);
         setRegisterErrors([]);
@@ -59,31 +59,58 @@ const Register: NextPageWithLayout = () => {
 
         if (registerOk) {
 
-            createUserWithEmailAndPassword(auth, email, password)
+            const result = await createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                // Signed in 
-                const user = userCredential.user;
-
-                user.getIdTokenResult()
-                .then((result) => {
-                    setIsSubmitted(false);
-                    dispatch(setAuthData({
-                        id: result.claims.user_id,
-                        accessToken: result.token,
-                        expiresAt: result.expirationTime
-                    }));
-                }).finally(() => {
-                    router.replace("./movies")
-                })
+                return userCredential.user.getIdTokenResult();
+            })
+            .then((user: any) => {
+                return user
             })
             .catch((error) => {
+                // console.log("error: ",error);
                 setIsSubmitted(false);
                 if (error.code === "auth/email-already-in-use") {
                     setRegisterErrors([{ error: "Email address already in use!" }]);
                     return;
                 }
                 setRegisterErrors([{ error: "All fields are required" }]);
-            });
+            })
+
+            if (result.token) {
+                // setIsSubmitted(false);
+                dispatch(setAuthData({
+                    id: result.claims.user_id,
+                    accessToken: result.token,
+                    expiresAt: result.expirationTime
+                }));
+                router.replace("./movies")
+            }
+
+            // createUserWithEmailAndPassword(auth, email, password)
+            // .then((userCredential) => {
+            //     // Signed in 
+            //     const user = userCredential.user;
+
+            //     user.getIdTokenResult()
+            //     .then((result) => {
+            //         setIsSubmitted(false);
+            //         dispatch(setAuthData({
+            //             id: result.claims.user_id,
+            //             accessToken: result.token,
+            //             expiresAt: result.expirationTime
+            //         }));
+            //     }).finally(() => {
+            //         router.replace("./movies")
+            //     })
+            // })
+            // .catch((error) => {
+            //     setIsSubmitted(false);
+            //     if (error.code === "auth/email-already-in-use") {
+            //         setRegisterErrors([{ error: "Email address already in use!" }]);
+            //         return;
+            //     }
+            //     setRegisterErrors([{ error: "All fields are required" }]);
+            // });
         } else {
             setIsSubmitted(false);
         }
@@ -115,7 +142,8 @@ const Register: NextPageWithLayout = () => {
       md:w-[70%]
       lg:w-[60%]
       xl:w-[50%]
-      2xl:w-[40%]">
+      2xl:w-[40%]"
+      data-testid="register_container">
         <div className="flex flex-col items-center justify-start w-full">
           <section className="flex flex-col items-center justify-center w-full">
             
@@ -147,14 +175,14 @@ const Register: NextPageWithLayout = () => {
                         hover:text-yellow-200 hover:bg-btnhighlight mt-[2rem]" onClick={signupHandler}  />
                         :
                         <div title="Sign Up" className={`flex items-center justify-center py-5 px-5 text-2xl rounded-md bg-gray-500 text-btnprimary w-full
-                        mt-[2rem]`} >
+                        mt-[2rem]`}>
                             {
                             isSubmitted ?
                                 <div className="flex items-center justify-center text-white"  data-testid="spinning_component">
                                     <ArrowPathIcon className="w-[25px] h-[25px] animate-spin" />
                                     <span className="ml-2">Creating your account...</span>
                                 </div> :
-                                <div className="flex items-center justify-center text-white">
+                                <div className="flex items-center justify-center text-white" >
                                     Sign Up
                                 </div>
                              }
@@ -167,7 +195,13 @@ const Register: NextPageWithLayout = () => {
                 md:flex-row md:justify-between md:items-start">
                     <div className="flex flex-col items-start justify-center text-xl w-full md:flex-row">
                         <span className="tracking-wider">Already have an account?</span>
-                        <span className="text-btnhighlight hover:text-yellow-200 ml-0 cursor-pointer md:ml-2 md:mt-0" onClick={signInAccountHandler} >Sign In here</span>
+                        <button 
+                            className="text-btnhighlight hover:text-yellow-200 ml-0 cursor-pointer md:ml-2 md:mt-0" 
+                            onClick={signInAccountHandler} 
+                            data-testid="signinhere_button"
+                            >
+                                Sign In here
+                        </button>
                     </div>  
                 </div>
             </div>

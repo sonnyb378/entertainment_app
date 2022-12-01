@@ -123,6 +123,8 @@ const Signin: NextPageWithLayout = () => {
           return userData.user.getIdTokenResult();        
         }).then((user:any) => {          
           return user;
+        }).catch((error) => {
+
         })
 
       if (result.token) {
