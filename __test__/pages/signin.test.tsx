@@ -66,6 +66,7 @@ describe("test sign in page", () => {
 
     afterAll(() => {
         jest.clearAllMocks();
+        jest.clearAllTimers();
     })
 
     it("must display email address field", () => {

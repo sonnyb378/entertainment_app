@@ -38,7 +38,7 @@ describe('<Logo />', () => {
         
         fireEvent.click(buttonComponent)
         
-        expect(mockRouter.replace).toHaveBeenCalledWith("./")
+        expect(mockRouter.replace).toHaveBeenCalledWith("/")
 
     })
 

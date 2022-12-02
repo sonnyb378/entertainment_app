@@ -1,5 +1,5 @@
 .container {
-  @apply flex items-center justify-center w-full text-[#676767] relative;
+  @apply flex items-center justify-center w-full text-[#676767] relative z-[2000];
 }
 
 .subcontainer {
@@ -17,5 +17,5 @@
 }
 
 .nav_container {
-  @apply flex flex-1 items-center justify-between w-full;
+  @apply flex flex-1 items-center justify-between w-full relative;
 }

@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 const Logo: React.FC = () => {
     const router = useRouter();
     const redirectHandler = () => {
-        router.replace("./");
+        router.replace("/");
     }
     return (
         <div className="hover:cursor-pointer scale-[60%] 

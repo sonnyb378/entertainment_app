@@ -1,0 +1,27 @@
+.container {
+  @apply flex flex-col items-end justify-start p-2  hover:text-yellow-400 relative;
+}
+
+.avatar {
+  @apply flex items-center justify-center  bg-blue-800 border-slate-600 border rounded-full  text-white cursor-pointer w-[35px] h-[35px];
+}
+
+.dropdown_hide {
+  @apply hidden;
+}
+
+.dropdown_show {
+  @apply flex items-center justify-center absolute bg-gray-500 rounded-md  w-[200px] mt-[40px] p-2;
+}
+
+.menu {
+  @apply list-none w-full relative;
+}
+
+.menu_item {
+  @apply flex items-center justify-start cursor-pointer py-2 px-4 text-sm text-blue-100  hover:text-yellow-500;
+}
+
+.menu_item span {
+  @apply flex items-center justify-center bg-black;
+}

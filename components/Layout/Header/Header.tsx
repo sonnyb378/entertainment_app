@@ -12,6 +12,8 @@ import { setAuthData } from "../../../app/store/slices/auth";
 import { useAppDispatch } from "../../../app/hooks";
 import { signOut } from "firebase/auth";
 
+import Avatar from "../../Avatar/Avatar"
+
 export interface IHeader {
     children?: React.ReactNode;
 }
@@ -21,11 +23,11 @@ const Header: React.FC<IHeader> = ({ children }) => {
     const [yValue, setYValue] = useState(0);
     const router = useRouter();
     const dispatch = useAppDispatch();
-
-    // useEffect(() => {
-    //     console.log("header test >>>>>> ", user);
+    
+    useEffect(() => {
+        // console.log("header test >>>>>> ", user?.email?.substring(0,1).toUpperCase());
         // console.log("header >>>>> ", router.pathname);
-    // }, []);
+    }, []);
 
     useEffect(() => {
         window.addEventListener("scroll", scrollHandler)
@@ -35,23 +37,23 @@ const Header: React.FC<IHeader> = ({ children }) => {
         setYValue(window.scrollY);
     }
 
-    const logoutHandler = () => {
-        signOut(auth);
-        dispatch(setAuthData({
-            id: null,
-            accessToken: null,
-            expiresAt: null
-        }))
-
-    }
+    // const logoutHandler = () => {
+    //     signOut(auth);
+    //     dispatch(setAuthData({
+    //         id: null,
+    //         accessToken: null,
+    //         expiresAt: null
+    //     }))
+    // }
 
     const signInHandler = () => {
-        router.replace("./signin")
+        router.replace("/signin")
     }
     const registerHandler = () => {
-        router.replace("./register")
+        router.replace("/register")
     }
 
+    
     return (
         <header className={styles.container} data-testid="header">
             <div className={yValue <= 60 ? styles.subcontainer : styles.subcontainer_scrolled}>
@@ -61,10 +63,12 @@ const Header: React.FC<IHeader> = ({ children }) => {
                         user && <Navigation show={!!user} />
                     }
                     {
-                        !user ? 
-                        <SigninBtn title={router.pathname === "/signin" ? "Register" : "Sign In"} onClick={ router.pathname === "/signin" ? registerHandler : signInHandler } /> 
-                        : 
-                        <SigninBtn title="Logout" onClick={logoutHandler} />
+                        !loading &&
+                            !user ? 
+                                <SigninBtn title={router.pathname === "/signin" ? "Register" : "Sign In"} onClick={ router.pathname === "/signin" ? registerHandler : signInHandler } /> 
+                            :                          
+                                //  <SigninBtn title="Logout" onClick={logoutHandler} />
+                                <Avatar userInitial={user?.email?.substring(0,1).toUpperCase()} />
                     }
                 </div>
             </div>

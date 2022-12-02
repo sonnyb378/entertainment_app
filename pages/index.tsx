@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { NextPageWithLayout } from './page';
 import Main from '../components/Layout/Main/Main';
 import InputField from '../components/Form/InputField/InputField';
@@ -16,20 +17,38 @@ import { faq_list } from '../model/faq';
 import FaqList from '../components/Faq/FaqList/FaqList';
 
 import { useRouter } from "next/router"
+import { useAppSelector } from "../app/hooks";
+import { selectAuth } from "../app/store/slices/auth";
+
+import { IAuthState } from "../ts/states/auth_state";
 
 
 const Home: NextPageWithLayout = () => {
   const router = useRouter();
 
+  const [pageIsLoading, setPageIsLoading] = useState(true);
+  const user = useAppSelector<IAuthState>(selectAuth);
+
+  useEffect(() => {   
+    if (user.accessToken) {
+      router.replace("/movies");
+    } else {
+      setPageIsLoading(false);
+    }
+  });
+
+  if (pageIsLoading) return null
+
+
   const getStartedHandler = () => {
-    console.log("get started");
-    router.replace("./register");
+    router.replace("/register");
   }
 
-  return (
-    <div className="flex flex-col items-center justify-start w-full">      
 
-      <section className="flex flex-col items-start justify-start w-full h-screen py-20">
+  return (
+    <div className="flex flex-col items-center justify-start w-full" data-testid="homepage_container">      
+
+      <section className="flex flex-col items-start justify-start w-full h-screen py-20" data-testid="getting_started">
         <div className="flex flex-col items-center justify-center w-full ">
           <div className="text-[3rem] text-center leading-none">All the TV Shows, All the Movies.</div>
           <div className="text-[1.8rem] text-center leading-none">Streamed to You!</div>
@@ -43,7 +62,7 @@ const Home: NextPageWithLayout = () => {
       </section>
     
       <section className="flex flex-col items-center justify-center w-full p-2 mt-12
-        lg:w-[90%]  2xl:w-[70%]">  
+        lg:w-[90%]  2xl:w-[70%]"  data-testid="enjoy_your_tv">  
         <div className="flex flex-1 flex-col items-center justify-center w-full
         lg:flex-row">
           <div className="flex-1">
@@ -61,7 +80,7 @@ const Home: NextPageWithLayout = () => {
        
 
       <section className="flex flex-col items-center justify-center w-full p-2 mt-12  lg:flex-row 
-      lg:w-[90%]  2xl:w-[70%]">
+      lg:w-[90%]  2xl:w-[70%]"  data-testid="download_and_watch">
         <div className="flex-1">
           <h1 className="text-4xl text-center lg:text-left">Download & Watch</h1>
           <p className="mt-2 w-full text-center lg:text-left">Save your favorite shows to watch offline. </p>
@@ -74,7 +93,7 @@ const Home: NextPageWithLayout = () => {
       </section> 
 
       <section className="flex flex-col items-center justify-center w-full p-2 mt-12 
-      lg:w-[90%] 2xl:w-[70%]">
+      lg:w-[90%] 2xl:w-[70%]"  data-testid="stream_anywhere">
 
         <div className="flex flex-1 flex-col items-center justify-center mb-4">
           <h1 className="text-4xl text-center">Stream Anywhere, Anytime</h1>
@@ -108,7 +127,7 @@ const Home: NextPageWithLayout = () => {
       </section>
 
       <section className="flex flex-col items-center justify-center w-full p-5 mt-12
-      lg:w-[90%]">
+      lg:w-[90%]"  data-testid="frequently_asked_questions">
         <h1 className="text-4xl text-center">Frequently Asked Questions</h1>
         <FaqList list={faq_list} />
         
