@@ -43,10 +43,10 @@ const Avatar: React.FC<IAvatar> = ({ userInitial }) => {
             <div className={ styles.avatar } data-testid="initial_container">{ userInitial || "" }</div>
             <div className={ show ? styles.dropdown_show : styles.dropdown_hide} >
                 <ul className={ styles.menu }>
-                    <li className={ styles.menu_item } onClick={ myListHandler }>
+                    <li className={ styles.menu_item } onClick={ myListHandler } data-testid='mylist_btn'>
                         <BookmarkIcon className="w-[20px] h-[20px] mr-2" />My List
                     </li>
-                    <li className={ styles.menu_item } onClick={ logoutHandler }>
+                    <li className={ styles.menu_item } onClick={ logoutHandler } data-testid='logout_btn'>
                         <ArrowRightOnRectangleIcon className="w-[20px] h-[20px] mr-2" />Logout
                     </li>
                 </ul>
