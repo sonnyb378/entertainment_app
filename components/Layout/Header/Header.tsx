@@ -13,6 +13,7 @@ import { useAppDispatch } from "../../../app/hooks";
 import { signOut } from "firebase/auth";
 
 import Avatar from "../../Avatar/Avatar"
+import Search from "../../Search/Search"
 
 export interface IHeader {
     children?: React.ReactNode;
@@ -37,15 +38,6 @@ const Header: React.FC<IHeader> = ({ children }) => {
         setYValue(window.scrollY);
     }
 
-    // const logoutHandler = () => {
-    //     signOut(auth);
-    //     dispatch(setAuthData({
-    //         id: null,
-    //         accessToken: null,
-    //         expiresAt: null
-    //     }))
-    // }
-
     const signInHandler = () => {
         router.replace("/signin")
     }
@@ -60,16 +52,18 @@ const Header: React.FC<IHeader> = ({ children }) => {
                 <div className={styles.nav_container}>
                     <Logo />
                     {
-                        user && <Navigation show={!!user} />
+                        user ? <Navigation show={!!user} /> : <div className="flex-1"></div>
+                        
                     }
+                    <Search />
                     {
                         !loading &&
                             !user ? 
                                 <SigninBtn title={router.pathname === "/signin" ? "Register" : "Sign In"} onClick={ router.pathname === "/signin" ? registerHandler : signInHandler } /> 
                             :                          
-                                //  <SigninBtn title="Logout" onClick={logoutHandler} />
-                                <Avatar userInitial={user?.email?.substring(0,1).toUpperCase()} />
+                               <Avatar userInitial={user?.email?.substring(0,1).toUpperCase()} />
                     }
+
                 </div>
             </div>
         </header>

@@ -3,7 +3,7 @@
 }
 
 .avatar {
-  @apply flex items-center justify-center  bg-blue-800 border-slate-600 border rounded-full  text-white cursor-pointer w-[35px] h-[35px];
+  @apply flex items-center justify-center  bg-sky-900 border-slate-600 border rounded-full  text-white cursor-pointer w-[35px] h-[35px];
 }
 
 .dropdown_hide {

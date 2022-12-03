@@ -1,0 +1,7 @@
+.search_container {
+  @apply flex px-[2px] py-[2px] items-center justify-start w-[280px] bg-[#20344E] rounded-md focus-within:border-2 border-btnprimary;
+}
+
+.input_field {
+  @apply w-full h-[40px] z-[90] text-sm text-white  bg-[#20344E] border-transparent focus:outline-0 focus:border-btnprimary;
+}

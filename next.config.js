@@ -2,6 +2,16 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  images: {
+    // domains: ['https://image.tmdb.org'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'image.tmdb.org',
+        pathname: '/t/p/w500',
+      },
+    ],
+  },
 };
 
 module.exports = nextConfig;

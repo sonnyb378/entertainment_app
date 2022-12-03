@@ -40,6 +40,9 @@ describe("<Navigation />", () => {
 
 
     it("must redirect to /movies when 'Movies' button is clicked", () => {
+        
+        const eventHandler = jest.fn();
+
         const user = useAuthState as jest.Mock;        
         user.mockReturnValue({
             id: "somevalue"
@@ -51,7 +54,7 @@ describe("<Navigation />", () => {
         router.mockReturnValue(mockRouter)
 
         render(<Navigation show={ !!user().id }/>)
-        const navBtn = screen.getByText('Movies')
+        const navBtn = screen.getByTestId('nav_movies')
         expect(navBtn).toBeInTheDocument()
 
         fireEvent.click(navBtn)
@@ -59,7 +62,7 @@ describe("<Navigation />", () => {
 
     })
 
-    it("must redirect to /tv-shows when 'TV Shows' button ic clicked", () => {
+    it("must redirect to /tvshows when 'TV Shows' button ic clicked", () => {
         const user = useAuthState as jest.Mock;        
         user.mockReturnValue({
             id: "somevalue"
@@ -71,11 +74,11 @@ describe("<Navigation />", () => {
         router.mockReturnValue(mockRouter)
 
         render(<Navigation show={ !!user().id }/>)
-        const navBtn = screen.getByText('TV Shows')
+        const navBtn = screen.getByTestId('nav_tvshows')
         expect(navBtn).toBeInTheDocument()
 
         fireEvent.click(navBtn)
-        expect(mockRouter.replace).toHaveBeenCalledWith("/tv-shows")
+        expect(mockRouter.replace).toHaveBeenCalledWith("/tvshows")
     })
 
     it("must redirect to /user/mylist when 'My List' button ic clicked", () => {
@@ -90,7 +93,7 @@ describe("<Navigation />", () => {
         router.mockReturnValue(mockRouter)
 
         render(<Navigation show={ !!user().id }/>)
-        const navBtn = screen.getByText('My List')
+        const navBtn = screen.getByTestId('nav_mylist')
         expect(navBtn).toBeInTheDocument()
 
         fireEvent.click(navBtn)
