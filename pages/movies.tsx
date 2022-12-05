@@ -10,7 +10,16 @@ import { selectAuth } from "../app/store/slices/auth";
 
 import { IAuthState } from "../ts/states/auth_state";
 
+import SearchResults from "../components/Search/SearchResults/SearchResults";
+
+
 const Movies: NextPageWithLayout = () => {
+  const router = useRouter();
+
+  // console.log("movies page: ", router.pathname, router.asPath, router.asPath.split("?"))
+
+    if (router.asPath.includes("/search")) return <SearchResults />
+
     return (
       <div className="flex flex-col items-center justify-center w-full" data-testid="movies_container">
         movies  

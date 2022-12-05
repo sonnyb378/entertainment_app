@@ -15,14 +15,16 @@ const Search: NextPageWithLayout = () => {
     const router = useRouter();
     const search = document.getElementById("search") as HTMLInputElement
 
-    useEffect(() => {
-        if (search.value === "") router.replace("/movies")
-    },[])
+    // TODO: check for querystring : ?q=
+    
+    // useEffect(() => {
+    //     if (search.value === "") router.replace("/movies")
+    // },[])
 
     return (
       <div className="flex flex-col items-start justify-center w-full p-5" data-testid="movies_container">
         <h2 className="text-[2rem]">Search Results: </h2>
-        <div></div> 
+        <div>results here</div> 
       </div> 
     );
     
