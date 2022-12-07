@@ -12,7 +12,7 @@ import { IAuthState } from "../ts/states/auth_state";
 import { setCurrentUrl } from "../app/store/slices/url";
 
 
-const Movies: NextPageWithLayout = () => {
+const TVShows: NextPageWithLayout = () => {
     const router = useRouter();
     const dispatch = useAppDispatch();
 
@@ -25,19 +25,19 @@ const Movies: NextPageWithLayout = () => {
 
     return (
       <div className="flex flex-col items-center justify-center w-full" data-testid="movies_container">
-        movies  
+        TVShows  
       </div> 
     );
     
   };
   
-  export default Movies;
+  export default TVShows;
   
   
-  Movies.getLayout = (page) => {
+  TVShows.getLayout = (page) => {
     const meta = {
-      title: "Movies",
-      description: "Movies - Wibix"
+      title: "TVShows",
+      description: "TVShows - Wibix"
     }
     const [pageIsLoading, setPageIsLoading] = useState(true);
     const user = useAppSelector<IAuthState>(selectAuth);

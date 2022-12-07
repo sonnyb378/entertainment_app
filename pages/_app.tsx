@@ -25,6 +25,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
           <Component {...pageProps} /> 
         </PersistGate>
       </Provider>  
-    </AppContextWrapper>);
+    </AppContextWrapper>
+    );
 }
 export default wrapper.withRedux(MyApp);

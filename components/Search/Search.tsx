@@ -7,50 +7,50 @@ import { XCircleIcon } from "@heroicons/react/24/solid";
 
 import { debounce } from "../../lib/debounce";
 
-import { sendRequest } from "../../lib/sendRequest";
-
-import { fake_multi_search_data } from "../../model/fake_search";
-
 import { useRouter } from "next/router";
 import InputField from "../Form/InputField/InputField";
 
+import { useAppContext } from "../../context/state"
+
+import { useAppSelector } from "../../app/hooks";
+import { selectCurrentUrl } from "../../app/store/slices/url";
+import { IUrl } from "../../app/store/slices/url";
+
 const Search: React.FC = () => {
     const router = useRouter();
-    let last_keyword:string = ""
-    const inputRef = useRef<HTMLInputElement>(null);
+    const new_url = useAppSelector<IUrl>(selectCurrentUrl);
+    
+    const [lastKeyword, setLastKeyword] = useState("")
 
     const search_input = document.getElementById("search") as HTMLInputElement
     const xicon = document.getElementById("xcircleicon") 
     const righticon = document.getElementById("chevronrighticon")
 
-    let current_path = router.pathname
-    let current_aspath = router.asPath
-
     const clearInputHandler = () => {
         search_input.value = ""
         xicon?.classList.replace("flex", "hidden")            
         righticon?.classList.replace("hidden", "flex")
-        router.push(current_path)
+        setLastKeyword("")
+        router.replace(new_url.currentUrl)
     }
 
-    const refreshQuery = useCallback(debounce((e) => {        
-        const search_keyword = e.target as HTMLInputElement;
-        if (search_keyword.value.trim() === "") return
-        if (last_keyword === search_keyword.value.trim()) return;
+    const sendRequest = debounce((keyword, e) => {
+        if (!keyword) return
+        // console.log("send request ", !!keyword, keyword, window.location);
 
-        last_keyword = search_keyword.value.trim()
-        router.push(router.pathname, {
+        router.replace({
             pathname: "/search",
             query: {
-                q: encodeURI(search_keyword.value.trim())
+                q: encodeURI(keyword)
             }
-        }) 
-    }, 1200), [router.pathname])
+        })
+    }, 1000)
 
-    const search = (event: React.KeyboardEvent) => {
-        const search_keyword = event.target as HTMLInputElement;
+    const searchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+        const search_keyword = e.target.value;
     
-        if (search_keyword.value.trim() !== "") {
+        if (search_keyword.trim() !== "") {
             xicon?.classList.replace("hidden", "flex")
             righticon?.classList.replace("flex", "hidden")
         } else {            
@@ -58,45 +58,28 @@ const Search: React.FC = () => {
             righticon?.classList.replace("hidden", "flex")
         }
 
+        
+        let searchParams = new URLSearchParams(window.location.search);            
+        searchParams.set("q", encodeURI(search_keyword.trim()));       
 
-        if (search_keyword.value.trim() !== "") {
-            if (!current_aspath.includes("/search")) {
-                router.replace(router.pathname, {
-                    pathname: "/search",
-                    query: {
-                        q: ""
-                    }
-                }) 
-            } else {
-                let searchParams = new URLSearchParams(window.location.search);
-
-                searchParams.set("q", encodeURI(search_keyword.value));
-    
-                if (window.history.replaceState) {
-                    const url = window.location.protocol 
-                                + "//" + window.location.host 
-                                + window.location.pathname 
-                                + "?" 
-                                + searchParams.toString();
-    
-                    window.history.replaceState({
-                        path: url
-                    }, "", url)
-                }
-                
-                refreshQuery(event)
-            }
+        if (window.history.replaceState) {
+            const url = window.location.protocol 
+            + "//" + window.location.host 
+            + "/search"
+            + "?" 
+            + searchParams.toString();
             
-
-
-        }
-        
-        if (current_aspath.includes("/search") && search_keyword.value.trim() === "") {            
-            router.replace(current_path, current_path)    
+            window.history.replaceState({
+                path: url
+            }, "", url)
         }
 
-        // db(event)
-        
+        if (search_keyword.trim() === "") {
+            router.replace(new_url.currentUrl)
+        }
+
+        sendRequest(search_keyword.trim(), e)
+
     }
 
     return(
@@ -104,7 +87,7 @@ const Search: React.FC = () => {
             <MagnifyingGlassIcon className="w-[30px] h-[30px] ml-2 mr-2 text-white" />
             <input 
                 id="search" 
-                onKeyUp={ (e) => search(e) } 
+                onChange={ searchHandler } 
                 className={styles.input_field}  
                 type="text" 
                 placeholder="Name, Cast, Company" 

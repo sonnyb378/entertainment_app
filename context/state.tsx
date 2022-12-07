@@ -4,53 +4,44 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
 
 export interface ContextState {
-  scrollYValue: number;
+  keyword: string;
+  setKeyword: (keyword: string) => void
 }  
 
 const initialState = {
-  scrollYValue: 0
+  keyword: "",
+  setKeyword: () => {}
 };
 
 const AppContext = createContext<ContextState>(initialState);
 
-// const ctxSetters = {
-//     setScrollYValue: (yValue: number) => {}
-// }
-
-// const AppContextSetters = createContext(ctxSetters);
-
 export const AppContextWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [contextState, setContextState] = useState<ContextState>(initialState);
 
-  // const setScrollYValue = useCallback(() => {
+  // const setKeyword = (keyword: string) => {
+  //   console.log("called");
   //   setContextState((prev) => {
   //       return {
   //           ...prev,
-  //           scrollYValue: window.scrollY
+  //           keyword: keyword
   //       }
   //   })
-  // },[contextState.scrollYValue])
+  // }
 
-  // useEffect(() => {
-  //   window.addEventListener('scroll', setScrollYValue);
-  // })
+  const setKeyword = () => {}
 
-  // const ctxSetters = useMemo(() =>  {
-  //   return {
-  //     setScrollYValue
-  //   }
-  // }, [setScrollYValue] )
+  const ctx = {
+    keyword: contextState.keyword,
+    setKeyword
+  }
 
-  return <AppContext.Provider value={ contextState  }>
-        {/* <AppContextSetters.Provider value={ ctxSetters }> */}
-            {children}
-        {/* </AppContextSetters.Provider> */}
-    </AppContext.Provider>;
+  return (
+      <AppContext.Provider value={ ctx  } >        
+        {children}
+      </AppContext.Provider>
+    )
 };
 
 export function useAppContext() {
   return useContext(AppContext);
 }
-// export function useAppContextSetters() {
-//   return useContext(AppContextSetters);
-// }

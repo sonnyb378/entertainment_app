@@ -23,15 +23,15 @@ jest.mock("../../app/store/slices/auth", () => ({
 
 describe("<Movies />", () => {
     
-    afterAll(() => {
-        jest.clearAllMocks();
-    })
+    // afterAll(() => {
+    //     jest.clearAllMocks();
+    // })
 
-    it("must render the movies page", () => {
-        render(<Movies />)
-        const movies_container = screen.getByTestId("movies_container")
-        expect(movies_container).toBeInTheDocument();
-    })
+    // it("must render the movies page", () => {
+    //     render(<Movies />)
+    //     const movies_container = screen.getByTestId("movies_container")
+    //     expect(movies_container).toBeInTheDocument();
+    // })
 
     it("must render header with navigation bar and user avatar", () => {
 

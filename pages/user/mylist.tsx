@@ -5,18 +5,22 @@ import { NextPageWithLayout } from "../page";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
-import { useAppSelector } from "../../app/hooks";
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { selectAuth } from "../../app/store/slices/auth";
-
 import { IAuthState } from "../../ts/states/auth_state";
 
-import SearchResults from "../../components/Search/SearchResults/SearchResults";
+import { setCurrentUrl } from "../../app/store/slices/url";
 
 const MyList: NextPageWithLayout = () => {
     const router = useRouter();
+    const dispatch = useAppDispatch();
 
-    if (router.asPath.includes("/search")) return <SearchResults />
-
+    useEffect(() => {
+      dispatch(setCurrentUrl({
+        currentUrl: router.pathname
+      }))
+    },[])
+ 
     return (
       <div className="flex flex-col items-center justify-center w-full" data-testid="mylist_container">
         my list  
@@ -38,7 +42,6 @@ const MyList: NextPageWithLayout = () => {
     const router = useRouter();
 
     useEffect(() => {
-      // console.log("movies getLayout: ", user);
       if (!user || !user.accessToken) {
         router.replace("/signin");
       } else {

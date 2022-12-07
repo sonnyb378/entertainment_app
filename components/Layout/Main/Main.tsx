@@ -17,7 +17,7 @@ export interface IMain {
 }
 
 const Main: React.FC<IMain> = ({ children, seo, showHero}) => {
-    // console.log("Main seo: ", seo)
+
     return (
         <div className={styles.container} data-testid="main_component">
 

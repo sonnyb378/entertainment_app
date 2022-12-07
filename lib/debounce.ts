@@ -1,13 +1,13 @@
 import React from "react";
 
 
-export function debounce(callback: (...args: [any]) => void, delay: number) {
+export function debounce(callback: (keyword: string, ...args: [any]) => void, delay: number) {
     let timer: NodeJS.Timeout;
 
-    return function (...args: [any]) {
+    return function (keyword: string, ...args: [any]) {
         if (timer) clearTimeout(timer)
         timer = setTimeout(() => {
-            callback(...args)
+            callback(keyword, ...args)
         }, delay)
     }
 

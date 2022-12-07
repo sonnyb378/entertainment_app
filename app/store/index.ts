@@ -16,9 +16,11 @@ import {
 import storage from "../../lib/persistStorage";
 
 import authReducer from "./slices/auth";
+import urlReducer from "./slices/url"
   
 const reducers = combineReducers({
   auth: authReducer,
+  url: urlReducer,
 });
 
 const persistConfig = {

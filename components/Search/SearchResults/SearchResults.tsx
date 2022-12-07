@@ -1,44 +1,48 @@
-import { useCallback, useEffect } from "react"
+import { useCallback, useEffect, useState } from "react"
 import styles from "./SearchResults.module.css"
 
-import { debounce } from "../../../lib/debounce";
 import { useRouter } from "next/router";
 
-import { fake_multi_search_data } from "../../../model/fake_search";
+import { fake_blackadam_search, fake_multisearch_limitless } from "../../../model/fake_search";
 
-const SearchResults: React.FC = () => {
-    const router = useRouter();
+import { useMultiSearch } from "../../../lib/hooks/useMultiSearch";
 
-    let query_string : string = ""
+const SearchResults: React.FC<{keyword: string}> = ({ keyword }) => {
+    // const { data, isLoading, isError } = useMultiSearch(decodeURI(keyword))
 
-    const query = router.asPath.split("?")
+    // const { data, isLoading, isError } = fake_blackadam_search(decodeURI(keyword))
+    const { data, isLoading, isError } = fake_multisearch_limitless(decodeURI(keyword))
 
-    // TODO: check if q= has value
-    console.log("search results page: ", router.pathname, router.asPath, query)
+    if (isLoading) return <div>Loading...</div>
+    if (isError) return  <div>Error</div>
 
-
-    const db = useCallback(debounce((e) => {
-        const kw = e.target as HTMLInputElement;
-        
-        console.log("send request: ", kw.value.trim())
-        // const response = await sendRequest(
-        //     EMethodTypes.GET, 
-        //     `search/multi?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&page=1&include_adult=false&query=${encodeURI(keyword.value.trim())}`, 
-        // ).then((data) => data)
-        // .catch((error) => { 
-        //     //console.log("error: ", error)
-        // })
-
-
-    }, 1200), [])
-
-
-    
     
     return (
         <div className={styles.container} data-testid="search_results_container">
             <h2 className="text-[2rem]">Search Results: </h2>
-            <div>results here</div> 
+            <div>{ decodeURI(keyword) }</div> 
+            {
+                data && <div className="grid grid-cols-1 gap-2 mt-4 items-start justify-start w-full
+                sm:grid sm:grid-cols-2
+                lg:grid lg:grid-cols-3
+                xl:grid xl:grid-cols-5
+                ">
+                    {
+                        data.results.map((result) => {
+                            return (
+                                <div key={result.id } className="flex flex-col items-start justify-start borderh-[250px] rounded-md overflow-hidden">
+                                    <div className="w-full h-[150px] bg-gray-500">image</div>
+                                    <div className="p-2">
+                                        <h1>{ result.title || result.name }</h1>
+                                        <p className="text-white text-sm mt-2">{ result.overview }</p>
+                                    </div>
+                                </div>
+                            )
+                        })
+                    }
+                </div>
+            }
+
         </div> 
     )
 }
