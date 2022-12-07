@@ -8,9 +8,6 @@ import { XCircleIcon } from "@heroicons/react/24/solid";
 import { debounce } from "../../lib/debounce";
 
 import { useRouter } from "next/router";
-import InputField from "../Form/InputField/InputField";
-
-import { useAppContext } from "../../context/state"
 
 import { useAppSelector } from "../../app/hooks";
 import { selectCurrentUrl } from "../../app/store/slices/url";
@@ -36,7 +33,6 @@ const Search: React.FC = () => {
 
     const sendRequest = debounce((keyword, e) => {
         if (!keyword) return
-        // console.log("send request ", !!keyword, keyword, window.location);
 
         router.replace({
             pathname: "/search",
@@ -58,7 +54,6 @@ const Search: React.FC = () => {
             righticon?.classList.replace("hidden", "flex")
         }
 
-        
         let searchParams = new URLSearchParams(window.location.search);            
         searchParams.set("q", encodeURI(search_keyword.trim()));       
 
