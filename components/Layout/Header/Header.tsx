@@ -13,7 +13,7 @@ import { useAppDispatch } from "../../../app/hooks";
 import { signOut } from "firebase/auth";
 
 import Avatar from "../../Avatar/Avatar"
-import Search from "../../Search/Search"
+import SearchField from "../../Search/SearchField/SearchField"
 
 export interface IHeader {
     children?: React.ReactNode;
@@ -48,14 +48,14 @@ const Header: React.FC<IHeader> = ({ children }) => {
     
     return (
         <header className={styles.container} data-testid="header">
-            <div className={yValue <= 60 ? styles.subcontainer : styles.subcontainer_scrolled}>
+            <div className={yValue <= 150 ? styles.subcontainer : styles.subcontainer_scrolled}>
                 <div className={styles.nav_container}>
                     <Logo />
                     {
                         user ? <Navigation show={!!user} /> : <div className="flex-1"></div>
                         
                     }
-                    <Search />
+                    <SearchField />
                     {
                         !loading &&
                             !user ? 

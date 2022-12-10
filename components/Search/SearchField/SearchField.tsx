@@ -1,27 +1,38 @@
 import React, { useRef, useCallback, useEffect, useState } from "react";
-import styles from "./Search.module.css";
+import styles from "./SearchField.module.css";
 
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { XCircleIcon } from "@heroicons/react/24/solid";
 
-import { debounce } from "../../lib/debounce";
+import { debounce } from "../../../lib/debounce";
 
 import { useRouter } from "next/router";
 
-import { useAppSelector } from "../../app/hooks";
-import { selectCurrentUrl } from "../../app/store/slices/url";
-import { IUrl } from "../../app/store/slices/url";
+import { useAppSelector } from "../../../app/hooks";
+import { selectCurrentUrl } from "../../../app/store/slices/url";
+import { IUrl } from "../../../app/store/slices/url";
 
 const Search: React.FC = () => {
     const router = useRouter();
     const new_url = useAppSelector<IUrl>(selectCurrentUrl);
+    const [searchKeyword, setSearchKeyword] = useState("")
     
     const [lastKeyword, setLastKeyword] = useState("")
 
-    const search_input = document.getElementById("search") as HTMLInputElement
-    const xicon = document.getElementById("xcircleicon") 
-    const righticon = document.getElementById("chevronrighticon")
+    let search_input: HTMLInputElement;
+    let xicon: HTMLElement | null;
+    let righticon: HTMLElement | null;
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            search_input = document.getElementById("search") as HTMLInputElement
+            search_input.value = window.location.search.substring(3)
+            xicon = document.getElementById("xcircleicon") 
+            righticon = document.getElementById("chevronrighticon")
+        }   
+    }, [])
+    
 
     const clearInputHandler = () => {
         search_input.value = ""
@@ -45,7 +56,7 @@ const Search: React.FC = () => {
     const searchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
 
         const search_keyword = e.target.value;
-    
+
         if (search_keyword.trim() !== "") {
             xicon?.classList.replace("hidden", "flex")
             righticon?.classList.replace("flex", "hidden")
@@ -53,7 +64,7 @@ const Search: React.FC = () => {
             xicon?.classList.replace("flex", "hidden")            
             righticon?.classList.replace("hidden", "flex")
         }
-
+        
         let searchParams = new URLSearchParams(window.location.search);            
         searchParams.set("q", encodeURI(search_keyword.trim()));       
 

@@ -9,6 +9,7 @@ import { auth } from "../../firebase";
 import { signOut } from "firebase/auth";
 import { useAppDispatch } from "../../app/hooks";
 import { setAuthData } from "../../app/store/slices/auth";
+import { setCurrentUrl } from "../../app/store/slices/url";
 
 import { useRouter } from "next/router"
 
@@ -27,6 +28,9 @@ const Avatar: React.FC<IAvatar> = ({ userInitial }) => {
             id: null,
             accessToken: null,
             expiresAt: null
+        }))
+        dispatch(setCurrentUrl({
+            currentUrl: ""
         }))
     }
 
