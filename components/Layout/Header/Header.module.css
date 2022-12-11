@@ -1,5 +1,5 @@
 .container {
-  @apply flex items-center justify-center w-full text-[#676767] relative z-[2000];
+  @apply flex flex-col items-center justify-center w-full text-[#676767] relative z-[2000];
 }
 
 .subcontainer {
@@ -18,4 +18,20 @@
 
 .nav_container {
   @apply flex flex-1 items-center justify-between w-full relative;
+}
+
+.filler_container {
+  @apply hidden items-center justify-between w-full m-1 py-1 px-2 rounded-md bg-primary opacity-90 ease-out duration-200 transition-all 
+  h-[100px]
+  sm:py-1 sm:px-2
+  md:py-3 md:px-5
+  xl:py-5 xl:px-8;
+}
+
+.filler_container_show {
+  @apply flex items-center justify-between w-full m-1 py-1 px-2 rounded-md bg-primary opacity-90 ease-out duration-200 transition-all 
+  h-[100px]
+  sm:py-1 sm:px-2
+  md:py-3 md:px-5
+  xl:py-5 xl:px-8;
 }

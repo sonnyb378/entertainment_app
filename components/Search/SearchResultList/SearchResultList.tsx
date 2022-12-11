@@ -1,25 +1,28 @@
-import { Key, useCallback, useEffect, useState } from "react"
+
 import styles from "./SearchResultList.module.css"
 
+import ResultCardLoading from "../SearchResultItem/ResultCardLoading/ResultCardLoading"
 import SearchResultItem from "../SearchResultItem/SearchResultItem"
 import { IResult } from "../SearchResultItem/SearchResultItem"
 
-const SearchResultList: React.FC<{ data: any}> = ({ data }) => {
+const SearchResultList: React.FC<{ data: any, isLoading: boolean }> = ({ data, isLoading }) => {
 
-    console.log("pagination: search result list: ", data);
+    // 1024 > 1535
+    
     return(
-        
             data && 
-            <section className={styles.container} data-testid="search_results_container">
+            <section className={styles.container} data-testid="search_results_container" id="search_results_container">
                 {
-                    data.results.map((result: IResult) => {
+                    data.map((result: IResult) => {
                         return (
                             <SearchResultItem key={result.id} result={result} />
                         )
                     })
                 }
-            </section>
-        
+                {
+                    isLoading && <ResultCardLoading count={12} />
+                }
+            </section>        
     )
 }
 

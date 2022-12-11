@@ -40,7 +40,6 @@ const Search: NextPageWithLayout = () => {
 
     },[router.asPath])
 
-
     if (hasSearch) return null
 
     return (

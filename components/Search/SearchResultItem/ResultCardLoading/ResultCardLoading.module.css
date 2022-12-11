@@ -1,0 +1,13 @@
+.container {
+  @apply flex flex-col  items-center justify-center relative overflow-hidden cursor-pointer p-0.5 border-0 w-6/12 mt-4 animate-pulse
+      sm:w-6/12 sm:border-red-500
+      md:w-4/12 md:border-blue-500
+      lg:w-3/12 lg:border-green-500
+      xl:w-3/12 xl:border-purple-500
+      2xl:w-2/12 2xl:border-orange-500;
+}
+
+.media_type_show_container {
+  @apply flex flex-col items-center justify-center w-full z-[1100] p-2 bg-gray-800 bg-opacity-70 border-0 
+    sm:h-[70px] sm:items-start;
+}

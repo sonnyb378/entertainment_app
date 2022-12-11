@@ -48,7 +48,8 @@ const Header: React.FC<IHeader> = ({ children }) => {
     
     return (
         <header className={styles.container} data-testid="header">
-            <div className={yValue <= 150 ? styles.subcontainer : styles.subcontainer_scrolled}>
+            <div className={ yValue <= 150 ? styles.filler_container : styles.filler_container_show }></div>
+            <div className={ yValue <= 150 ? styles.subcontainer : styles.subcontainer_scrolled }>
                 <div className={styles.nav_container}>
                     <Logo />
                     {
@@ -66,6 +67,7 @@ const Header: React.FC<IHeader> = ({ children }) => {
 
                 </div>
             </div>
+
         </header>
     )
     
