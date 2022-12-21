@@ -15,41 +15,44 @@ import { selectCurrentUrl } from "../app/store/slices/url";
 import SearchResults from "../components/Search/SearchResults/SearchResults";
 
 
+
 const Search: NextPageWithLayout = () => {
     const router = useRouter();
-    const [hasSearch, setHasSearch] = useState(true)
     const new_url = useAppSelector<IUrl>(selectCurrentUrl)
     
-    const [queryString, setQueryString] = useState("")
-    
-    useEffect(() => {
-      if (router.asPath.includes("/search?q=")) {
-        const query = router.asPath.split("?")
-        const kw = query[1].split("=")[1]
-        if (kw === "") {
-            setQueryString("")
-            router.replace(new_url.currentUrl)
-        } else {
-            setQueryString(kw)      
-            setHasSearch(false)
-        }       
-      } else {
-        setQueryString("")
-        router.replace(new_url.currentUrl)
-      }
+    let cont: boolean = false;
+    let kw: string = "";
 
+    if (!router.asPath.includes("/search?q=")) {
+      router.push(new_url.currentUrl)
+      return <></>
+    } else {
+      const query = router.asPath.split("?")
+      kw = query[1].split("=")[1]
+      if (kw) {
+        cont = true;
+      }
+    }
+
+    useEffect(() => {
+      if (!cont) {
+       router.push(new_url.currentUrl);
+      }
     },[router.asPath])
 
-    if (hasSearch) return null
+
+    if (!cont) return null
+
 
     return (
-      <div className="flex flex-col items-center justify-center w-full" data-testid="movies_container">
+      <div className="flex flex-col items-start justify-center w-full p-5" data-testid="movies_container">
+        <h2 className="text-[2rem]">Search Results: </h2>
+        <h4 className="text-yellow-600 text-3xl">{ decodeURI(decodeURI(kw)) }</h4> 
+
         {
-            queryString !== "" ?
-            <SearchResults keyword={decodeURI(queryString)} /> 
-            :
-            "No Results Found!"
+            kw !== "" && <SearchResults keyword={decodeURI(kw)} /> 
         }
+
       </div> 
     );
     
@@ -63,19 +66,22 @@ const Search: NextPageWithLayout = () => {
       title: "Search Results",
       description: "Search Results - Wibix"
     }
+
     const [pageIsLoading, setPageIsLoading] = useState(true);
     const user = useAppSelector<IAuthState>(selectAuth);
     const router = useRouter();
 
     useEffect(() => {
-        if (!user || !user.accessToken) {
-          router.replace("/signin");
-        } else {
-          setPageIsLoading(false);
-        }
-      });
+        // if (!user || !user.accessToken) {
+        //   router.replace("/signin");
+        // } else {
+        //   setPageIsLoading(false);
+        // }
+        setPageIsLoading(false);
+      },[router.asPath]);
+
   
-      if (pageIsLoading) return null;
+    if (pageIsLoading) return null;
    
     return (
       <Main seo={meta} showHero={false}>

@@ -1,5 +1,6 @@
 .search_container {
-  @apply flex px-[2px] py-[2px] items-center justify-start w-[280px] bg-[#20344E] rounded-md focus-within:border-2 border-btnprimary;
+  @apply flex px-[2px] py-[2px] items-center justify-start w-[180px] bg-[#20344E] rounded-md mr-2 focus-within:border-2 border-btnprimary
+  sm:w-[280px];
 }
 
 .input_field {

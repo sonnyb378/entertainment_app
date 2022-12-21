@@ -22,6 +22,15 @@ const Avatar: React.FC<IAvatar> = ({ userInitial }) => {
     const [show, setShow] = useState(false)
     const dispatch = useAppDispatch()    
     
+
+    useEffect(() => {
+        window.addEventListener("resize", () => {
+            if (show) {
+                setShow(false)
+            }
+        })
+    },[show])
+
     const logoutHandler = () => {
         signOut(auth);
         dispatch(setAuthData({
@@ -30,8 +39,9 @@ const Avatar: React.FC<IAvatar> = ({ userInitial }) => {
             expiresAt: null
         }))
         dispatch(setCurrentUrl({
-            currentUrl: ""
+            currentUrl: "/"
         }))
+        router.replace("/")
     }
 
     const myListHandler = () => { 
@@ -43,19 +53,23 @@ const Avatar: React.FC<IAvatar> = ({ userInitial }) => {
     }
 
     return (
-        <div className={ styles.container } data-testid="avatar" onClick={toggleDropdown}>
-            <div className={ styles.avatar } data-testid="initial_container">{ userInitial || "" }</div>
-            <div className={ show ? styles.dropdown_show : styles.dropdown_hide} >
-                <ul className={ styles.menu }>
-                    <li className={ styles.menu_item } onClick={ myListHandler } data-testid='mylist_btn'>
-                        <BookmarkIcon className="w-[20px] h-[20px] mr-2" />My List
-                    </li>
-                    <li className={ styles.menu_item } onClick={ logoutHandler } data-testid='logout_btn'>
-                        <ArrowRightOnRectangleIcon className="w-[20px] h-[20px] mr-2" />Logout
-                    </li>
-                </ul>
+        
+            
+            <div className={ styles.container } data-testid="avatar" onClick={toggleDropdown}>            
+                <div className={ styles.avatar } data-testid="initial_container">{ userInitial || "" }</div>
+                <div className={ show ? styles.dropdown_show : styles.dropdown_hide} id="signin_dropdown" >
+                    <ul className={ styles.menu }>
+                        <li className={ styles.menu_item } onClick={ myListHandler } data-testid='mylist_btn'>
+                            <BookmarkIcon className="w-[20px] h-[20px] mr-2" />My List
+                        </li>
+                        <li className={ styles.menu_item } onClick={ logoutHandler } data-testid='logout_btn'>
+                            <ArrowRightOnRectangleIcon className="w-[20px] h-[20px] mr-2" />Logout
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
+        
+       
     )
 
 }

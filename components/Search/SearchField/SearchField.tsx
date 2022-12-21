@@ -13,50 +13,84 @@ import { useAppSelector } from "../../../app/hooks";
 import { selectCurrentUrl } from "../../../app/store/slices/url";
 import { IUrl } from "../../../app/store/slices/url";
 
-const Search: React.FC = () => {
-    const router = useRouter();
-    const new_url = useAppSelector<IUrl>(selectCurrentUrl);
-    const [searchKeyword, setSearchKeyword] = useState("")
-    
-    const [lastKeyword, setLastKeyword] = useState("")
-
+const getElements = () => {
     let search_input: HTMLInputElement;
     let xicon: HTMLElement | null;
     let righticon: HTMLElement | null;
+    if (typeof window !== "undefined") {
+        search_input = document.getElementById("search") as HTMLInputElement
+        xicon = document.getElementById("xcircleicon") 
+        righticon = document.getElementById("chevronrighticon")
+        return {
+            search_input,
+            xicon,
+            righticon
+        }
+    }
+    return { 
+        search_input: null, 
+        xicon: null, 
+        righticon: null 
+    }
+}
+
+const Search: React.FC = () => {
+    const router = useRouter();
+    const new_url = useAppSelector<IUrl>(selectCurrentUrl);
+    const { search_input, xicon, righticon } = getElements();
 
     useEffect(() => {
-        if (typeof window !== "undefined") {
-            search_input = document.getElementById("search") as HTMLInputElement
-            search_input.value = window.location.search.substring(3)
-            xicon = document.getElementById("xcircleicon") 
-            righticon = document.getElementById("chevronrighticon")
-        }   
-    }, [])
+        const inputField = document.getElementById("search") as HTMLInputElement
+        inputField.disabled = false;
+    },[router.asPath])
     
+    
+        
+    if (router.pathname !== "/search") {
+        if (search_input) {
+            search_input.value = ""
+            xicon?.classList.replace("flex", "hidden")            
+            righticon?.classList.replace("hidden", "flex")
+        }
+    } else {
+        if (router.query.hasOwnProperty("q")) {
+            
+            }
+        if (search_input && router.query.hasOwnProperty("q")) {
+            const { q } = router.query;
+            search_input.value = decodeURI(String(q))
+            righticon?.classList.replace("flex", "hidden")            
+            xicon?.classList.replace("hidden", "flex")
+        }
+    }
+   
 
     const clearInputHandler = () => {
-        search_input.value = ""
-        xicon?.classList.replace("flex", "hidden")            
-        righticon?.classList.replace("hidden", "flex")
-        setLastKeyword("")
+        const { search_input, xicon, righticon } = getElements();
+        if (search_input) {
+            search_input.value = ""
+            xicon?.classList.replace("flex", "hidden")            
+            righticon?.classList.replace("hidden", "flex")
+        }
+        // setLastKeyword("")
         router.replace(new_url.currentUrl)
     }
 
     const sendRequest = debounce((keyword, e) => {
         if (!keyword) return
-
+        // console.log("sendRequest : ", keyword)
         router.replace({
             pathname: "/search",
             query: {
-                q: encodeURI(keyword)
+                q: encodeURI(keyword.trim())
             }
         })
-    }, 1000)
+    }, 1500)
 
-    const searchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const searchHandler =(e: React.ChangeEvent<HTMLInputElement>) => {
 
         const search_keyword = e.target.value;
-
+        const { xicon, righticon } = getElements();
         if (search_keyword.trim() !== "") {
             xicon?.classList.replace("hidden", "flex")
             righticon?.classList.replace("flex", "hidden")
@@ -64,16 +98,14 @@ const Search: React.FC = () => {
             xicon?.classList.replace("flex", "hidden")            
             righticon?.classList.replace("hidden", "flex")
         }
-        
-        let searchParams = new URLSearchParams(window.location.search);            
-        searchParams.set("q", encodeURI(search_keyword.trim()));       
-
+        let searchParams = new URLSearchParams(decodeURI(window.location.search));            
+        searchParams.set("q", encodeURI(search_keyword.trim())); 
         if (window.history.replaceState) {
             const url = window.location.protocol 
             + "//" + window.location.host 
             + "/search"
             + "?" 
-            + searchParams.toString();
+            + decodeURI(searchParams.toString());
             
             window.history.replaceState({
                 path: url
@@ -81,6 +113,7 @@ const Search: React.FC = () => {
         }
 
         if (search_keyword.trim() === "") {
+            e.target.disabled = true
             router.replace(new_url.currentUrl)
         }
 

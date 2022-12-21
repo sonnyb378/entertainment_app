@@ -1,5 +1,5 @@
 .container {
-  @apply flex flex-col items-end justify-start p-2  hover:text-yellow-400 relative;
+  @apply flex flex-col items-end justify-start p-0 m-2 hover:text-yellow-400 relative z-[3000];
 }
 
 .avatar {

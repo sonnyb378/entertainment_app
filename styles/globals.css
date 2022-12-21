@@ -19,12 +19,12 @@ body {
   padding: 0;
 }
 
-.inputfield:focus,
-.inputfield:not(:placeholder-shown) {
+#inputContainer > input:focus,
+#inputContainer > input:not(:placeholder-shown) {
   @apply text-blue-100 bg-black border-btnprimary;
 }
 
-.inputfield:focus ~ label,
-.inputfield:not(:placeholder-shown) ~ label {
+#inputContainer > input:focus ~ label,
+#inputContainer > input:not(:placeholder-shown) ~ label {
   @apply text-blue-300 -translate-y-5 -translate-x-[17px] text-xs p-0;
 }

@@ -17,9 +17,10 @@ export interface IMain {
 }
 
 const Main: React.FC<IMain> = ({ children, seo, showHero}) => {
-
+    // console.log("Main")
     return (
         <div className={styles.container} data-testid="main_component">
+            {/* <React.StrictMode> */}
 
             {
                 seo && <Seo meta={seo} />
@@ -47,7 +48,7 @@ const Main: React.FC<IMain> = ({ children, seo, showHero}) => {
                 </>
             }
             
-
+            {/* </React.StrictMode> */}
         </div>
        
     );

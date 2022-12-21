@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import styles from "./Header.module.css";
 import Logo from "../../Logo/Logo";
 import SigninBtn from "../../Button/SignIn/SigninBtn";
@@ -24,32 +24,29 @@ const Header: React.FC<IHeader> = ({ children }) => {
     const [yValue, setYValue] = useState(0);
     const router = useRouter();
     const dispatch = useAppDispatch();
-    
-    useEffect(() => {
-        // console.log("header test >>>>>> ", user?.email?.substring(0,1).toUpperCase());
-        // console.log("header >>>>> ", router.pathname);
-    }, []);
+
+   
 
     useEffect(() => {
-        window.addEventListener("scroll", scrollHandler)
-    })
-
-    const scrollHandler = () => {
-        setYValue(window.scrollY);
-    }
+        window.addEventListener("scroll", () => {
+           setYValue(window.scrollY);            
+        })
+    },[])
 
     const signInHandler = () => {
         router.replace("/signin")
     }
+
     const registerHandler = () => {
         router.replace("/register")
     }
-
     
     return (
+       
         <header className={styles.container} data-testid="header">
-            <div className={ yValue <= 150 ? styles.filler_container : styles.filler_container_show }></div>
-            <div className={ yValue <= 150 ? styles.subcontainer : styles.subcontainer_scrolled }>
+            {/* <div id="overlay" className={ styles.overlay }></div> */}
+            <div className={ yValue <= 80 ? styles.filler_container : styles.filler_container_show }></div>
+            <div className={ yValue <= 80 ? styles.subcontainer : styles.subcontainer_scrolled }>
                 <div className={styles.nav_container}>
                     <Logo />
                     {
@@ -59,7 +56,8 @@ const Header: React.FC<IHeader> = ({ children }) => {
                     <SearchField />
                     {
                         !loading &&
-                            !user ? 
+                            !user ?
+                            // <button>test</button> 
                                 <SigninBtn title={router.pathname === "/signin" ? "Register" : "Sign In"} onClick={ router.pathname === "/signin" ? registerHandler : signInHandler } /> 
                             :                          
                                <Avatar userInitial={user?.email?.substring(0,1).toUpperCase()} />

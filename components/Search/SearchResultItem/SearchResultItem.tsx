@@ -2,10 +2,6 @@
 import styles from "./SearchResultItem.module.css"
 
 import Image from "next/image";
-import { tv_genres } from "../../../model/tv_genres"; 
-import { movie_genres } from "../../../model/movie_genres";
-
-import { TvIcon, FilmIcon, UserCircleIcon, BookmarkIcon } from "@heroicons/react/24/solid";
 
 import BackdropImage from "./BackdropImage/BackdropImage";
 import PosterImage from "./PosterImage/PosterImage";
@@ -14,6 +10,9 @@ import no_result from "../../../assets/no_result.png"
 
 import MediaTypePerson from "./MediaType/Person"
 import MediaTypeShow from "./MediaType/Show"
+import { IAuthState } from "../../../ts/states/auth_state";
+import { useAppSelector } from "../../../app/hooks";
+import { selectAuth } from "../../../app/store/slices/auth";
 
 interface IKnownFor {
     id: number,
@@ -46,15 +45,16 @@ export interface IResult {
     known_for: [IKnownFor]
 }
 
-const SearchResultItem: React.FC<{result: IResult}> = ({ result }) => {
+const SearchResultItem: React.FC<{ result: IResult}> = ({ result }) => {
+    const user = useAppSelector<IAuthState>(selectAuth);
     
     return(
         <div className={ styles.container } data-testid="thumbnail">
             {                
                 <div className="flex flex-col items-stretch justify-start relative border-0 w-full">
                     {
-                        result.backdrop_path ? <BackdropImage src={result.backdrop_path} /> : 
-                        result.poster_path ? <PosterImage src={result.poster_path} /> : 
+                        result.backdrop_path ? <BackdropImage user={user} src={result.backdrop_path} /> : 
+                        result.poster_path ? <PosterImage user={user} src={result.poster_path} /> : 
                         <div className="image-container relative w-full" data-testid="backdrop_image_container">
                             <Image 
                                 src={ no_result } 

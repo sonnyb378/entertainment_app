@@ -66,7 +66,7 @@ const Signin: NextPageWithLayout = () => {
           const user = userCredential.user;
           user.getIdTokenResult()
           .then((result) => {
-              console.log("signin result: ", result);
+              // console.log("signin result: ", result);
               setIsSubmitted(false);
               dispatch(setAuthData({
                 id: result.claims.user_id,
@@ -234,13 +234,14 @@ const Signin: NextPageWithLayout = () => {
     const user = useAppSelector<IAuthState>(selectAuth);
     const router = useRouter();
 
+
     useEffect(() => {
       if (user && user.accessToken) {
-        router.replace("./movies");
+        router.replace("/movies");
       } else {
         setPageIsLoading(false);
       }
-    });
+    },[router.asPath]);
 
     if (pageIsLoading) return null;
 

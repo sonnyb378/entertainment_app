@@ -5,23 +5,23 @@ import ResultCardLoading from "../SearchResultItem/ResultCardLoading/ResultCardL
 import SearchResultItem from "../SearchResultItem/SearchResultItem"
 import { IResult } from "../SearchResultItem/SearchResultItem"
 
-const SearchResultList: React.FC<{ data: any, isLoading: boolean }> = ({ data, isLoading }) => {
+const SearchResultList: React.FC<{ data: any }> = ({ data }) => {
 
     // 1024 > 1535
-    
+
+    // console.log("SearchResultList: ", isLoading);
+
     return(
             data && 
-            <section className={styles.container} data-testid="search_results_container" id="search_results_container">
+            <section className={styles.resultlist_container} data-testid="search_results_container" id="search_results_container">
                 {
-                    data.map((result: IResult) => {
+                    data.results.map((result: IResult) => {
                         return (
                             <SearchResultItem key={result.id} result={result} />
                         )
                     })
                 }
-                {
-                    isLoading && <ResultCardLoading count={12} />
-                }
+
             </section>        
     )
 }

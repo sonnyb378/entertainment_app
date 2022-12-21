@@ -2,7 +2,7 @@
 import Main from "../components/Layout/Main/Main";
 import { NextPageWithLayout } from "./page";
 
-import { useRouter } from "next/router";
+import Router, { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
 import { useAppSelector, useAppDispatch } from "../app/hooks";
@@ -22,7 +22,7 @@ const Movies: NextPageWithLayout = () => {
       }))
     },[])
 
-
+    
     return (
       <div className="flex flex-col items-center justify-center w-full" data-testid="movies_container">
         movies  
@@ -44,12 +44,14 @@ const Movies: NextPageWithLayout = () => {
     const router = useRouter();
 
     useEffect(() => {
+      // console.log("movies: (useEffect)")
       if (!user || !user.accessToken) {
-        router.replace("/signin");
+        router.push("/signin");
       } else {
         setPageIsLoading(false);
       }
-    });
+    },[router.asPath]);
+
 
     if (pageIsLoading) return null;
    

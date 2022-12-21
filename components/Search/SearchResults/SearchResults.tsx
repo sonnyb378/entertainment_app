@@ -1,98 +1,89 @@
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
+import axios from "axios";
 import styles from "./SearchResults.module.css"
 
-import { useRouter } from "next/router";
-
-import { useBlackAdam, useLimitless, useLOTR, useStarTrek, useZeroResult } from "../../../model/fake_search";
-
-import { useMultiSearch } from "../../../lib/hooks/useMultiSearch";
-
-import SearchResultList from "../SearchResultList/SearchResultList";
-
-import { IResult } from "../SearchResultItem/SearchResultItem";
-import { current } from "@reduxjs/toolkit";
+import { IFakeResponse, useBlackAdam, useLimitless, useLOTR, useStarTrek, useZeroResult } from "../../../model/fake_search";
 
 import ResultCardLoading from "../SearchResultItem/ResultCardLoading/ResultCardLoading";
 
-const SearchResults: React.FC<{keyword: string}> = ({ keyword }) => {
+import useSWRInfinite, { SWRInfiniteKeyLoader } from 'swr/infinite'
+
+import SearchResultItem, { IResult } from "../SearchResultItem/SearchResultItem";
+
+interface ISearchResultProps {
+    keyword: string;
+}
+
+export const fetcherInfinite = (baseUrl: string, url: string, page: number, keyword: string) => axios.get(
+    `${baseUrl}${url}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&include_adult=false`+
+    `&query=${keyword}`+
+    `&page=${page}`)
+.then((res) => {
+    return res.data.results
+})
+
+const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
+    const [ pageNumber, setPageNumber ] = useState(1)
+
+    let search_results: IResult[];
+
+    const PAGE_SIZE = 20;
+    const { data, error, size, setSize } = useSWRInfinite((index) => [
+        `${process.env.NEXT_PUBLIC_TMDB_API_URL}`, 
+        "search/multi", 
+        index + 1, 
+        keyword
+    ], fetcherInfinite)
+
     
-    const [data, setData] = useState<any>([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isError, setIsError] = useState(false);
-    const [showLoadMore, setShowLoadMore] = useState(false);
-
-    // const { data, isLoading, isError } = useMultiSearch(decodeURI(keyword))
+    search_results = data ? [].concat(...data) : [];
+    const isLoading = !data && !error;
+    const isError = error;
+    const isLoadingMore = isLoading || (size > 0 && data && typeof data[size - 1] === "undefined");
+    const isEmpty = data?.[0]?.length === 0;
+    const isReachingEnd = isEmpty || (data && data[data.length - 1]?.length < PAGE_SIZE);
+    // const isRefreshing = isValidating && data && data.length === size;
     
-    // const { data, isLoading, isError } = fake_multisearch_limitless(decodeURI(keyword))
-    // const { data, isLoading, isError } = fake_blackadam_search(decodeURI(keyword))
+    // console.log("SearchResults: ", search_results, error, size, isLoading, isLoadingMore, isReachingEnd)
 
-    useEffect(() => {
-        setIsLoading(true)
-        setShowLoadMore(false)
-        
-        // initial
-        setTimeout(() => {
-            const { data, currentPage, totalPages, isLoading, isError } = useStarTrek(decodeURI(keyword))   
-
-            // TODO: save to redux
-            setData(data.results)
-            
-            setCurrentPage(currentPage)
-            setIsLoading(isLoading)
-            setIsError(isError)
-            setShowLoadMore(totalPages !== 0 && totalPages !== currentPage)
-        }, 2000) 
-
-    },[keyword])
-
-
-    const getMoreData = (keyword:string, page:number) => {        
-        setIsLoading(true)
-        setTimeout(() => {
-            const { data, currentPage, totalPages, isLoading, isError } = useStarTrek(decodeURI(keyword), page)
-        
-            if (data && data.hasOwnProperty("page")) {
-                setData((prev:any) => [...prev, ...data.results])
-                setCurrentPage(currentPage)
-                setIsLoading(isLoading)
-                setIsError(isError)
-                setShowLoadMore(totalPages !== currentPage)
-            }
-        }, 2000)
-        
-        
+    const getMoreData = (size: number) => {
+        setSize(size + 1)
     }
 
-    // console.log("SearchResults data: ", isLoading);
-
-    if (isError) return  <div>Error</div>
+    if (isError) return  <div>Sorry an error occurred. Please try again...</div>
 
     return (
         <div className={styles.container} data-testid="search_results_container">
-            <h2 className="text-[2rem]">Search Results: </h2>
-            <h4 className="text-yellow-600 text-3xl">{ decodeURI(keyword) }</h4> 
 
-            {
-                isLoading && data.length <= 0 ? 
-                    <ResultCardLoading count={12}/>
-                : 
-                    data && data.length > 0 ?         
-                        <div className="flex flex-col items-start justify-center w-full">
-                            <SearchResultList data={ data } isLoading={isLoading} /> 
-                        </div>
-                    : 
-                        <div className="mt-4">No Records Found</div>
+            <section className={styles.resultlist_container} data-testid="search_results_container" id="search_results_container">
+                {
+                    isEmpty && <div className="mt-4">No Records Found</div>
+                }
+                {
+                    search_results.map((result, i) => {
+                        return (
+                            <SearchResultItem key={i} result={result} />
+                        )                       
+                    })
+                }
+                {
+                    isLoadingMore && <ResultCardLoading count={12}/>
+                }
 
-            }
-            {
-                showLoadMore && 
-                    <button 
-                        className="flex w-full items-center justify-center text-lg p-2 mt-2 bg-btnprimary rounded-sm cursor-pointer hover:bg-btnhighlight" 
-                        onClick={ getMoreData.bind(this, keyword, currentPage + 1) }>
-                            Load More
+                {
+                    !isReachingEnd &&
+                    <button
+                        className="flex w-full items-center justify-center text-lg p-2 mt-2 bg-btnprimary rounded-sm cursor-pointer hover:bg-btnhighlight"
+                        disabled={ isLoadingMore || isReachingEnd }
+                        onClick={ getMoreData.bind(this, size) }
+                    >
+
+                        Load More
+
                     </button>
-            }
+                }
+            </section>
+         
             
         </div> 
     )

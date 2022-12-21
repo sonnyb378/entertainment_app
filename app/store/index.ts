@@ -17,10 +17,12 @@ import storage from "../../lib/persistStorage";
 
 import authReducer from "./slices/auth";
 import urlReducer from "./slices/url"
+import searchReducer from "./slices/searchResults"
   
 const reducers = combineReducers({
   auth: authReducer,
   url: urlReducer,
+  search_results: searchReducer
 });
 
 const persistConfig = {

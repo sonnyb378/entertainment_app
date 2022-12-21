@@ -49,7 +49,7 @@ const TVShows: NextPageWithLayout = () => {
       } else {
         setPageIsLoading(false);
       }
-    });
+    },[router.asPath]);
 
     if (pageIsLoading) return null;
    

@@ -1,4 +1,4 @@
 .container {
-  @apply flex items-center justify-between py-2 px-5 text-sm rounded-md bg-btnprimary text-white
+  @apply flex items-center justify-between py-2 px-5 h-[42px] text-sm rounded-md bg-btnprimary text-white
   hover:text-yellow-200 hover:bg-btnhighlight;
 }

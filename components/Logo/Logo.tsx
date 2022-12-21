@@ -10,11 +10,12 @@ const Logo: React.FC = () => {
         router.replace("/");
     }
     return (
-        <div className="hover:cursor-pointer scale-[60%] 
-        sm:scale-[70%]
-        md:scale-[80%]
+        <div className="hover:cursor-pointer scale-[80%]
+        sm:scale-[80%]
+        md:scale-[90%]
         lg:scale-[100%]
-        xl:scale-[110%]" onClick={ redirectHandler } data-testid="logo_container">
+        xl:scale-[100%]
+        " onClick={ redirectHandler } data-testid="logo_container">
             <Image src={logo} alt="logo" priority={true} />
         </div>
     )

@@ -13,7 +13,7 @@ export interface IInputField {
 const InputField: React.FC<IInputField> = ({type, label, id, placeholder, value, onChange}) => {
     return (
         <div className={type !== "checkbox" ? styles.container : styles.c_container} data-testid="inputfield_container">
-            <div className={type !== "checkbox" ? styles.input_container : styles.checkbox_container}>
+            <div id="inputContainer" className={type !== "checkbox" ? styles.input_container : styles.checkbox_container}>
                 <input 
                     className={type !== "checkbox" ? styles.input_field : styles.checkbox } 
                     type={type} 

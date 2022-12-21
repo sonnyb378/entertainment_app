@@ -47,7 +47,7 @@ const MyList: NextPageWithLayout = () => {
       } else {
         setPageIsLoading(false);
       }
-    });
+    },[router.asPath]);
 
     if (pageIsLoading) return null;
    

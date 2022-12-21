@@ -24,25 +24,27 @@ import { IAuthState } from "../ts/states/auth_state";
 
 
 const Home: NextPageWithLayout = () => {
-  const router = useRouter();
+  // const router = useRouter();
 
   const [pageIsLoading, setPageIsLoading] = useState(true);
   const user = useAppSelector<IAuthState>(selectAuth);
+  const router = useRouter();
 
   useEffect(() => {   
-    if (user.accessToken) {
+    if (user && user.accessToken) {
       router.replace("/movies");
     } else {
       setPageIsLoading(false);
     }
-  });
+  },[router.asPath]);
+  
 
   if (pageIsLoading) return null
-
 
   const getStartedHandler = () => {
     router.replace("/register");
   }
+
 
 
   return (
@@ -149,6 +151,21 @@ Home.getLayout = (page) => {
   //   title: "Streaming to you today - Wibix",
   //   description: "Wibix, streaming entertainment company"
   // }
+  const [pageIsLoading, setPageIsLoading] = useState(true);
+  const user = useAppSelector<IAuthState>(selectAuth);
+  const router = useRouter();
+
+  useEffect(() => {   
+    if (user && user.accessToken) {
+      router.replace("/movies");
+    } else {
+      setPageIsLoading(false);
+    }
+  },[router.asPath]);
+
+
+  if (pageIsLoading) return null
+
   return (
       <Main showHero={true}>
         {page}   
