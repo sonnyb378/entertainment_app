@@ -75,6 +75,8 @@ const Search: React.FC = () => {
     }
 
     const sendRequest = debounce((keyword, e) => {
+        const { xicon } = getElements();
+        
         if (!keyword) return
         router.replace({
             pathname: "/search",
@@ -119,7 +121,7 @@ const Search: React.FC = () => {
     }
 
     return(
-        <div className={ styles.search_container } data-testid="search_container">
+        <div className={ styles.search_container } id="search_container" data-testid="search_container">
             <MagnifyingGlassIcon className="w-[30px] h-[30px] ml-2 mr-2 text-white" />
             <input 
                 id="search" 

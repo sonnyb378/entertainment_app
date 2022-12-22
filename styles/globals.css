@@ -29,13 +29,23 @@ body {
   @apply text-blue-300 -translate-y-5 -translate-x-[17px] text-xs p-0;
 }
 
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus {
+#inputContainer > input:-webkit-autofill,
+#inputContainer > input:-webkit-autofill:hover,
+#inputContainer > input:-webkit-autofill:focus {
   border: 2px solid #20344e;
   -webkit-text-fill-color: white;
   -webkit-box-shadow: 0 0 0px 1000px black inset;
   box-shadow: 0 0 0px 1000px black inset;
+  transition: background-color 5000s ease-in-out 0s;
+  color: white;
+}
+
+#search_container > input:-webkit-autofill,
+#search_container > input:-webkit-autofill:hover,
+#search_container > input:-webkit-autofill:focus {
+  -webkit-text-fill-color: white;
+  -webkit-box-shadow: 0 0 0px 1000px #20344e inset;
+  box-shadow: 0 0 0px 1000px #20344e inset;
   transition: background-color 5000s ease-in-out 0s;
   color: white;
 }
