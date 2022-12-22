@@ -42,9 +42,7 @@ const Search: React.FC = () => {
     useEffect(() => {
         const inputField = document.getElementById("search") as HTMLInputElement
         inputField.disabled = false;
-    },[router.asPath])
-    
-    
+    },[router.asPath])    
         
     if (router.pathname !== "/search") {
         if (search_input) {
@@ -78,7 +76,6 @@ const Search: React.FC = () => {
 
     const sendRequest = debounce((keyword, e) => {
         if (!keyword) return
-        // console.log("sendRequest : ", keyword)
         router.replace({
             pathname: "/search",
             query: {

@@ -28,3 +28,14 @@ body {
 #inputContainer > input:not(:placeholder-shown) ~ label {
   @apply text-blue-300 -translate-y-5 -translate-x-[17px] text-xs p-0;
 }
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  border: 2px solid #20344e;
+  -webkit-text-fill-color: white;
+  -webkit-box-shadow: 0 0 0px 1000px black inset;
+  box-shadow: 0 0 0px 1000px black inset;
+  transition: background-color 5000s ease-in-out 0s;
+  color: white;
+}
