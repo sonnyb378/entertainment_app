@@ -11,10 +11,18 @@ import { IAuthState } from "../ts/states/auth_state";
 
 import { setCurrentUrl } from "../app/store/slices/url";
 
+import { GetStaticProps } from "next";
+import { IResult } from "../components/Search/SearchResultItem/SearchResultItem";
+import axios from "axios";
+
 
 const Movies: NextPageWithLayout = () => {
     const router = useRouter();
     const dispatch = useAppDispatch();
+
+    // const { trending } = props.data;
+
+    // console.log("trending: ", trending)
 
     useEffect(() => {
       dispatch(setCurrentUrl({
@@ -63,7 +71,29 @@ const Movies: NextPageWithLayout = () => {
 
   };
 
+  // export const getStaticProps: GetStaticProps = async (context:any) => {
+    
+  //   const [reqTrending] = await Promise.all([
+  //     await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}trending/tv/week?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}`).then(res => res.data)   
+  //   ])
 
-  
+  //   const [resTrending] = await Promise.all([
+  //     reqTrending
+  //   ])
 
+      // TODO: get first 10
+      // TODO: for featured, random pick from entire list
 
+  //   return {
+  //     props: {
+  //       data: {
+  //         featured: {},
+  //         trending: resTrending ? [].concat(...resTrending.results) : [],
+  //         popular: [],
+  //         bookmark: []  
+  //       }
+  //     },
+  //     revalidate: 10,
+  //   }
+
+  // }

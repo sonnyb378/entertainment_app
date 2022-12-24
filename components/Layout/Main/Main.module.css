@@ -3,7 +3,7 @@
 }
 
 .main_section {
-  @apply flex relative items-center justify-center w-full p-3;
+  @apply flex relative items-center justify-center w-full;
 }
 
 .sub_container {

@@ -1,7 +1,7 @@
 .container {
-  @apply flex flex-col items-start justify-center w-full p-5;
+  @apply flex flex-col items-start justify-center w-full p-5  border-0 border-red-500;
 }
 
 .resultlist_container {
-  @apply flex flex-wrap items-start justify-start w-full relative mt-4;
+  @apply flex flex-wrap items-start justify-start w-full relative mt-4 border-0 border-blue-500;
 }

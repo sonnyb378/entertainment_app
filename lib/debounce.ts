@@ -10,5 +10,4 @@ export function debounce(callback: (keyword: string, ...args: [any]) => void, de
             callback(keyword, ...args)
         }, delay)
     }
-
 }

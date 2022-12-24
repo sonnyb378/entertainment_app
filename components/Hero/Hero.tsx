@@ -18,7 +18,7 @@ const Hero:React.FC<IHero> = ({ children }) => {
 
     return (
             <section className={styles.container} data-testid="hero">
-                <Image src={hero_image} alt="hero" quality={50}  layout="fill" className="object-cover relative" data-testid="image_container"/>
+                <Image src={hero_image} priority={true} alt="hero" quality={50}  layout="fill" className="object-cover relative" data-testid="image_container"/>
                 { children}
             </section>  
     )

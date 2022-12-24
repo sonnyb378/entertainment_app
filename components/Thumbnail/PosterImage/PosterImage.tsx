@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { BookmarkIcon } from "@heroicons/react/24/solid";
-import { IAuthState } from "../../../../ts/states/auth_state";
+import { IAuthState } from "../../../ts/states/auth_state";
 
 const PosterImage: React.FC<{user:IAuthState, src:string}> = ({ user, src }) => {
 

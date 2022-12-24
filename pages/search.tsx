@@ -14,8 +14,6 @@ import { selectCurrentUrl } from "../app/store/slices/url";
 
 import SearchResults from "../components/Search/SearchResults/SearchResults";
 
-
-
 const Search: NextPageWithLayout = () => {
     const router = useRouter();
     const new_url = useAppSelector<IUrl>(selectCurrentUrl)
@@ -45,7 +43,7 @@ const Search: NextPageWithLayout = () => {
 
 
     return (
-      <div className="flex flex-col items-start justify-center w-full p-5" data-testid="movies_container">
+      <div className="flex flex-col items-start justify-center w-full p-5 relative" data-testid="movies_container">
         <h2 className="text-[2rem]">Search Results: </h2>
         <h4 className="text-yellow-600 text-3xl">{ decodeURI(decodeURI(kw)) }</h4> 
 

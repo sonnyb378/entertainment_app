@@ -28,12 +28,6 @@ export const useStarTrekInfinite = (getKey:number, keyword:string) => {
 const sleep = (ms: number) => new Promise(
     resolve => setTimeout(resolve, ms));
 
-const setData = async (ms: number, callback: any):Promise<IFakeResponse>  => {
-    await sleep(ms)
-    return new Promise<IFakeResponse>((resolve, reject) => {
-        return resolve(callback())
-    })
-}
 
 // export const useStarTrek = (searched:ISearchResults | null , keyword: string, page: number = 1) => {
 export const useStarTrek = (keyword: string, page: number = 1) => {

@@ -51,9 +51,6 @@ const Search: React.FC = () => {
             righticon?.classList.replace("hidden", "flex")
         }
     } else {
-        if (router.query.hasOwnProperty("q")) {
-            
-            }
         if (search_input && router.query.hasOwnProperty("q")) {
             const { q } = router.query;
             search_input.value = decodeURI(String(q))
@@ -70,12 +67,11 @@ const Search: React.FC = () => {
             xicon?.classList.replace("flex", "hidden")            
             righticon?.classList.replace("hidden", "flex")
         }
-        // setLastKeyword("")
         router.replace(new_url.currentUrl)
     }
 
     const sendRequest = debounce((keyword, e) => {
-        const { xicon } = getElements();
+        // const { search_input, xicon } = getElements();
         
         if (!keyword) return
         router.replace({
@@ -112,10 +108,10 @@ const Search: React.FC = () => {
         }
 
         if (search_keyword.trim() === "") {
-            e.target.disabled = true
+            // e.target.disabled = true
             router.replace(new_url.currentUrl)
         }
-
+        
         sendRequest(search_keyword.trim(), e)
 
     }

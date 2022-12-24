@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import axios from "axios";
 import styles from "./SearchResults.module.css"
 
@@ -9,6 +9,10 @@ import ResultCardLoading from "../SearchResultItem/ResultCardLoading/ResultCardL
 import useSWRInfinite, { SWRInfiniteKeyLoader } from 'swr/infinite'
 
 import SearchResultItem, { IResult } from "../SearchResultItem/SearchResultItem";
+import Thumbnail from "../../Thumbnail/Thumbnail";
+import { useAppSelector } from "../../../app/hooks";
+import { IAuthState } from "../../../ts/states/auth_state";
+import { selectAuth } from "../../../app/store/slices/auth";
 
 interface ISearchResultProps {
     keyword: string;
@@ -24,39 +28,85 @@ export const fetcherInfinite = (baseUrl: string, url: string, page: number, keyw
 
 const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
     const [ pageNumber, setPageNumber ] = useState(1)
+    const user = useAppSelector<IAuthState>(selectAuth);
 
     let search_results: IResult[];
 
-    const PAGE_SIZE = 20;
-    const { data, error, size, setSize } = useSWRInfinite((index) => [
-        `${process.env.NEXT_PUBLIC_TMDB_API_URL}`, 
-        "search/multi", 
-        index + 1, 
-        keyword
-    ], fetcherInfinite)
+    const { data } = useBlackAdam(keyword);
+
+    /* 
+        Demo: Passing props to nested components
+        SearchResults.tsx > SearchResultItem.tsx > Thumbnail.tsx
+    */
+
+    // const PAGE_SIZE = 20;
+    // const { data, error, size, setSize } = useSWRInfinite((index) => [
+    //     `${process.env.NEXT_PUBLIC_TMDB_API_URL}`, 
+    //     "search/multi", 
+    //     index + 1, 
+    //     keyword
+    // ], fetcherInfinite)
 
     
-    search_results = data ? [].concat(...data) : [];
-    const isLoading = !data && !error;
-    const isError = error;
-    const isLoadingMore = isLoading || (size > 0 && data && typeof data[size - 1] === "undefined");
-    const isEmpty = data?.[0]?.length === 0;
-    const isReachingEnd = isEmpty || (data && data[data.length - 1]?.length < PAGE_SIZE);
-    // const isRefreshing = isValidating && data && data.length === size;
-    
-    // console.log("SearchResults: ", search_results, error, size, isLoading, isLoadingMore, isReachingEnd)
+    // search_results = data ? [].concat(...data) : [];
+    // const isLoading = !data && !error;
+    // const isError = error;
+    // const isLoadingMore = isLoading || (size > 0 && data && typeof data[size - 1] === "undefined");
+    // const isEmpty = data?.[0]?.length === 0;
+    // const isReachingEnd = isEmpty || (data && data[data.length - 1]?.length < PAGE_SIZE);
 
-    const getMoreData = (size: number) => {
-        setSize(size + 1)
+    // const getMoreData = (size: number) => {
+    //     setSize(size + 1)
+    // }
+
+    // if (isError) return  <div>Sorry an error occurred. Please try again...</div>
+
+    let timer: NodeJS.Timer;
+
+    const onEnterHandler = (e:React.MouseEvent<HTMLElement>, callback: () => void) => {
+        const target = e.target as HTMLElement;
+        const parent = target.closest("#thumbnail")
+        if (timer) clearTimeout(timer)
+        if (parent) {
+            timer = setTimeout(() => {
+                callback()
+            }, 1000)
+        }
+       
     }
 
-    if (isError) return  <div>Sorry an error occurred. Please try again...</div>
+    const onLeaveHandler = (e:React.MouseEvent<HTMLElement>, callback: (...args:any[]) => void) => {
+        const target = e.target as HTMLElement;
+        const parent = target.closest("#thumbnail")
+
+        if (parent) {
+            callback(timer)
+        }
+       
+    }
+
 
     return (
-        <div className={styles.container} data-testid="search_results_container">
-
-            <section className={styles.resultlist_container} data-testid="search_results_container" id="search_results_container">
+        <div  className="flex flex-col items-start justify-center w-full p-5 relative" data-testid="search_results_container">
+            <ul 
+                className="flex flex-wrap items-start justify-start border-0 mt-4 w-full relative" 
+                data-testid="results_item_container" 
+                id="results_item_container"
+            >
                 {
+                    data.results && data.results.map((result:any, i) => {
+                        return (
+                            <SearchResultItem 
+                                onMouseEnterHandler={onEnterHandler} 
+                                onMouseLeaveHandler={onLeaveHandler} 
+                                key={i} 
+                                result={result} 
+                            /> 
+                        )                       
+                    })
+                }
+
+                {/* {
                     isEmpty && <div className="mt-4">No Records Found</div>
                 }
                 {
@@ -81,8 +131,8 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
                         Load More
 
                     </button>
-                }
-            </section>
+                } */}
+            </ul>
          
             
         </div> 

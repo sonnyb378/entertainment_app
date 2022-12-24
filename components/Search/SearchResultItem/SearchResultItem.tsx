@@ -1,18 +1,11 @@
 
 import styles from "./SearchResultItem.module.css"
 
-import Image from "next/image";
-
-import BackdropImage from "./BackdropImage/BackdropImage";
-import PosterImage from "./PosterImage/PosterImage";
-
-import no_result from "../../../assets/no_result.png"
-
-import MediaTypePerson from "./MediaType/Person"
-import MediaTypeShow from "./MediaType/Show"
 import { IAuthState } from "../../../ts/states/auth_state";
 import { useAppSelector } from "../../../app/hooks";
 import { selectAuth } from "../../../app/store/slices/auth";
+import Thumbnail from "../../Thumbnail/Thumbnail";
+import React from "react";
 
 interface IKnownFor {
     id: number,
@@ -40,37 +33,38 @@ export interface IResult {
     poster_path:string;
     release_date: string;
     original_name: string
-    vote_avergae: number;
+    vote_average: number;
     first_air_date: string;
+    popularity: number;
     known_for: [IKnownFor]
 }
 
-const SearchResultItem: React.FC<{ result: IResult}> = ({ result }) => {
+
+const SearchResultItem: React.FC<{ 
+    onMouseEnterHandler?:(e:React.MouseEvent<HTMLElement>, callback: () => void) => void, 
+    onMouseLeaveHandler?:(e:React.MouseEvent<HTMLElement>, callback: () => void) => void, 
+    result: IResult}> = ({ 
+        onMouseEnterHandler,
+        onMouseLeaveHandler,
+        result 
+    }) => {
     const user = useAppSelector<IAuthState>(selectAuth);
-    
+
     return(
-        <div className={ styles.container } data-testid="thumbnail">
-            {                
-                <div className="flex flex-col items-stretch justify-start relative border-0 w-full">
-                    {
-                        result.backdrop_path ? <BackdropImage user={user} src={result.backdrop_path} /> : 
-                        result.poster_path ? <PosterImage user={user} src={result.poster_path} /> : 
-                        <div className="image-container relative w-full" data-testid="backdrop_image_container">
-                            <Image 
-                                src={ no_result } 
-                                layout="fill"
-                                priority={true}
-                                className={`object-contain cursor-pointer !relative !h-[unset] z-[1000]`}
-                            />
-                        </div>                              
-                    }
-                    {
-                        result.media_type !== "person" ? <MediaTypeShow result={result} /> : <MediaTypePerson result={result} />
-                    }
-                </div>
-                
-            }                                                   
-        </div>
+        <li className="flex flex-col items-center justify-center cursor-pointer relative transition-all duration-100 p-0.5 border-0 w-6/12
+            sm:w-6/12 sm:border-red-500
+            md:w-4/12 md:border-blue-500
+            lg:w-3/12 lg:border-green-500
+            xl:w-3/12 xl:border-purple-500
+            2xl:w-2/12 2xl:border-orange-500"
+            id={`thumbnail_container`}
+            data-testid="thumbnail_container"            
+        >
+            <Thumbnail 
+                onMouseEnterHandler={onMouseEnterHandler}
+                onMouseLeaveHandler={onMouseLeaveHandler}
+                user={user} result={result} />                                                 
+        </li>
     )
 }
 

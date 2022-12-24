@@ -1,10 +1,9 @@
-.container {
-  @apply flex flex-col items-center justify-center relative overflow-hidden cursor-pointer transition-all duration-100 p-0.5 border-0 w-6/12
+.thumbnail_container {
+  @apply flex flex-col items-center justify-center cursor-pointer relative transition-all duration-100 p-0.5 border-0 w-6/12
     sm:w-6/12 sm:border-red-500
     md:w-4/12 md:border-blue-500
     lg:w-3/12 lg:border-green-500
     xl:w-3/12 xl:border-purple-500
     2xl:w-2/12 2xl:border-orange-500
-
-    hover:z-[1000] hover:transition-all hover:duration-300 hover:shadow-xl hover:rounded-md;
+    /* hover:z-[3000] hover:transition-all hover:duration-200 hover:shadow-xl hover:rounded-md; */;
 }

@@ -4,5 +4,6 @@
 }
 
 .input_field {
-  @apply w-full h-[40px] z-[90] text-sm text-white  bg-[#20344E] border-transparent focus:outline-0 focus:border-btnprimary;
+  @apply w-full h-[40px] z-[90] text-sm text-white outline-none  bg-[#20344E] border-transparent focus:outline-0 focus:border-btnprimary
+  focus:border-0 focus:ring-0;
 }
