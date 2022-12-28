@@ -9,7 +9,6 @@ import ResultCardLoading from "../SearchResultItem/ResultCardLoading/ResultCardL
 import useSWRInfinite, { SWRInfiniteKeyLoader } from 'swr/infinite'
 
 import SearchResultItem, { IResult } from "../SearchResultItem/SearchResultItem";
-import Thumbnail from "../../Thumbnail/Thumbnail";
 import { useAppSelector } from "../../../app/hooks";
 import { IAuthState } from "../../../ts/states/auth_state";
 import { selectAuth } from "../../../app/store/slices/auth";
@@ -34,11 +33,6 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
 
     const { data } = useBlackAdam(keyword);
 
-    /* 
-        Demo: Passing props to nested components
-        SearchResults.tsx > SearchResultItem.tsx > Thumbnail.tsx
-    */
-
     // const PAGE_SIZE = 20;
     // const { data, error, size, setSize } = useSWRInfinite((index) => [
     //     `${process.env.NEXT_PUBLIC_TMDB_API_URL}`, 
@@ -61,30 +55,6 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
 
     // if (isError) return  <div>Sorry an error occurred. Please try again...</div>
 
-    let timer: NodeJS.Timer;
-
-    const onEnterHandler = (e:React.MouseEvent<HTMLElement>, callback: () => void) => {
-        const target = e.target as HTMLElement;
-        const parent = target.closest("#thumbnail")
-        if (timer) clearTimeout(timer)
-        if (parent) {
-            timer = setTimeout(() => {
-                callback()
-            }, 1000)
-        }
-       
-    }
-
-    const onLeaveHandler = (e:React.MouseEvent<HTMLElement>, callback: (...args:any[]) => void) => {
-        const target = e.target as HTMLElement;
-        const parent = target.closest("#thumbnail")
-
-        if (parent) {
-            callback(timer)
-        }
-       
-    }
-
 
     return (
         <div  className="flex flex-col items-start justify-center w-full p-5 relative" data-testid="search_results_container">
@@ -94,11 +64,9 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
                 id="results_item_container"
             >
                 {
-                    data.results && data.results.map((result:any, i) => {
+                    data.results && data.results.map((result:any, i:any) => {
                         return (
                             <SearchResultItem 
-                                onMouseEnterHandler={onEnterHandler} 
-                                onMouseLeaveHandler={onLeaveHandler} 
                                 key={i} 
                                 result={result} 
                             /> 
@@ -112,7 +80,10 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
                 {
                     search_results.map((result, i) => {
                         return (
-                            <SearchResultItem key={i} result={result} />
+                            <SearchResultItem 
+                                key={i} 
+                                result={result} 
+                            />
                         )                       
                     })
                 }

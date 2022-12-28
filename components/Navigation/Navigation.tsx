@@ -13,12 +13,18 @@ const Navigation: React.FC<INavigation> = ({ show }) => {
     const [showDropdown, setShowDropdown] = useState(false)
 
     useEffect(() => {
-        window.addEventListener("resize", () => {
-            const nav_container = document.getElementById("navigation_container")!
-            if (showDropdown && nav_container.clientWidth >= 318) {
-                setShowDropdown(false)
-            }
-        })
+        if (typeof window !== "undefined") {
+            window.addEventListener("resize", () => {
+                const nav_container = document.getElementById("navigation_container")!
+                // console.log(nav_container)
+                if (showDropdown && nav_container && nav_container.clientWidth >= 318) {
+                    setShowDropdown(false)
+                }
+            })
+
+        }
+        
+
     },[showDropdown])
 
     function redirectHandler (e: React.MouseEvent<HTMLUListElement>) {

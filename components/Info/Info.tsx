@@ -1,0 +1,40 @@
+
+import styles from "./Info.module.css"
+
+const Info:React.FC<{
+    title: string;
+    valueFor?: string;
+    value: string | number | any[];
+}> = ({ title, valueFor, value }) => {
+    const valuesArr:any[] = [];
+    let displayValue: string | number | undefined = undefined;
+
+    if (typeof value === "object" && value) {
+        value.slice(0,5).map((item, i) => {
+            valuesArr.push(item.name)
+        })        
+    }
+    if (valueFor === "runtime") {
+        const hr = Math.floor(Number(value) / 60);
+        const mins = (Number(value) % 60)
+        displayValue = `${hr > 0 ? `${hr}hr` : ""}${hr>1 ? "s":""}. ${mins}mins.`
+    }
+
+    return (
+        value || valuesArr.length > 0 ? 
+        <div className={ title ? styles.info_container : styles.info_container_notitle }>
+            {
+                title && <span className={ styles.info_title }>{ title }:</span>
+            }
+            {
+                title ? <span className={ styles.info_value}>{ valuesArr.length > 0 ? valuesArr.join(" ● ") : value }</span> :
+                valueFor === "runtime" ? 
+                    <span className={ styles.info_runtime }>{ displayValue }</span>
+                : ""
+            }
+            
+        </div> : null
+    )
+}
+
+export default Info;

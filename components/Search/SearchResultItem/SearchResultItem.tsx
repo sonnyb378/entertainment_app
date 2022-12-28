@@ -41,11 +41,7 @@ export interface IResult {
 
 
 const SearchResultItem: React.FC<{ 
-    onMouseEnterHandler?:(e:React.MouseEvent<HTMLElement>, callback: () => void) => void, 
-    onMouseLeaveHandler?:(e:React.MouseEvent<HTMLElement>, callback: () => void) => void, 
     result: IResult}> = ({ 
-        onMouseEnterHandler,
-        onMouseLeaveHandler,
         result 
     }) => {
     const user = useAppSelector<IAuthState>(selectAuth);
@@ -61,9 +57,8 @@ const SearchResultItem: React.FC<{
             data-testid="thumbnail_container"            
         >
             <Thumbnail 
-                onMouseEnterHandler={onMouseEnterHandler}
-                onMouseLeaveHandler={onMouseLeaveHandler}
-                user={user} result={result} />                                                 
+                user={user} result={result} 
+            />                                                 
         </li>
     )
 }

@@ -1,5 +1,5 @@
 .container {
-  @apply flex flex-col items-center justify-center w-full text-[#676767] px-1 relative z-[2000];
+  @apply flex flex-col items-center justify-center w-full text-[#676767] px-1 relative z-[5000];
 }
 
 .subcontainer {

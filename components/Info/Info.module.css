@@ -1,0 +1,20 @@
+.info_container {
+  @apply flex px-4 my-1 w-full border-0
+  md:w-full;
+}
+
+.info_container_notitle {
+  @apply flex px-4 my-0;
+}
+
+.info_title {
+  @apply text-[12px] font-bold mr-[8px];
+}
+
+.info_value {
+  @apply text-[12px] flex-1;
+}
+
+.info_runtime {
+  @apply text-[12px] border border-green-700 px-[5px] py-[2px];
+}
