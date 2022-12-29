@@ -7,13 +7,15 @@ import no_result from "../../assets/no_result.png"
 import MediaTypeShow from "./MediaType/Show";
 import MediaTypePerson from "./MediaType/Person";
 
-import { PlusIcon, PlayIcon } from "@heroicons/react/24/solid";
+import { PlusIcon, PlayIcon, MinusIcon } from "@heroicons/react/24/solid";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useAppContext } from "../../context/state";
 import { useRouter } from "next/router";
 import Video from "./Video/Video";
+import { collection, onSnapshot, query } from "firebase/firestore";
+import { db } from "../../firebase";
 
 const Thumbnail:React.FC<{ 
     user: IAuthState, 
@@ -31,6 +33,13 @@ const Thumbnail:React.FC<{
         const [expand, setExpand] = useState(false);
         const [isHover, setIsHover] = useState(false);
         const router = useRouter();
+
+        const [isBookmarked, setIsBookmarked] = useState(false);
+
+        useEffect(() => {
+            onSnapshot(collection(db, 'bookmark', `${user.id}`, `${result.media_type}`),
+				(snapshot) => setIsBookmarked(snapshot.docs.findIndex((movie) => `${movie.id}` === `${result.id}`) !== -1) )
+        }, [result.id])
     
        
     return (
@@ -50,7 +59,7 @@ const Thumbnail:React.FC<{
                     {
                         // expand ? <iframe width="w-full" height='169' src={`https://www.youtube-nocookie.com/embed/mkomfZHG5q4?autoplay=${expand ? 1: 0}&mute=1&enablejsapi=1`} 
                         //      title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
-                        expand ? <Video id={result.id} expand={expand} user={user} src="/train.mp4" /> :
+                        expand ? <Video result={result} expand={expand} user={user} src="/train.mp4" isBookmarked={isBookmarked} /> :
                             result.backdrop_path ? <BackdropImage expand={expand} user={user} src={result.backdrop_path} /> : 
                             result.poster_path ? <PosterImage expand={expand} user={user} src={result.poster_path} /> :                                     
                             <div className="image-container relative w-full border-0" data-testid="backdrop_image_container">
@@ -76,9 +85,17 @@ const Thumbnail:React.FC<{
                             <div className="flex-1"></div>
                             <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
                                 hover:text-btnhighlight hover:border-btnhighlight">
-                                <PlusIcon className="w-[20px] h-[20px]" onClick={() => setBookmark(result.id, (id:any) => {
-                                    console.log("PlusIcon bookmarked: ", id)
-                                })}/>
+                                {
+                                    !isBookmarked ?                                
+                                        <PlusIcon className="w-[20px] h-[20px]" onClick={() => setBookmark(result, result.media_type, isBookmarked, (id:any) => {
+                                            // console.log("PlusIcon bookmarked: ", id)
+                                        })}/>
+                                    : 
+                                        <MinusIcon className="w-[20px] h-[20px]" onClick={() => setBookmark(result, result.media_type, isBookmarked, (id:any) => {
+                                            // console.log("MinusIcon bookmarked: ", id)
+                                        })}/>
+                                }
+
                             </div>
                             <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
                                 hover:text-btnhighlight hover:border-btnhighlight">

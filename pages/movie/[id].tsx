@@ -14,15 +14,18 @@ import Info from "../../components/Info/Info";
 
 import CustomBtn from "../../components/Button/CustomBtn/CustomBtn";
 import { useAppContext } from "../../context/state";
-import { PlayCircleIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
+import { PlayCircleIcon, PlusCircleIcon, MinusCircleIcon } from "@heroicons/react/24/outline";
 import Thumbnail from "../../components/Thumbnail/Thumbnail";
 
 import { movieData, movieRecommendations } from "../../model/fake_detail";
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "../../firebase";
 
 const Movie: NextPageWithLayout = (props:any) => {
   const router = useRouter();
   const { setBookmark } = useAppContext()
   const user = useAppSelector<IAuthState>(selectAuth);
+  const [isBookmarked, setIsBookmarked] = useState(false)
   
   
   // const { data, recommendations, isLoading, isError } = useMovieDetail(props.movie_id);    
@@ -31,6 +34,7 @@ const Movie: NextPageWithLayout = (props:any) => {
   const isError = undefined;
   const data = movieData
   const recommendations = movieRecommendations;
+
 
   let recommendationsArr:any[] = [];
   let timer: NodeJS.Timer;
@@ -86,6 +90,12 @@ const Movie: NextPageWithLayout = (props:any) => {
     
   },[])
   
+
+  useEffect(() => {
+    onSnapshot(collection(db, 'bookmark', `${user.id}`, "movie"),
+      (snapshot) => setIsBookmarked(snapshot.docs.findIndex((movie) => movie.id === props.movie_id) !== -1) )
+  }, [props.movie_id])
+
 
     if (isError) return <div>Error occured while fetching movie details. Please try again.</div>
 
@@ -147,9 +157,16 @@ const Movie: NextPageWithLayout = (props:any) => {
                   sm:space-y-0 sm:space-x-2 sm:flex-row
                   lg:space-x-2">
                     <CustomBtn title="Play" Icon={PlayCircleIcon} onClickHandler={() => console.log("PlayCircleIcon: ",data.id)} />
-                    <CustomBtn title="Add to List" Icon={PlusCircleIcon} onClickHandler={() => setBookmark(data.id, (id) => {
-                      console.log("detail bookmark ", id)
-                    })} />
+                    {
+                      !isBookmarked ? 
+                        <CustomBtn title="Add to List" Icon={PlusCircleIcon} onClickHandler={() => setBookmark(data, "movie", isBookmarked, (id) => {
+                          // console.log("detail PlusCircleIcon bookmark ", id)
+                        })} />
+                      :
+                        <CustomBtn title="Remove from List" Icon={MinusCircleIcon} onClickHandler={() => setBookmark(data, "movie", isBookmarked, (id) => {
+                          // console.log("detail MinusCircleIcon bookmark ", id)
+                        })} />
+                    }
                   </div>
                 </div>
               </div>
@@ -193,7 +210,7 @@ const Movie: NextPageWithLayout = (props:any) => {
                   <ChevronRightIcon className="w-[30px] h-[30px] text-white" />
                 </div>
                 
-                <div id="recommendations_ul" className="flex relative justify-between border-0 border-red-500 h-[100%] space-x-0">
+                <div id="recommendations_ul" className="flex relative items-center justify-start border-2 -translate-x-[0px] border-red-500 h-[100%] space-x-0">
                   <div
                     className="border-0 cursor-pointer h-[100%] w-[50px] p-[2px]"
                     id="filler_start"
