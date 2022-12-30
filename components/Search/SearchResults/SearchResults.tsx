@@ -56,6 +56,8 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
     // if (isError) return  <div>Sorry an error occurred. Please try again...</div>
 
 
+    // TODO: get user bookmark data:  SearchResultItem > Thumbnail (bookmarkData)
+
     return (
         <div  className="flex flex-col items-start justify-center w-full p-5 relative" data-testid="search_results_container">
             <ul 

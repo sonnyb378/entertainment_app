@@ -42,7 +42,7 @@ const Thumbnail:React.FC<{
             
         // }, [result.id])
     
-       
+       // TODO: search id result.id is in bookmarkData, update isBookmarked if necessary
        
     return (
         <div

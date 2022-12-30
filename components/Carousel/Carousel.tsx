@@ -5,10 +5,10 @@ import Thumbnail from "../Thumbnail/Thumbnail";
 import styles from "./Carousel.module.css"
 
 
-const Carousel: React.FC<{ data:any[], user:IAuthState, isThumbnail?:boolean}> = ({data, user, isThumbnail = true}) => {
+const Carousel: React.FC<{ data:any[], user:IAuthState, isThumbnail?:boolean, maxItems:number}> = ({data, user, isThumbnail = true, maxItems = 18}) => {
 
     const THUMBNAIL_BASEWIDTH = 290;
-    const MAX_ITEMS = 18;
+    const MAX_ITEMS = maxItems;
 
     const [visibleItem, setVisibleItem] = useState(6);
     const [translateWidth, setTranslateWidth] = useState(0)
@@ -102,24 +102,22 @@ const Carousel: React.FC<{ data:any[], user:IAuthState, isThumbnail?:boolean}> =
             <div id="track" className="hidden ml-[50px] border-2">{ translateWidth }, max index: {maxIndex}, current index: {currentIndex}, visible items: {visibleItem}</div>
               <div 
                 id="carousel" 
-                className="flex flex-row items-center justify-start mt-4 relative overflow border-0 border-purple-500 min-w-[346px] h-[100%]"
+                className={ styles.carousel }
                 data-testid="carousel" 
               >
                 
                 <div
                     onClick={prevHandler} 
-                    className="flex left-0 items-center justify-center absolute h-[100%] w-[50px] bg-black opacity-0 p-2 border-0 z-[1150] 
-                cursor-pointer hover:opacity-80">
+                    className={ styles.prev_btn }>
                     <ChevronLeftIcon className="w-[30px] h-[30px] text-white" />
                 </div>
                 <div 
                     onClick={nextHandler}
-                    className="flex right-0 items-center justify-center absolute h-[100%] w-[50px] bg-black opacity-0 p-2 border-0 z-[1150]  
-                    cursor-pointer hover:opacity-80">
+                    className={ styles.next_btn }>
                     <ChevronRightIcon className="w-[30px] h-[30px] text-white" />
                 </div>
                 
-                <div id="carousel_ul" className={`flex relative items-center justify-start transition-all duration-1000 translate-x-[500] border-0 border-red-500 h-[100%] space-x-0`}>
+                <div id="carousel_ul" className={ styles.carousel_ul }>
                   <div
                     className="border-0 cursor-pointer h-[100%] w-[50px] p-[2px]"
                     id="filler_start"
@@ -129,8 +127,7 @@ const Carousel: React.FC<{ data:any[], user:IAuthState, isThumbnail?:boolean}> =
                     
                     data.length > 0 && data.slice(0,visibleItem * maxIndex).map((item:any, i:any) => {
                       return (
-                        <div  className={`flex items-start justify-center border-0 cursor-pointer h-[100%] 
-                          w-[290px] p-[2px] carousel_li`}
+                        <div  className="@apply flex items-start justify-center border-0 cursor-pointer h-[100%] w-[290px] p-[2px] carousel_li"
                           key={i}
                         >
                             {

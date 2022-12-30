@@ -50,6 +50,7 @@ const Movie: NextPageWithLayout = (props:any) => {
   //     (snapshot) => setIsBookmarked(snapshot.docs.findIndex((movie) => movie.id === props.movie_id) !== -1) )
   // }, [props.movie_id])
 
+  // TODO: get user bookmark data:  Carousel > Thumbnail (bookmarkData)
 
     if (isError) return <div>Error occured while fetching movie details. Please try again.</div>
 
@@ -149,7 +150,7 @@ const Movie: NextPageWithLayout = (props:any) => {
             <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative">
               <h1 className="ml-[50px] text-[20px]">Recommended Movies</h1>
 
-              <Carousel data={recommendationsArr} user={user}  />
+              <Carousel data={recommendationsArr} user={user} maxItems={18} />
 
             </section>
 
