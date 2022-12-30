@@ -20,6 +20,7 @@ import Thumbnail from "../../components/Thumbnail/Thumbnail";
 import { movieData, movieRecommendations } from "../../model/fake_detail";
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "../../firebase";
+import Carousel from "../../components/Carousel/Carousel";
 
 const Movie: NextPageWithLayout = (props:any) => {
   const router = useRouter();
@@ -42,59 +43,12 @@ const Movie: NextPageWithLayout = (props:any) => {
   recommendations && recommendations.results && recommendations.results.slice(0,18).map((item) => {
     recommendationsArr.push(item)
   })
+
   
-  const resize_ob = new ResizeObserver(function(entries) {
-    let rect = entries[0].contentRect;  
-    let width = rect.width;
-    
-    const track = document.getElementById("track")
-    const li_thumbnail = document.querySelectorAll(".li_thumbnail_recommendations") as NodeListOf<HTMLDivElement>
-
-    const visibleThumbnail = Math.floor((width / 290));
-    const singleItemWidth = Math.floor(width / visibleThumbnail);
-    const newTrackWidth = Math.floor((singleItemWidth * visibleThumbnail) - 100)
-
-    if (track) {
-      track.style.width = `${newTrackWidth}px`
-    }
-    
-    li_thumbnail.forEach((item) => {
-     item.style.width = `${(newTrackWidth / visibleThumbnail) }px`
-    })
-  });
-
-  useEffect(() => {
-    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
-      const container = document.getElementById("recommendations_container")
-      if (container) {
-        resize_ob.observe(container as Element);
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    if (typeof window !== 'undefined' && typeof document !== "undefined") {
-      const recommendations_container = document.getElementById("recommendations_container") as Element;
-      const li_thumbnail = document.querySelectorAll(".li_thumbnail_recommendations") as NodeListOf<HTMLDivElement>
-      const track = document.getElementById("track")
-      const visibleThumbnail = Math.floor((recommendations_container?.clientWidth / 290));
-      const singleItemWidth = Math.floor(recommendations_container?.clientWidth / visibleThumbnail);
-      const newTrackWidth = Math.floor((singleItemWidth * visibleThumbnail) - 100)
-      if (track) {
-        track.style.width = `${newTrackWidth}px`
-      }
-      li_thumbnail.forEach((item) => {
-        item.style.width = `${(newTrackWidth / visibleThumbnail) }px`
-      })
-    }
-    
-  },[])
-  
-
-  useEffect(() => {
-    onSnapshot(collection(db, 'bookmark', `${user.id}`, "movie"),
-      (snapshot) => setIsBookmarked(snapshot.docs.findIndex((movie) => movie.id === props.movie_id) !== -1) )
-  }, [props.movie_id])
+  // useEffect(() => {
+  //   onSnapshot(collection(db, 'bookmark', `${user.id}`, "movie"),
+  //     (snapshot) => setIsBookmarked(snapshot.docs.findIndex((movie) => movie.id === props.movie_id) !== -1) )
+  // }, [props.movie_id])
 
 
     if (isError) return <div>Error occured while fetching movie details. Please try again.</div>
@@ -194,53 +148,9 @@ const Movie: NextPageWithLayout = (props:any) => {
 
             <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative">
               <h1 className="ml-[50px] text-[20px]">Recommended Movies</h1>
-              <div id="track" className="ml-[50px] border-0"></div>
-              <div 
-                data-testid="recommendations_container" 
-                id="recommendations_container" 
-                className="flex flex-row items-center justify-start mt-4 relative overflow border-0 border-purple-500 min-w-[346px] h-[100%]"
-              >
-                
-                <div className="flex left-0 items-center justify-center absolute h-[100%] w-[50px] bg-black opacity-0 p-2 border-0 z-[1150] 
-                cursor-pointer hover:opacity-80">
-                    <ChevronLeftIcon className="w-[30px] h-[30px] text-white" />
-                </div>
-                <div className="flex right-0 items-center justify-center absolute h-[100%] w-[50px] bg-black opacity-0 p-2 border-0 z-[1150]  
-                cursor-pointer hover:opacity-80">
-                  <ChevronRightIcon className="w-[30px] h-[30px] text-white" />
-                </div>
-                
-                <div id="recommendations_ul" className="flex relative items-center justify-start border-2 -translate-x-[0px] border-red-500 h-[100%] space-x-0">
-                  <div
-                    className="border-0 cursor-pointer h-[100%] w-[50px] p-[2px]"
-                    id="filler_start"
-                    data-testid="filler_start"
-                  ></div>
-                  {
-                    
-                    recommendationsArr.length > 0 && recommendationsArr.map((item:any, i:any) => {
-                      return (
-                        <div  className="flex items-start justify-center border-0 cursor-pointer h-[100%] 
-                          w-[290px] li_thumbnail_recommendations p-[2px]"
-                          key={i}
-                        >
-                          <Thumbnail 
-                              user={user} result={item} 
-                          />
 
-                        </div>
-                      )
-                    })
-                  }
-                  <div
-                    className="border-0 cursor-pointer h-[100%] w-[50px] p-[2px]"
-                    id="filler_end"
-                    data-testid="filler_end"
-                  ></div>
+              <Carousel data={recommendationsArr} user={user}  />
 
-                </div>
-
-              </div>
             </section>
 
             <section className="flex flex-col px-[50px] py-4 mt-6">

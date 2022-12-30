@@ -36,11 +36,13 @@ const Thumbnail:React.FC<{
 
         const [isBookmarked, setIsBookmarked] = useState(false);
 
-        useEffect(() => {
-            onSnapshot(collection(db, 'bookmark', `${user.id}`, `${result.media_type}`),
-				(snapshot) => setIsBookmarked(snapshot.docs.findIndex((movie) => `${movie.id}` === `${result.id}`) !== -1) )
-        }, [result.id])
+        // useEffect(() => {
+        //     onSnapshot(collection(db, 'bookmark', `${user.id}`, `${result.media_type}`),
+		// 		(snapshot) => setIsBookmarked(snapshot.docs.findIndex((movie) => `${movie.id}` === `${result.id}`) !== -1) )
+            
+        // }, [result.id])
     
+       
        
     return (
         <div
@@ -124,7 +126,9 @@ const Thumbnail:React.FC<{
                         setIsHover(false)
                     })}  
                     className={`flex ${ expand && "scale-[120%]" } flex-col items-center justify-start w-full relative duration-200 transition-all border-0 rounded-md overflow-hidden`}>
-                    <span className={`${isHover ? "flex" : "hidden"} z-[1000] items-center justify-center absolute top-2 left-2 px-2 text-[10px] bg-black`}>Keep hovering to autoplay</span>
+                    <span className={`${isHover ? "flex" : "hidden"} z-[2000] items-center justify-center absolute top-2 left-2 px-2 text-[10px] bg-black`}>
+                        Keep hovering to autoplay
+                    </span>
                     {
                         result.backdrop_path ? <BackdropImage expand={expand} user={user} src={result.backdrop_path} /> : 
                         result.poster_path ? <PosterImage expand={expand} user={user} src={result.poster_path} /> :                                     

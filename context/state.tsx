@@ -43,18 +43,19 @@ export const AppContextWrapper: React.FC<{ children: React.ReactNode }> = ({ chi
     try {
       
       if (!isBookmarked) {
-        await setDoc(doc(db, "bookmark", `${user.id}`), {
-          user_id: user.id
-        })
-        await setDoc(doc(db, "bookmark", `${user.id}`, `${media_type}`, `${result.id}`), {
-          id: result.id,
-          name: result.name || result.title || result.original_name || result.original_title,
-          backdrop_path: result.backdrop_path,
-          poster_path: result.poster_path
-        })
+        // await setDoc(doc(db, "bookmark", `${user.id}`), {
+        //   user_id: user.id
+        // })
+        // await setDoc(doc(db, "bookmark", `${user.id}`, `${media_type}`, `${result.id}`), {
+        //   id: result.id,
+        //   name: result.name || result.title || result.original_name || result.original_title,
+        //   backdrop_path: result.backdrop_path,
+        //   poster_path: result.poster_path
+        // })
+        console.log("ctx set bookmark")
       } else {
-        await deleteDoc(doc(db, "bookmark", `${user.id}`, `${media_type}`, `${result.id}` ));
-        // console.log("ctx removing bookmark")
+        // await deleteDoc(doc(db, "bookmark", `${user.id}`, `${media_type}`, `${result.id}` ));
+        console.log("ctx removing bookmark")
       }
 
       callback(result.id)
@@ -80,7 +81,7 @@ export const AppContextWrapper: React.FC<{ children: React.ReactNode }> = ({ chi
     if (parent) {
         timer = setTimeout(() => {
             callback()
-        }, 500)
+        }, 1000)
     }   
   }
 
