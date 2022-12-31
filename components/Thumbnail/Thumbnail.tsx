@@ -19,11 +19,11 @@ import Video from "./Video/Video";
 const Thumbnail:React.FC<{ 
     user: IAuthState, 
     result:IResult,
-    bookmarkData:any[]|null
+    bookmarkData?:any[]|null
 }> = ({ 
         user, 
         result,
-        bookmarkData
+        bookmarkData = null
     }) => {
         
         const { 

@@ -29,7 +29,8 @@ const Movie: NextPageWithLayout = (props:any) => {
   const [isBookmarked, setIsBookmarked] = useState(false)
   const [movieBookmarks, setMovieBookmarks] = useState<any>([])
   const [tvBookmarks, setTVBookmarks] = useState<any>([])
-  
+  const [dataBookmark, setDataBookmark] = useState<any>([])
+
   // const { data, recommendations, isLoading, isError } = useMovieDetail(props.movie_id);    
 
   const isLoading = false;
@@ -37,8 +38,8 @@ const Movie: NextPageWithLayout = (props:any) => {
   const data = movieData
   const recommendations = movieRecommendations;
 
-
   let recommendationsArr:any[] = [];
+  
 
   let timer: NodeJS.Timer;
 
@@ -68,6 +69,26 @@ const Movie: NextPageWithLayout = (props:any) => {
 
   }, [])
 
+
+  useEffect(() => {
+    let bookmarkArr:any[] = [];
+    [...tvBookmarks, ...movieBookmarks].map((bookmark, i) => {
+      const data = {
+        id: bookmark.data().id,
+        name: bookmark.data().name,
+        media_type: bookmark.data().media_type,
+        genre_ids: bookmark.data().genre_ids,
+        backdrop_path: bookmark.data().backdrop_path,
+        poster_path: bookmark.data().poster_path,
+      }
+      bookmarkArr.push(data)      
+    })
+    setDataBookmark(bookmarkArr)
+  }, [tvBookmarks, movieBookmarks])
+
+    // console.log("dataBookmark: ", dataBookmark)
+    // console.log("recommendationsArr: ", recommendationsArr)
+    
     if (isError) return <div>Error occured while fetching movie details. Please try again.</div>
 
     return (
@@ -166,13 +187,34 @@ const Movie: NextPageWithLayout = (props:any) => {
             <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative">
               <h1 className="ml-[50px] text-[20px]">Recommended Movies</h1>
 
-              <Carousel data={recommendationsArr} user={user} maxItems={18} bookmarkData={[...movieBookmarks, ...tvBookmarks]} />
+              <Carousel 
+                data={recommendationsArr} 
+                user={user} 
+                maxItems={18} 
+                bookmarkData={[...movieBookmarks, ...tvBookmarks]} 
+                baseWidth={290}
+                target="r"
+              />
 
             </section>
 
-            <section className="flex flex-col px-[50px] py-4 mt-6">
-              <h1 className="text-[20px]">My List</h1>
+            <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]">
+              <h1 className="ml-[50px] text-[20px]">My List</h1>
+              
+              {
+                dataBookmark && dataBookmark.length > 0 ?
+                  <Carousel 
+                    data={ dataBookmark }
+                    user={user} 
+                    maxItems={ dataBookmark.length } 
+                    bookmarkData={[...movieBookmarks, ...tvBookmarks]} 
+                    baseWidth={290}
+                    target="m"
+                  />
+                :
+                  <div className="flex items-center justify-start ml-[50px] mt-6 p-2">No bookmarks found</div>
 
+              }
               
             </section>
             
