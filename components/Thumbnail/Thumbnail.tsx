@@ -7,22 +7,23 @@ import no_result from "../../assets/no_result.png"
 import MediaTypeShow from "./MediaType/Show";
 import MediaTypePerson from "./MediaType/Person";
 
-import { PlusIcon, PlayIcon, MinusIcon } from "@heroicons/react/24/solid";
+import { PlusIcon, PlayIcon, MinusIcon, CheckIcon } from "@heroicons/react/24/solid";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 
 import { useAppContext } from "../../context/state";
 import { useRouter } from "next/router";
 import Video from "./Video/Video";
-import { collection, onSnapshot, query } from "firebase/firestore";
-import { db } from "../../firebase";
+
 
 const Thumbnail:React.FC<{ 
     user: IAuthState, 
-    result:IResult
+    result:IResult,
+    bookmarkData:any[]|null
 }> = ({ 
         user, 
-        result
+        result,
+        bookmarkData
     }) => {
         
         const { 
@@ -30,20 +31,20 @@ const Thumbnail:React.FC<{
             ctxOnEnterHandler: onEnterHandler,
             ctxOnLeaveHandler: onLeaveHandler
         } = useAppContext();
+
         const [expand, setExpand] = useState(false);
         const [isHover, setIsHover] = useState(false);
         const router = useRouter();
 
         const [isBookmarked, setIsBookmarked] = useState(false);
 
-        // useEffect(() => {
-        //     onSnapshot(collection(db, 'bookmark', `${user.id}`, `${result.media_type}`),
-		// 		(snapshot) => setIsBookmarked(snapshot.docs.findIndex((movie) => `${movie.id}` === `${result.id}`) !== -1) )
-            
-        // }, [result.id])
-    
-       // TODO: search id result.id is in bookmarkData, update isBookmarked if necessary
-       
+        useEffect(() => {
+            if (bookmarkData && bookmarkData.length > 0) {
+                setIsBookmarked(bookmarkData?.findIndex((b) => `${b.id}` === `${result.id}`) !== -1)
+            }
+        }, [bookmarkData])
+
+
     return (
         <div
             className="flex flex-col items-center justify-start w-full relative"
@@ -61,17 +62,26 @@ const Thumbnail:React.FC<{
                     {
                         // expand ? <iframe width="w-full" height='169' src={`https://www.youtube-nocookie.com/embed/mkomfZHG5q4?autoplay=${expand ? 1: 0}&mute=1&enablejsapi=1`} 
                         //      title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
-                        expand ? <Video result={result} expand={expand} user={user} src="/train.mp4" isBookmarked={isBookmarked} /> :
-                            result.backdrop_path ? <BackdropImage expand={expand} user={user} src={result.backdrop_path} /> : 
-                            result.poster_path ? <PosterImage expand={expand} user={user} src={result.poster_path} /> :                                     
-                            <div className="image-container relative w-full border-0" data-testid="backdrop_image_container">
-                                <Image 
-                                    src={ no_result } 
-                                    layout="fill"
-                                    priority={ true }
-                                    className={`object-contain cursor-pointer !relative !h-[unset] z-[1000]`}
-                                />                        
-                            </div>
+
+                        result.media_type !== "person" &&
+                            expand ? <Video result={result} expand={expand} user={user} src="/train.mp4" isBookmarked={isBookmarked} />
+                        :
+                            result.backdrop_path ? 
+                                <BackdropImage expand={expand} user={user} src={result.backdrop_path} media_type={result.media_type}  /> 
+                                : 
+                                result.poster_path ? 
+                                    <PosterImage expand={expand} user={user} src={result.poster_path}  media_type={result.media_type} /> 
+                                    : 
+                                    <div className="image-container relative w-full border-0" data-testid="backdrop_image_container">
+                                        <Image 
+                                            src={ no_result } 
+                                            layout="fill"
+                                            priority={ true }
+                                            className={`object-contain cursor-pointer !relative !h-[unset] z-[1000]`}
+                                        />                        
+                                    </div>
+                        
+                        
                     }
                     <div className="flex flex-1 flex-col items-center justify-start w-full relative">
                         <div id="gradient" className="flex h-[10px] -top-[10px] absolute z-[1000] w-full items-center justify-start 
@@ -93,8 +103,8 @@ const Thumbnail:React.FC<{
                                             // console.log("PlusIcon bookmarked: ", id)
                                         })}/>
                                     : 
-                                        <MinusIcon className="w-[20px] h-[20px]" onClick={() => setBookmark(result, result.media_type, isBookmarked, (id:any) => {
-                                            // console.log("MinusIcon bookmarked: ", id)
+                                        <CheckIcon className="w-[20px] h-[20px]" onClick={() => setBookmark(result, result.media_type, isBookmarked, (id:any) => {
+                                            // console.log("CheckIcon bookmarked: ", id)
                                         })}/>
                                 }
 
@@ -130,8 +140,8 @@ const Thumbnail:React.FC<{
                         Keep hovering to autoplay
                     </span>
                     {
-                        result.backdrop_path ? <BackdropImage expand={expand} user={user} src={result.backdrop_path} /> : 
-                        result.poster_path ? <PosterImage expand={expand} user={user} src={result.poster_path} /> :                                     
+                        result.backdrop_path ? <BackdropImage expand={expand} user={user} src={result.backdrop_path} media_type={result.media_type} /> : 
+                        result.poster_path ? <PosterImage expand={expand} user={user} src={result.poster_path} media_type={result.media_type} /> :                                     
                         <div className="image-container relative w-full border-0" data-testid="backdrop_image_container">
                             <Image 
                                 src={ no_result } 

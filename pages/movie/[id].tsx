@@ -27,7 +27,8 @@ const Movie: NextPageWithLayout = (props:any) => {
   const { setBookmark } = useAppContext()
   const user = useAppSelector<IAuthState>(selectAuth);
   const [isBookmarked, setIsBookmarked] = useState(false)
-  
+  const [movieBookmarks, setMovieBookmarks] = useState<any>([])
+  const [tvBookmarks, setTVBookmarks] = useState<any>([])
   
   // const { data, recommendations, isLoading, isError } = useMovieDetail(props.movie_id);    
 
@@ -38,19 +39,34 @@ const Movie: NextPageWithLayout = (props:any) => {
 
 
   let recommendationsArr:any[] = [];
+
   let timer: NodeJS.Timer;
 
   recommendations && recommendations.results && recommendations.results.slice(0,18).map((item) => {
     recommendationsArr.push(item)
   })
 
-  
-  // useEffect(() => {
-  //   onSnapshot(collection(db, 'bookmark', `${user.id}`, "movie"),
-  //     (snapshot) => setIsBookmarked(snapshot.docs.findIndex((movie) => movie.id === props.movie_id) !== -1) )
-  // }, [props.movie_id])
+  useEffect(() => {
 
-  // TODO: get user bookmark data:  Carousel > Thumbnail (bookmarkData)
+    const unsubscribeMovieBookmark = onSnapshot(collection(db, 'bookmark', `${user.id}`, "movie"),
+      (snapshot) => { 
+        setMovieBookmarks(snapshot.docs);
+        setIsBookmarked(snapshot.docs.findIndex((movie) => movie.id === props.movie_id) !== -1)
+      }
+    )
+
+    const unsubscribeTVBookmark = onSnapshot(collection(db, 'bookmark', `${user.id}`, "tv"),
+      (snapshot) => { 
+        setTVBookmarks(snapshot.docs);
+      }
+    )
+
+    return () => {
+      unsubscribeMovieBookmark();
+      unsubscribeTVBookmark();
+    }
+
+  }, [])
 
     if (isError) return <div>Error occured while fetching movie details. Please try again.</div>
 
@@ -150,12 +166,14 @@ const Movie: NextPageWithLayout = (props:any) => {
             <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative">
               <h1 className="ml-[50px] text-[20px]">Recommended Movies</h1>
 
-              <Carousel data={recommendationsArr} user={user} maxItems={18} />
+              <Carousel data={recommendationsArr} user={user} maxItems={18} bookmarkData={[...movieBookmarks, ...tvBookmarks]} />
 
             </section>
 
             <section className="flex flex-col px-[50px] py-4 mt-6">
               <h1 className="text-[20px]">My List</h1>
+
+              
             </section>
             
           </section>

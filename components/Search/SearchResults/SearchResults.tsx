@@ -12,6 +12,8 @@ import SearchResultItem, { IResult } from "../SearchResultItem/SearchResultItem"
 import { useAppSelector } from "../../../app/hooks";
 import { IAuthState } from "../../../ts/states/auth_state";
 import { selectAuth } from "../../../app/store/slices/auth";
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "../../../firebase";
 
 interface ISearchResultProps {
     keyword: string;
@@ -28,6 +30,8 @@ export const fetcherInfinite = (baseUrl: string, url: string, page: number, keyw
 const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
     const [ pageNumber, setPageNumber ] = useState(1)
     const user = useAppSelector<IAuthState>(selectAuth);
+    const [movieBookmarks, setMovieBookmarks] = useState<any>([])
+    const [tvBookmarks, setTVBookmarks] = useState<any>([])
 
     let search_results: IResult[];
 
@@ -56,7 +60,25 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
     // if (isError) return  <div>Sorry an error occurred. Please try again...</div>
 
 
-    // TODO: get user bookmark data:  SearchResultItem > Thumbnail (bookmarkData)
+    useEffect(() => {    
+        const unsubscribeMovieBookmark = onSnapshot(collection(db, 'bookmark', `${user.id}`, "movie"),
+            (snapshot) => { 
+                setMovieBookmarks(snapshot.docs);           
+            }
+        )
+
+        const unsubscribeTVBookmark = onSnapshot(collection(db, 'bookmark', `${user.id}`, "tv"),
+            (snapshot) => { 
+                setTVBookmarks(snapshot.docs);           
+            }
+        )
+
+          return () => {
+            unsubscribeMovieBookmark();
+            unsubscribeTVBookmark();
+          }
+      }, [])
+
 
     return (
         <div  className="flex flex-col items-start justify-center w-full p-5 relative" data-testid="search_results_container">
@@ -71,6 +93,7 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
                             <SearchResultItem 
                                 key={i} 
                                 result={result} 
+                                bookmarkData={[...movieBookmarks, ...tvBookmarks]}
                             /> 
                         )                       
                     })

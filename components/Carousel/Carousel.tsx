@@ -5,7 +5,18 @@ import Thumbnail from "../Thumbnail/Thumbnail";
 import styles from "./Carousel.module.css"
 
 
-const Carousel: React.FC<{ data:any[], user:IAuthState, isThumbnail?:boolean, maxItems:number}> = ({data, user, isThumbnail = true, maxItems = 18}) => {
+const Carousel: React.FC<{ 
+    data?:any[] | null, 
+    user:IAuthState, 
+    maxItems:number,
+    bookmarkData:any[] | null,
+
+}> = ({
+    data, 
+    user, 
+    maxItems = 18, 
+    bookmarkData
+}) => {
 
     const THUMBNAIL_BASEWIDTH = 290;
     const MAX_ITEMS = maxItems;
@@ -36,11 +47,14 @@ const Carousel: React.FC<{ data:any[], user:IAuthState, isThumbnail?:boolean, ma
             item.style.width = `${(newTrackWidth / visibleThumbnail) }px`
         })
 
-        if (currentIndex > 0) {
-            carousel_ul!.style.transform = `translateX(-${(currentIndex) * newTrackWidth}px)`;
-        } else {
-            carousel_ul!.style.transform = `translateX(-${0}px)`;
+        if (carousel_ul) {
+            if (currentIndex > 0) {
+                carousel_ul.style.transform = `translateX(-${(currentIndex) * newTrackWidth}px)`;
+            } else {
+                carousel_ul.style.transform = `translateX(-${0}px)`;
+            }
         }
+
 
         if (currentIndex >= maxIndex) {
             setCurrentIndex(maxIndex - 1)
@@ -97,6 +111,8 @@ const Carousel: React.FC<{ data:any[], user:IAuthState, isThumbnail?:boolean, ma
         setCurrentIndex(currentIndex + 1)
       }
 
+    //   console.log("carousel: ", bookmarkData)
+
     return(
         <div className="flex flex-col  border-0 w-full relative">
             <div id="track" className="hidden ml-[50px] border-2">{ translateWidth }, max index: {maxIndex}, current index: {currentIndex}, visible items: {visibleItem}</div>
@@ -125,19 +141,16 @@ const Carousel: React.FC<{ data:any[], user:IAuthState, isThumbnail?:boolean, ma
                   ></div>
                   {
                     
-                    data.length > 0 && data.slice(0,visibleItem * maxIndex).map((item:any, i:any) => {
+                    data && data.length > 0 && data.slice(0,visibleItem * maxIndex).map((item:any, i:any) => {
                       return (
                         <div  className="@apply flex items-start justify-center border-0 cursor-pointer h-[100%] w-[290px] p-[2px] carousel_li"
                           key={i}
                         >
-                            {
-                                isThumbnail ? <Thumbnail user={user} result={item} /> : ""
-                            }
-                            
-
+                            <Thumbnail user={user} result={item} bookmarkData={bookmarkData} />
                         </div>
                       )
                     })
+
                   }
                   <div
                     className="border-0 cursor-pointer h-[100%] w-[50px] p-[2px]"

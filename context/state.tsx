@@ -6,7 +6,7 @@ import { auth, db } from "../firebase";
 import { useAppSelector } from "../app/hooks";
 import { IAuthState } from "../ts/states/auth_state";
 import { selectAuth } from "../app/store/slices/auth";
-import { collection, addDoc, setDoc, doc, documentId, deleteDoc } from "firebase/firestore"; 
+import { collection, addDoc, setDoc, doc, documentId, deleteDoc, FieldValue, arrayUnion } from "firebase/firestore"; 
 import { IResult } from "../components/Search/SearchResultItem/SearchResultItem";
 
 export interface ContextState {
@@ -34,7 +34,7 @@ export const AppContextWrapper: React.FC<{ children: React.ReactNode }> = ({ chi
   let timer: NodeJS.Timer;
 
   const setBookmark = async (
-    result:IResult, 
+    result:any, 
     media_type:string, 
     isBookmarked: boolean,
     callback:(id:any) => void
@@ -43,24 +43,34 @@ export const AppContextWrapper: React.FC<{ children: React.ReactNode }> = ({ chi
     try {
       
       if (!isBookmarked) {
-        // await setDoc(doc(db, "bookmark", `${user.id}`), {
-        //   user_id: user.id
-        // })
-        // await setDoc(doc(db, "bookmark", `${user.id}`, `${media_type}`, `${result.id}`), {
-        //   id: result.id,
-        //   name: result.name || result.title || result.original_name || result.original_title,
-        //   backdrop_path: result.backdrop_path,
-        //   poster_path: result.poster_path
-        // })
-        console.log("ctx set bookmark")
+
+        const genres:any = [];
+        if (result.genres) {
+          result.genres.map((genre:any) => {
+            genres.push(genre.id)
+          })
+        }
+
+        await setDoc(doc(db, "bookmark", `${user.id}`), {
+          user_id: user.id
+        })
+        await setDoc(doc(db, "bookmark", `${user.id}`, `${media_type}`, `${result.id}`), {
+          id: result.id,
+          name: result.name || result.title || result.original_name || result.original_title,
+          backdrop_path: result.backdrop_path,
+          poster_path: result.poster_path,
+          media_type: media_type,
+          genre_ids: genres.length > 0 ? genres : result.genre_ids
+        })
+
       } else {
-        // await deleteDoc(doc(db, "bookmark", `${user.id}`, `${media_type}`, `${result.id}` ));
-        console.log("ctx removing bookmark")
+        await deleteDoc(doc(db, "bookmark", `${user.id}`, `${media_type}`, `${result.id}` ));
       }
 
       callback(result.id)
     } catch (e) {
       // console.error("Error adding document: ", e);
+      callback(e)
     }
 
   }

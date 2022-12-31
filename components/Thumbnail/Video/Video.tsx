@@ -22,12 +22,18 @@ const Video: React.FC<{
             {
                 expand && user && user.accessToken &&
                 <div className="flex absolute top-0 right-0 items-center justify-end z-[1000] w-full p-2 space-x-2">
-                    <div className={`p-2 ${ !isBookmarked ? "hover:bg-btnprimary" : "hover:bg-white" } hover:rounded-full`}
+                    <div className={`p-2 ${isBookmarked ? "bg-btnprimary rounded-full  hover:bg-gray-500":"hover:bg-btnprimary hover:rounded-full" }  `}
                          onClick={ () => setBookmark(result, result.media_type, isBookmarked, (docID) => {
                             // console.log("video: (bookmark):", docID)
                         }) }
                         >
-                        <BookmarkIconSolid className={`w-[18px] h-[18px] ${ !isBookmarked ? "text-white" : "text-btnprimary" } `} />
+                        {
+                            isBookmarked ? 
+                                <BookmarkIconSolid className={`w-[18px] h-[18px] text-white } `} />
+                                :
+                                <BookmarkIconOutline className={`w-[18px] h-[18px] text-white `} />
+
+                        }
                     </div>
                 </div>          
             }
