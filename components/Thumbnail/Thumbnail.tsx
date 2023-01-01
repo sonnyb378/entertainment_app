@@ -95,20 +95,23 @@ const Thumbnail:React.FC<{
                                 }} />
                             </div>
                             <div className="flex-1"></div>
-                            <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
-                                hover:text-btnhighlight hover:border-btnhighlight">
-                                {
-                                    !isBookmarked ?                                
-                                        <PlusIcon className="w-[20px] h-[20px]" onClick={() => setBookmark(result, result.media_type, isBookmarked, (id:any) => {
-                                            // console.log("PlusIcon bookmarked: ", id)
-                                        })}/>
-                                    : 
-                                        <CheckIcon className="w-[20px] h-[20px]" onClick={() => setBookmark(result, result.media_type, isBookmarked, (id:any) => {
-                                            // console.log("CheckIcon bookmarked: ", id)
-                                        })}/>
-                                }
-
-                            </div>
+                            {
+                                user && user.accessToken && 
+                                <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
+                                    hover:text-btnhighlight hover:border-btnhighlight">
+                                    {
+                                        !isBookmarked ?                                
+                                            <PlusIcon className="w-[20px] h-[20px]" onClick={() => setBookmark(result, result.media_type, isBookmarked, (id:any) => {
+                                                // console.log("PlusIcon bookmarked: ", id)
+                                            })}/>
+                                        : 
+                                            <CheckIcon className="w-[20px] h-[20px]" onClick={() => setBookmark(result, result.media_type, isBookmarked, (id:any) => {
+                                                // console.log("CheckIcon bookmarked: ", id)
+                                            })}/>
+                                    }
+                                </div>
+                            }
+                            
                             <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
                                 hover:text-btnhighlight hover:border-btnhighlight">
                                 <ChevronDownIcon className="w-[20px] h-[20px]" onClick={() => {

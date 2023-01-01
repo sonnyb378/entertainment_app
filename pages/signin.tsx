@@ -29,8 +29,8 @@ const Signin: NextPageWithLayout = () => {
     const dispatch = useAppDispatch();
 
     const [isSubmitted, setIsSubmitted] = useState(false);
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("demo@demo.com");
+    const [password, setPassword] = useState("demodemo");
     const [signInErrors, setSignInErrors] = useState<SignInErrors[]>([]);
 
     const [rememberme, setRememberMe] = useState(false);

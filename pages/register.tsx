@@ -14,6 +14,7 @@ import { auth } from "../firebase";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { selectAuth, setAuthData } from "../app/store/slices/auth";
 import { IAuthState } from "../ts/states/auth_state";
+import Link from "next/link";
 
 interface IError {
     error: string;
@@ -59,58 +60,57 @@ const Register: NextPageWithLayout = () => {
 
         if (registerOk) {
 
-            const result = await createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                return userCredential.user.getIdTokenResult();
-            })
-            .then((user: any) => {
-                return user
-            })
-            .catch((error) => {
-                // console.log("error: ",error);
+            setRegisterErrors((prevState) => [...prevState, {
+                error: "Registration disabled"
+            }])
+
+            setTimeout(() => {
                 setIsSubmitted(false);
-                if (error.code === "auth/email-already-in-use") {
-                    setRegisterErrors([{ error: "Email address already in use!" }]);
-                    return;
-                }
-                setRegisterErrors([{ error: "All fields are required" }]);
-            })
+                setRegisterErrors([]);
+            }, 2000)
 
-            if (result.token) {
-                // setIsSubmitted(false);
-                dispatch(setAuthData({
-                    id: result.claims.user_id,
-                    accessToken: result.token,
-                    expiresAt: result.expirationTime
-                }));
-                router.replace("./movies")
-            }
+            /*
+                Uncomment code below to run registration 
+                *** START ***
+            */
 
-            // createUserWithEmailAndPassword(auth, email, password)
+            // const result = await createUserWithEmailAndPassword(auth, email, password)
             // .then((userCredential) => {
-            //     // Signed in 
-            //     const user = userCredential.user;
-
-            //     user.getIdTokenResult()
-            //     .then((result) => {
-            //         setIsSubmitted(false);
-            //         dispatch(setAuthData({
-            //             id: result.claims.user_id,
-            //             accessToken: result.token,
-            //             expiresAt: result.expirationTime
-            //         }));
-            //     }).finally(() => {
-            //         router.replace("./movies")
-            //     })
+            //     return userCredential.user.getIdTokenResult();
+            // })
+            // .then((user: any) => {
+            //     return user
             // })
             // .catch((error) => {
+            //     console.log("error code: ", error.code);
+            //     console.log("error code: ", error.message);
             //     setIsSubmitted(false);
             //     if (error.code === "auth/email-already-in-use") {
             //         setRegisterErrors([{ error: "Email address already in use!" }]);
             //         return;
+            //     } else if (error.code === "auth/weak-password") {
+            //         setRegisterErrors([{ error: "Password should be at least 6 characters" }]);
+            //         return;
+            //     } else if (error.code) {
+            //         setRegisterErrors([{ error: "An error occured while registering account" }]);
+            //         return;
             //     }
             //     setRegisterErrors([{ error: "All fields are required" }]);
-            // });
+            // })
+
+            // if (result.token) {
+            //     // setIsSubmitted(false);
+            //     dispatch(setAuthData({
+            //         id: result.claims.user_id,
+            //         accessToken: result.token,
+            //         expiresAt: result.expirationTime
+            //     }));
+            //     router.replace("./movies")
+            // }
+            /*
+                *** END ***
+            */
+           
         } else {
             setIsSubmitted(false);
         }
@@ -146,6 +146,19 @@ const Register: NextPageWithLayout = () => {
       data-testid="register_container">
         <div className="flex flex-col items-center justify-start w-full">
           <section className="flex flex-col items-center justify-center w-full">
+            {
+                <section className="flex flex-col items-start justify-center p-4 border border-red-500 bg-black bg-opacity-70 mt-4 mb-6 text-btnhighlight w-[99%]">
+                    <div>Registration disabled.</div> 
+                    <div className="">
+                        <span className="text-slate-400 font-bold mr-1">
+                            <a target="_blank" href="https://github.com/sonnyb378/entertainment_app/blob/main/pages/register.tsx" rel="noopener noreferrer">
+                                Check this github
+                            </a>
+                        </span>
+                        for complete registration code
+                    </div>
+                </section>
+            }
             
             <div className="flex flex-col items-start justify-between p-8 bg-black bg-opacity-60 w-[99%] rounded-lg">
                 <h1 className="text-[2rem] 

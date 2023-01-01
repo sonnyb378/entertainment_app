@@ -18,7 +18,7 @@ import { PlayCircleIcon, PlusCircleIcon, MinusCircleIcon } from "@heroicons/reac
 import Thumbnail from "../../components/Thumbnail/Thumbnail";
 
 import { movieData, movieRecommendations } from "../../model/fake_detail";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, Unsubscribe } from "firebase/firestore";
 import { db } from "../../firebase";
 import Carousel from "../../components/Carousel/Carousel";
 
@@ -48,23 +48,27 @@ const Movie: NextPageWithLayout = (props:any) => {
   })
 
   useEffect(() => {
+    let unsubscribeMovieBookmark: Unsubscribe;
+    let unsubscribeTVBookmark: Unsubscribe;
 
-    const unsubscribeMovieBookmark = onSnapshot(collection(db, 'bookmark', `${user.id}`, "movie"),
-      (snapshot) => { 
-        setMovieBookmarks(snapshot.docs);
-        setIsBookmarked(snapshot.docs.findIndex((movie) => movie.id === props.movie_id) !== -1)
-      }
-    )
+    if (user && user.accessToken) {
+      unsubscribeMovieBookmark = onSnapshot(collection(db, 'bookmark', `${user.id}`, "movie"),
+        (snapshot) => { 
+          setMovieBookmarks(snapshot.docs);
+          setIsBookmarked(snapshot.docs.findIndex((movie) => movie.id === props.movie_id) !== -1)
+        }
+      )
 
-    const unsubscribeTVBookmark = onSnapshot(collection(db, 'bookmark', `${user.id}`, "tv"),
-      (snapshot) => { 
-        setTVBookmarks(snapshot.docs);
-      }
-    )
+      unsubscribeTVBookmark = onSnapshot(collection(db, 'bookmark', `${user.id}`, "tv"),
+        (snapshot) => { 
+          setTVBookmarks(snapshot.docs);
+        }
+      )
+    }    
 
     return () => {
-      unsubscribeMovieBookmark();
-      unsubscribeTVBookmark();
+      unsubscribeMovieBookmark && unsubscribeMovieBookmark();
+      unsubscribeTVBookmark && unsubscribeTVBookmark();
     }
 
   }, [])
@@ -151,11 +155,11 @@ const Movie: NextPageWithLayout = (props:any) => {
                     <CustomBtn title="Play" Icon={PlayCircleIcon} onClickHandler={() => console.log("PlayCircleIcon: ",data.id)} />
                     {
                       !isBookmarked ? 
-                        <CustomBtn title="Add to List" Icon={PlusCircleIcon} onClickHandler={() => setBookmark(data, "movie", isBookmarked, (id) => {
+                        user && user.accessToken && <CustomBtn title="Add to List" Icon={PlusCircleIcon} onClickHandler={() => setBookmark(data, "movie", isBookmarked, (id) => {
                           // console.log("detail PlusCircleIcon bookmark ", id)
                         })} />
                       :
-                        <CustomBtn title="Remove from List" Icon={MinusCircleIcon} onClickHandler={() => setBookmark(data, "movie", isBookmarked, (id) => {
+                        user && user.accessToken &&  <CustomBtn title="Remove from List" Icon={MinusCircleIcon} onClickHandler={() => setBookmark(data, "movie", isBookmarked, (id) => {
                           // console.log("detail MinusCircleIcon bookmark ", id)
                         })} />
                     }
@@ -197,26 +201,29 @@ const Movie: NextPageWithLayout = (props:any) => {
               />
 
             </section>
+            {
+              user && user.accessToken &&
+                <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]">
+                  <h1 className="ml-[50px] text-[20px]">My List</h1>
+                  
+                  {
+                    dataBookmark && dataBookmark.length > 0 ?
+                      <Carousel 
+                        data={ dataBookmark }
+                        user={user} 
+                        maxItems={ dataBookmark.length } 
+                        bookmarkData={[...movieBookmarks, ...tvBookmarks]} 
+                        baseWidth={290}
+                        target="m"
+                      />
+                    :
+                      <div className="flex items-center justify-start ml-[50px] mt-6 p-2">No bookmarks found</div>
 
-            <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]">
-              <h1 className="ml-[50px] text-[20px]">My List</h1>
-              
-              {
-                dataBookmark && dataBookmark.length > 0 ?
-                  <Carousel 
-                    data={ dataBookmark }
-                    user={user} 
-                    maxItems={ dataBookmark.length } 
-                    bookmarkData={[...movieBookmarks, ...tvBookmarks]} 
-                    baseWidth={290}
-                    target="m"
-                  />
-                :
-                  <div className="flex items-center justify-start ml-[50px] mt-6 p-2">No bookmarks found</div>
-
-              }
-              
-            </section>
+                  }
+                  
+                </section>
+            }
+            
             
           </section>
         }

@@ -12,7 +12,7 @@ import SearchResultItem, { IResult } from "../SearchResultItem/SearchResultItem"
 import { useAppSelector } from "../../../app/hooks";
 import { IAuthState } from "../../../ts/states/auth_state";
 import { selectAuth } from "../../../app/store/slices/auth";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, Unsubscribe } from "firebase/firestore";
 import { db } from "../../../firebase";
 
 interface ISearchResultProps {
@@ -61,22 +61,27 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
 
 
     useEffect(() => {    
-        const unsubscribeMovieBookmark = onSnapshot(collection(db, 'bookmark', `${user.id}`, "movie"),
-            (snapshot) => { 
-                setMovieBookmarks(snapshot.docs);           
-            }
+        let unsubscribeMovieBookmark: Unsubscribe;
+        let unsubscribeTVBookmark: Unsubscribe;
+
+        if (user && user.accessToken) {
+            unsubscribeMovieBookmark = onSnapshot(collection(db, 'bookmark', `${user.id}`, "movie"),
+                (snapshot) => { 
+                    setMovieBookmarks(snapshot.docs);           
+                }
         )
 
-        const unsubscribeTVBookmark = onSnapshot(collection(db, 'bookmark', `${user.id}`, "tv"),
-            (snapshot) => { 
-                setTVBookmarks(snapshot.docs);           
-            }
-        )
+            unsubscribeTVBookmark = onSnapshot(collection(db, 'bookmark', `${user.id}`, "tv"),
+                (snapshot) => { 
+                    setTVBookmarks(snapshot.docs);           
+                }
+            )
+        }
 
-          return () => {
-            unsubscribeMovieBookmark();
-            unsubscribeTVBookmark();
-          }
+        return () => {
+            unsubscribeMovieBookmark && unsubscribeMovieBookmark();
+            unsubscribeTVBookmark && unsubscribeTVBookmark();
+        }
       }, [])
 
 
