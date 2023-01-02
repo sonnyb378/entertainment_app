@@ -8,7 +8,7 @@ import { IAuthState } from "../../ts/states/auth_state";
 export const useBookmark = () => {
     const user = useAppSelector<IAuthState>(selectAuth);
 
-    const [bookmarks, setBookmarks] = useState<any[]>([]);
+    const [bookmarks, setBookmarks] = useState<any>(null);
 
     const fetchBookmarks = async () => {
         const movieList:any = [];
@@ -30,6 +30,7 @@ export const useBookmark = () => {
 
     return {
         bookmark_data: bookmarks,
+        bookmarkLoading: !bookmarks,
         fetchBookmarks
     }
 

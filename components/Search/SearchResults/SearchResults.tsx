@@ -20,13 +20,13 @@ interface ISearchResultProps {
     keyword: string;
 }
 
-export const fetcherInfinite = (baseUrl: string, url: string, page: number, keyword: string) => axios.get(
-    `${baseUrl}${url}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&include_adult=false`+
-    `&query=${keyword}`+
-    `&page=${page}`)
-.then((res) => {
-    return res.data.results
-})
+// export const fetcherInfinite = (baseUrl: string, url: string, page: number, keyword: string) => axios.get(
+//     `${baseUrl}${url}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&include_adult=false`+
+//     `&query=${keyword}`+
+//     `&page=${page}`)
+// .then((res) => {
+//     return res.data.results
+// })
 
 const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
     const [ pageNumber, setPageNumber ] = useState(1)
@@ -66,7 +66,7 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
     
     useEffect(() => {
         let bookmarkArr:any[] = [];
-        bookmark_data && bookmark_data.map((bookmark, i) => {
+        bookmark_data && bookmark_data.map((bookmark:any, i:any) => {
             const data = {
             id: bookmark.data().id,
             name: bookmark.data().name,

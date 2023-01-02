@@ -42,7 +42,9 @@ const Movie: NextPageWithLayout = (props:any) => {
   const data = movieData
   const recommendations = movieRecommendations;
 
-  const { bookmark_data, fetchBookmarks } = useBookmark();
+  const { bookmark_data, bookmarkLoading, fetchBookmarks } = useBookmark();
+
+  // console.log("detail: ", bookmark_data, bookmarkLoading)
 
   let recommendationsArr:any[] = [];
   
@@ -58,22 +60,23 @@ const Movie: NextPageWithLayout = (props:any) => {
 
   useEffect(() => {
     let bookmarkArr:any[] = [];
-    setIsBookmarked(bookmark_data.findIndex((movie) => movie.id === props.movie_id) !== -1)
-    bookmark_data && bookmark_data.map((bookmark, i) => {
-      const data = {
-        id: bookmark.data().id,
-        name: bookmark.data().name,
-        media_type: bookmark.data().media_type,
-        genre_ids: bookmark.data().genre_ids,
-        backdrop_path: bookmark.data().backdrop_path,
-        poster_path: bookmark.data().poster_path,
-      }
-      bookmarkArr.push(data)      
-    })
-    setDataBookmark(bookmarkArr) 
+    if (bookmark_data) {
+      setIsBookmarked(bookmark_data.findIndex((movie:any) => movie.id === props.movie_id) !== -1)
+      bookmark_data && bookmark_data.map((bookmark:any, i:any) => {
+        const data = {
+          id: bookmark.data().id,
+          name: bookmark.data().name,
+          media_type: bookmark.data().media_type,
+          genre_ids: bookmark.data().genre_ids,
+          backdrop_path: bookmark.data().backdrop_path,
+          poster_path: bookmark.data().poster_path,
+        }
+        bookmarkArr.push(data)      
+      })
+      setDataBookmark(bookmarkArr) 
+    }    
   }, [bookmark_data])
 
-    // console.log("detail: ", bookmark_data, dataBookmark)
     
     if (isError) return <div>Error occured while fetching movie details. Please try again.</div>
 
@@ -177,7 +180,6 @@ const Movie: NextPageWithLayout = (props:any) => {
                 data={recommendationsArr} 
                 user={user} 
                 maxItems={18} 
-                // bookmarkData={[...movieBookmarks, ...tvBookmarks]} 
                 bookmarkData={dataBookmark}
                 baseWidth={290}
                 target="r"
@@ -191,15 +193,17 @@ const Movie: NextPageWithLayout = (props:any) => {
                   <h1 className="ml-[50px] text-[20px]">My List</h1>
                   
                   {
-                    !dataBookmark ?
-                      <div className="flex items-center justify-start ml-[50px] mt-6 p-2">Loading</div>
-                    :                    
-                      dataBookmark.length > 0 ?
+                    bookmarkLoading ?
+                      <div className="flex items-center justify-start ml-[50px] mt-6 p-2">
+                        <ArrowPathIcon className="w-[30px] h-[30px] animate-spin mr-2" />
+                        <span>Loading</span>
+                      </div>
+                    :
+                    dataBookmark && dataBookmark.length > 0 ?
                         <Carousel 
                           data={ dataBookmark }
                           user={user} 
                           maxItems={ dataBookmark.length } 
-                          // bookmarkData={[...movieBookmarks, ...tvBookmarks]} 
                           bookmarkData={dataBookmark}
                           baseWidth={290}
                           target="m"
