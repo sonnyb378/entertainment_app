@@ -42,10 +42,12 @@ export interface IResult {
 
 const SearchResultItem: React.FC<{ 
     result: IResult,
-    bookmarkData:any[]|null
+    bookmarkData:any[]|null,
+    fetchHandler: () => void
 }> = ({ 
         result,
-        bookmarkData
+        bookmarkData,
+        fetchHandler
     }) => {
     const user = useAppSelector<IAuthState>(selectAuth);
 
@@ -60,7 +62,7 @@ const SearchResultItem: React.FC<{
             data-testid="thumbnail_container"            
         >
             <Thumbnail 
-                user={user} result={result} bookmarkData={bookmarkData}
+                user={user} result={result} bookmarkData={bookmarkData} fetchHandler={fetchHandler}
             />                                                 
         </li>
     )

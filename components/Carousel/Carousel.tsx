@@ -11,14 +11,16 @@ const Carousel: React.FC<{
     maxItems:number,
     bookmarkData?:any[] | null,
     baseWidth?:number,
-    target:string
+    target:string,
+    fetchHandler:()=>void
 }> = ({
     data, 
     user, 
     maxItems = 18, 
     bookmarkData = null,
     baseWidth = 290,
-    target
+    target,
+    fetchHandler
 }) => {
 
     const THUMBNAIL_BASEWIDTH = baseWidth;
@@ -149,7 +151,7 @@ const Carousel: React.FC<{
                                 <div  className={`flex items-start justify-center border-0 cursor-pointer h-[100%] w-[290px] p-[2px] ${target}_carousel_li`}
                                 key={i}
                                 >
-                                    <Thumbnail user={user} result={item} bookmarkData={bookmarkData} />                            
+                                    <Thumbnail user={user} result={item} bookmarkData={bookmarkData} fetchHandler={fetchHandler} />                            
                                 </div>
                             )
                             })

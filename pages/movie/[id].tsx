@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Main from "../../components/Layout/Main/Main";
 import { NextPageWithLayout } from "../page";
 import { useRouter } from "next/router";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { IAuthState } from "../../ts/states/auth_state";
 import { selectAuth } from "../../app/store/slices/auth";
 import { useMovieDetail } from "../../lib/hooks/useMovieDetail";
@@ -21,22 +21,28 @@ import { movieData, movieRecommendations } from "../../model/fake_detail";
 import { collection, onSnapshot, Unsubscribe } from "firebase/firestore";
 import { db } from "../../firebase";
 import Carousel from "../../components/Carousel/Carousel";
+import PreviousMap from "postcss/lib/previous-map";
+
+import { useBookmark } from "../../lib/hooks/useBookmark";
 
 const Movie: NextPageWithLayout = (props:any) => {
   const router = useRouter();
   const { setBookmark } = useAppContext()
   const user = useAppSelector<IAuthState>(selectAuth);
   const [isBookmarked, setIsBookmarked] = useState(false)
-  const [movieBookmarks, setMovieBookmarks] = useState<any>([])
-  const [tvBookmarks, setTVBookmarks] = useState<any>([])
+
   const [dataBookmark, setDataBookmark] = useState<any>([])
 
-  // const { data, recommendations, isLoading, isError } = useMovieDetail(props.movie_id);    
+  const dispatch = useAppDispatch() 
+
+  // const { data, recommendations, isLoading, isError } = useMovieDetail(props.movie_id); 
 
   const isLoading = false;
   const isError = undefined;
   const data = movieData
   const recommendations = movieRecommendations;
+
+  const { bookmark_data, fetchBookmarks } = useBookmark();
 
   let recommendationsArr:any[] = [];
   
@@ -48,35 +54,13 @@ const Movie: NextPageWithLayout = (props:any) => {
   })
 
   useEffect(() => {
-    let unsubscribeMovieBookmark: Unsubscribe;
-    let unsubscribeTVBookmark: Unsubscribe;
-
-    if (user && user.accessToken) {
-      unsubscribeMovieBookmark = onSnapshot(collection(db, 'bookmark', `${user.id}`, "movie"),
-        (snapshot) => { 
-          setMovieBookmarks(snapshot.docs);
-          setIsBookmarked(snapshot.docs.findIndex((movie) => movie.id === props.movie_id) !== -1)
-        }
-      )
-
-      unsubscribeTVBookmark = onSnapshot(collection(db, 'bookmark', `${user.id}`, "tv"),
-        (snapshot) => { 
-          setTVBookmarks(snapshot.docs);
-        }
-      )
-    }    
-
-    return () => {
-      unsubscribeMovieBookmark && unsubscribeMovieBookmark();
-      unsubscribeTVBookmark && unsubscribeTVBookmark();
-    }
-
+    fetchBookmarks();
   }, [])
-
 
   useEffect(() => {
     let bookmarkArr:any[] = [];
-    [...tvBookmarks, ...movieBookmarks].map((bookmark, i) => {
+    setIsBookmarked(bookmark_data.findIndex((movie) => movie.id === props.movie_id) !== -1)
+    bookmark_data && bookmark_data.map((bookmark, i) => {
       const data = {
         id: bookmark.data().id,
         name: bookmark.data().name,
@@ -87,11 +71,9 @@ const Movie: NextPageWithLayout = (props:any) => {
       }
       bookmarkArr.push(data)      
     })
-    setDataBookmark(bookmarkArr)
-  }, [tvBookmarks, movieBookmarks])
+    setDataBookmark(bookmarkArr) 
+  }, [bookmark_data])
 
-    // console.log("dataBookmark: ", dataBookmark)
-    // console.log("recommendationsArr: ", recommendationsArr)
     
     if (isError) return <div>Error occured while fetching movie details. Please try again.</div>
 
@@ -156,11 +138,11 @@ const Movie: NextPageWithLayout = (props:any) => {
                     {
                       !isBookmarked ? 
                         user && user.accessToken && <CustomBtn title="Add to List" Icon={PlusCircleIcon} onClickHandler={() => setBookmark(data, "movie", isBookmarked, (id) => {
-                          // console.log("detail PlusCircleIcon bookmark ", id)
+                          fetchBookmarks()
                         })} />
                       :
                         user && user.accessToken &&  <CustomBtn title="Remove from List" Icon={MinusCircleIcon} onClickHandler={() => setBookmark(data, "movie", isBookmarked, (id) => {
-                          // console.log("detail MinusCircleIcon bookmark ", id)
+                          fetchBookmarks()
                         })} />
                     }
                   </div>
@@ -195,9 +177,11 @@ const Movie: NextPageWithLayout = (props:any) => {
                 data={recommendationsArr} 
                 user={user} 
                 maxItems={18} 
-                bookmarkData={[...movieBookmarks, ...tvBookmarks]} 
+                // bookmarkData={[...movieBookmarks, ...tvBookmarks]} 
+                bookmarkData={dataBookmark}
                 baseWidth={290}
                 target="r"
+                fetchHandler={fetchBookmarks}
               />
 
             </section>
@@ -212,9 +196,11 @@ const Movie: NextPageWithLayout = (props:any) => {
                         data={ dataBookmark }
                         user={user} 
                         maxItems={ dataBookmark.length } 
-                        bookmarkData={[...movieBookmarks, ...tvBookmarks]} 
+                        // bookmarkData={[...movieBookmarks, ...tvBookmarks]} 
+                        bookmarkData={dataBookmark}
                         baseWidth={290}
                         target="m"
+                        fetchHandler={fetchBookmarks}
                       />
                     :
                       <div className="flex items-center justify-start ml-[50px] mt-6 p-2">No bookmarks found</div>

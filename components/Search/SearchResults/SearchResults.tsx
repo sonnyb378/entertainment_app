@@ -14,6 +14,7 @@ import { IAuthState } from "../../../ts/states/auth_state";
 import { selectAuth } from "../../../app/store/slices/auth";
 import { collection, onSnapshot, Unsubscribe } from "firebase/firestore";
 import { db } from "../../../firebase";
+import { useBookmark } from "../../../lib/hooks/useBookmark";
 
 interface ISearchResultProps {
     keyword: string;
@@ -30,12 +31,14 @@ export const fetcherInfinite = (baseUrl: string, url: string, page: number, keyw
 const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
     const [ pageNumber, setPageNumber ] = useState(1)
     const user = useAppSelector<IAuthState>(selectAuth);
-    const [movieBookmarks, setMovieBookmarks] = useState<any>([])
-    const [tvBookmarks, setTVBookmarks] = useState<any>([])
+    
+    const [dataBookmark, setDataBookmark] = useState<any>([])
 
     let search_results: IResult[];
 
     const { data } = useBlackAdam(keyword);
+
+    const { bookmark_data, fetchBookmarks } = useBookmark();
 
     // const PAGE_SIZE = 20;
     // const { data, error, size, setSize } = useSWRInfinite((index) => [
@@ -57,33 +60,30 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
     //     setSize(size + 1)
     // }
 
-    // if (isError) return  <div>Sorry an error occurred. Please try again...</div>
-
-
-    useEffect(() => {    
-        let unsubscribeMovieBookmark: Unsubscribe;
-        let unsubscribeTVBookmark: Unsubscribe;
-
-        if (user && user.accessToken) {
-            unsubscribeMovieBookmark = onSnapshot(collection(db, 'bookmark', `${user.id}`, "movie"),
-                (snapshot) => { 
-                    setMovieBookmarks(snapshot.docs);           
-                }
-        )
-
-            unsubscribeTVBookmark = onSnapshot(collection(db, 'bookmark', `${user.id}`, "tv"),
-                (snapshot) => { 
-                    setTVBookmarks(snapshot.docs);           
-                }
-            )
-        }
-
-        return () => {
-            unsubscribeMovieBookmark && unsubscribeMovieBookmark();
-            unsubscribeTVBookmark && unsubscribeTVBookmark();
-        }
+    useEffect(() => {
+        fetchBookmarks();
       }, [])
+    
+    useEffect(() => {
+        let bookmarkArr:any[] = [];
+        bookmark_data && bookmark_data.map((bookmark, i) => {
+            const data = {
+            id: bookmark.data().id,
+            name: bookmark.data().name,
+            media_type: bookmark.data().media_type,
+            genre_ids: bookmark.data().genre_ids,
+            backdrop_path: bookmark.data().backdrop_path,
+            poster_path: bookmark.data().poster_path,
+            }
+            bookmarkArr.push(data)      
+        })
+        setDataBookmark(bookmarkArr) 
+    }, [bookmark_data])
 
+
+    // console.log("SearchResults search_results: ", search_results)
+
+    // if (isError) return  <div>Sorry an error occurred. Please try again...</div>
 
     return (
         <div  className="flex flex-col items-start justify-center w-full p-5 relative" data-testid="search_results_container">
@@ -98,7 +98,8 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
                             <SearchResultItem 
                                 key={i} 
                                 result={result} 
-                                bookmarkData={[...movieBookmarks, ...tvBookmarks]}
+                                bookmarkData={dataBookmark}
+                                fetchHandler={fetchBookmarks}
                             /> 
                         )                       
                     })
@@ -112,7 +113,9 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
                         return (
                             <SearchResultItem 
                                 key={i} 
-                                result={result} 
+                                result={result}
+                                bookmarkData={dataBookmark}
+                                fetchHandler={fetchBookmarks}
                             />
                         )                       
                     })

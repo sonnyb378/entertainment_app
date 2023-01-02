@@ -12,7 +12,8 @@ const Video: React.FC<{
     expand?: boolean, 
     src: string,
     isBookmarked: boolean,
-}> = ({ result, user, expand = false, src, isBookmarked }) => {
+    fetchHandler: () => void
+}> = ({ result, user, expand = false, src, isBookmarked, fetchHandler }) => {
     const { setBookmark } = useAppContext();
     return (
         <div className="image-container relative w-full" data-testid="backdrop_image_container" 
@@ -24,7 +25,7 @@ const Video: React.FC<{
                 <div className="flex absolute top-0 right-0 items-center justify-end z-[1000] w-full p-2 space-x-2">
                     <div className={`p-2 ${isBookmarked ? "bg-btnprimary rounded-full  hover:bg-gray-500":"hover:bg-btnprimary hover:rounded-full" }  `}
                          onClick={ () => setBookmark(result, result.media_type, isBookmarked, (docID) => {
-                            // console.log("video: (bookmark):", docID)
+                            fetchHandler();
                         }) }
                         >
                         {

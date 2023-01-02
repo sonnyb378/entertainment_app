@@ -19,11 +19,13 @@ import Video from "./Video/Video";
 const Thumbnail:React.FC<{ 
     user: IAuthState, 
     result:IResult,
-    bookmarkData?:any[]|null
+    bookmarkData?:any[]|null,
+    fetchHandler: () => void
 }> = ({ 
         user, 
         result,
-        bookmarkData = null
+        bookmarkData = null,
+        fetchHandler
     }) => {
         
         const { 
@@ -44,6 +46,7 @@ const Thumbnail:React.FC<{
             }
         }, [bookmarkData])
 
+        // console.log("thumbnail: bookmarkData: ", bookmarkData)
 
     return (
         <div
@@ -64,7 +67,14 @@ const Thumbnail:React.FC<{
                         //      title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
 
                         result.media_type !== "person" &&
-                            expand ? <Video result={result} expand={expand} user={user} src="/train.mp4" isBookmarked={isBookmarked} />
+                            expand ? <Video 
+                                result={result} 
+                                expand={expand} 
+                                user={user} 
+                                src="/train.mp4" 
+                                isBookmarked={isBookmarked} 
+                                fetchHandler={fetchHandler}
+                            />
                         :
                             result.backdrop_path ? 
                                 <BackdropImage expand={expand} user={user} src={result.backdrop_path} media_type={result.media_type}  /> 
@@ -102,11 +112,11 @@ const Thumbnail:React.FC<{
                                     {
                                         !isBookmarked ?                                
                                             <PlusIcon className="w-[20px] h-[20px]" onClick={() => setBookmark(result, result.media_type, isBookmarked, (id:any) => {
-                                                // console.log("PlusIcon bookmarked: ", id)
+                                                fetchHandler()
                                             })}/>
                                         : 
                                             <CheckIcon className="w-[20px] h-[20px]" onClick={() => setBookmark(result, result.media_type, isBookmarked, (id:any) => {
-                                                // console.log("CheckIcon bookmarked: ", id)
+                                                fetchHandler();
                                             })}/>
                                     }
                                 </div>

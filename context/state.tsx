@@ -6,7 +6,7 @@ import { auth, db } from "../firebase";
 import { useAppSelector } from "../app/hooks";
 import { IAuthState } from "../ts/states/auth_state";
 import { selectAuth } from "../app/store/slices/auth";
-import { collection, addDoc, setDoc, doc, documentId, deleteDoc, FieldValue, arrayUnion } from "firebase/firestore"; 
+import { collection, addDoc, setDoc, doc, documentId, deleteDoc, FieldValue, arrayUnion, Unsubscribe } from "firebase/firestore"; 
 import { IResult } from "../components/Search/SearchResultItem/SearchResultItem";
 
 export interface ContextState {
@@ -22,7 +22,7 @@ const initialState = {
   isFullscreen: false,
   setBookmark: () => {},
   ctxOnEnterHandler: (e:React.MouseEvent<HTMLElement>, callback:() => void) => {},
-  ctxOnLeaveHandler: (e:React.MouseEvent<HTMLElement>, callback: (...args:any[]) => void) => {}
+  ctxOnLeaveHandler: (e:React.MouseEvent<HTMLElement>, callback: (...args:any[]) => void) => {},
 };
 
 const AppContext = createContext<ContextState>(initialState);
@@ -102,6 +102,7 @@ export const AppContextWrapper: React.FC<{ children: React.ReactNode }> = ({ chi
         callback(timer)
     }   
   }
+
 
   const ctx = {
     setIsFullscreen,

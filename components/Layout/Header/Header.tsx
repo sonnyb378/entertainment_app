@@ -25,8 +25,6 @@ const Header: React.FC<IHeader> = ({ children }) => {
     const router = useRouter();
     const dispatch = useAppDispatch();
 
-   
-
     useEffect(() => {
         window.addEventListener("scroll", () => {
            setYValue(window.scrollY);            

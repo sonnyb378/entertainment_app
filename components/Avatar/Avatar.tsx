@@ -7,9 +7,10 @@ import styles from "./Avatar.module.css";
 
 import { auth } from "../../firebase";
 import { signOut } from "firebase/auth";
-import { useAppDispatch } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { setAuthData } from "../../app/store/slices/auth";
 import { setCurrentUrl } from "../../app/store/slices/url";
+
 
 import { useRouter } from "next/router"
 
@@ -20,8 +21,7 @@ export interface IAvatar {
 const Avatar: React.FC<IAvatar> = ({ userInitial }) => {
     const router = useRouter();
     const [show, setShow] = useState(false)
-    const dispatch = useAppDispatch()    
-    
+    const dispatch = useAppDispatch()        
 
     useEffect(() => {
         window.addEventListener("resize", () => {
@@ -33,6 +33,7 @@ const Avatar: React.FC<IAvatar> = ({ userInitial }) => {
 
     const logoutHandler = () => {
         signOut(auth);
+
         dispatch(setAuthData({
             id: null,
             accessToken: null,

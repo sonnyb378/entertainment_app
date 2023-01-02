@@ -126,6 +126,7 @@ const Search: React.FC = () => {
                 type="text" 
                 placeholder="Name, Cast, Company" 
                 data-testid="search_input" 
+                autoComplete="off"
                 required 
             />
   
