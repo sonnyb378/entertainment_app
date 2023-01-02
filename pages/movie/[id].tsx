@@ -18,7 +18,7 @@ import { PlayCircleIcon, PlusCircleIcon, MinusCircleIcon } from "@heroicons/reac
 import Thumbnail from "../../components/Thumbnail/Thumbnail";
 
 import { movieData, movieRecommendations } from "../../model/fake_detail";
-import { collection, onSnapshot, Unsubscribe } from "firebase/firestore";
+import { collection, DocumentData, onSnapshot, QuerySnapshot, Unsubscribe } from "firebase/firestore";
 import { db } from "../../firebase";
 import Carousel from "../../components/Carousel/Carousel";
 import PreviousMap from "postcss/lib/previous-map";
@@ -46,7 +46,6 @@ const Movie: NextPageWithLayout = (props:any) => {
 
   let recommendationsArr:any[] = [];
   
-
   let timer: NodeJS.Timer;
 
   recommendations && recommendations.results && recommendations.results.slice(0,18).map((item) => {
@@ -74,6 +73,7 @@ const Movie: NextPageWithLayout = (props:any) => {
     setDataBookmark(bookmarkArr) 
   }, [bookmark_data])
 
+    // console.log("detail: ", bookmark_data, dataBookmark)
     
     if (isError) return <div>Error occured while fetching movie details. Please try again.</div>
 
@@ -191,19 +191,23 @@ const Movie: NextPageWithLayout = (props:any) => {
                   <h1 className="ml-[50px] text-[20px]">My List</h1>
                   
                   {
-                    dataBookmark && dataBookmark.length > 0 ?
-                      <Carousel 
-                        data={ dataBookmark }
-                        user={user} 
-                        maxItems={ dataBookmark.length } 
-                        // bookmarkData={[...movieBookmarks, ...tvBookmarks]} 
-                        bookmarkData={dataBookmark}
-                        baseWidth={290}
-                        target="m"
-                        fetchHandler={fetchBookmarks}
-                      />
-                    :
-                      <div className="flex items-center justify-start ml-[50px] mt-6 p-2">No bookmarks found</div>
+                    !dataBookmark ?
+                      <div className="flex items-center justify-start ml-[50px] mt-6 p-2">Loading</div>
+                    :                    
+                      dataBookmark.length > 0 ?
+                        <Carousel 
+                          data={ dataBookmark }
+                          user={user} 
+                          maxItems={ dataBookmark.length } 
+                          // bookmarkData={[...movieBookmarks, ...tvBookmarks]} 
+                          bookmarkData={dataBookmark}
+                          baseWidth={290}
+                          target="m"
+                          fetchHandler={fetchBookmarks}
+                        />
+                      :
+                        <div className="flex items-center justify-start ml-[50px] mt-6 p-2">No bookmarks found</div>
+                        
 
                   }
                   

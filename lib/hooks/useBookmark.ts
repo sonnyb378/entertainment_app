@@ -20,17 +20,9 @@ export const useBookmark = () => {
         const docRefTV = collection(db, "bookmark", `${user.id}`, "tv");
         const docSnapTV = await getDocs(docRefTV);
 
-        if (!docSnapMovie.empty) {
-            movieList.push(...docSnapMovie.docs);
-        } else {
-            // console.log("movie No such document!");
-        }
+        if (!docSnapMovie.empty) movieList.push(...docSnapMovie.docs);
     
-        if (!docSnapTV.empty) {
-            tvList.push(...docSnapTV.docs);
-        } else {
-            // console.log("tv: No such document!");
-        }
+        if (!docSnapTV.empty) tvList.push(...docSnapTV.docs);
 
         setBookmarks([...movieList, ...tvList])
 
