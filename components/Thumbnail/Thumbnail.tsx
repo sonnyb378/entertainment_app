@@ -126,6 +126,7 @@ const Thumbnail:React.FC<{
                                 hover:text-btnhighlight hover:border-btnhighlight">
                                 <ChevronDownIcon className="w-[20px] h-[20px]" onClick={() => {
                                     router.push(`/${ result.media_type }/${ result.id}`)
+                                    // console.log(`redirect to: /${ result.media_type }/${ result.id}`)
                                 }} />
                             </div>
                         </div>               

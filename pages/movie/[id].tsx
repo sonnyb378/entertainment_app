@@ -29,8 +29,8 @@ const Movie: NextPageWithLayout = (props:any) => {
   const router = useRouter();
   const { setBookmark } = useAppContext()
   const user = useAppSelector<IAuthState>(selectAuth);
+  
   const [isBookmarked, setIsBookmarked] = useState(false)
-
   const [dataBookmark, setDataBookmark] = useState<any>([])
 
   const dispatch = useAppDispatch() 
@@ -42,46 +42,50 @@ const Movie: NextPageWithLayout = (props:any) => {
   const data = movieData
   const recommendations = movieRecommendations;
 
-  const { bookmark_data, bookmarkLoading, fetchBookmarks } = useBookmark();
+  // const { bookmark_data, bookmarkLoading, fetchBookmarks } = useBookmark();
 
   // console.log("detail: ", bookmark_data, bookmarkLoading)
 
-  let recommendationsArr:any[] = [];
-  
   let timer: NodeJS.Timer;
 
+  let recommendationsArr:any[] = [];
+  
   recommendations && recommendations.results && recommendations.results.slice(0,18).map((item) => {
     recommendationsArr.push(item)
   })
 
-  useEffect(() => {
-    fetchBookmarks();
-  }, [])
+  const fetchBookmarks = () => {
+    console.log("fake fetchBookmarks")
+  }
 
-  useEffect(() => {
-    let bookmarkArr:any[] = [];
-    if (bookmark_data) {
-      setIsBookmarked(bookmark_data.findIndex((movie:any) => movie.id === props.movie_id) !== -1)
-      bookmark_data && bookmark_data.map((bookmark:any, i:any) => {
-        const data = {
-          id: bookmark.data().id,
-          name: bookmark.data().name,
-          media_type: bookmark.data().media_type,
-          genre_ids: bookmark.data().genre_ids,
-          backdrop_path: bookmark.data().backdrop_path,
-          poster_path: bookmark.data().poster_path,
-        }
-        bookmarkArr.push(data)      
-      })
-      setDataBookmark(bookmarkArr) 
-    }    
-  }, [bookmark_data])
+  // useEffect(() => {
+  //   fetchBookmarks();
+  // }, [])
+
+  // useEffect(() => {
+  //   let bookmarkArr:any[] = [];
+  //   if (bookmark_data) {
+  //     setIsBookmarked(bookmark_data.findIndex((movie:any) => movie.id === props.movie_id) !== -1)
+  //     bookmark_data && bookmark_data.map((bookmark:any, i:any) => {
+  //       const data = {
+  //         id: bookmark.data().id,
+  //         name: bookmark.data().name,
+  //         media_type: bookmark.data().media_type,
+  //         genre_ids: bookmark.data().genre_ids,
+  //         backdrop_path: bookmark.data().backdrop_path,
+  //         poster_path: bookmark.data().poster_path,
+  //       }
+  //       bookmarkArr.push(data)      
+  //     })
+  //     setDataBookmark(bookmarkArr) 
+  //   }    
+  // }, [bookmark_data])
 
     
-    if (isError) return <div>Error occured while fetching movie details. Please try again.</div>
+    // if (isError) return <div>Error occured while fetching movie details. Please try again.</div>
 
     return (
-      <div className="flex flex-col items-start justify-center w-full overflow-hidden pb-[100px]" data-testid="movie_container">
+      <div className="flex flex-col items-start justify-center w-full overflow-hidden pb-[100px] -mt-[4px]" data-testid="movie_container">
         {
             isLoading && <div className="flex items-center justify-start w-full">
                 <ArrowPathIcon className="w-[30px] h-[30px] animate-spin mr-2" />
@@ -89,7 +93,8 @@ const Movie: NextPageWithLayout = (props:any) => {
             </div>
         }
         {
-          !isLoading && data && <section className="flex flex-col items-start justify-center w-full p-0">
+          !isLoading && data && 
+          <section className="flex flex-col items-start justify-center w-full p-0">
             
             <section className={`flex flex-1 flex-col items-start justify-center w-full border-0 relative h-[100%]
                 sm:border-red-500
@@ -188,34 +193,34 @@ const Movie: NextPageWithLayout = (props:any) => {
 
             </section>
             {
-              user && user.accessToken &&
-                <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]">
-                  <h1 className="ml-[50px] text-[20px]">My List</h1>
+              // user && user.accessToken &&
+              //   <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]">
+              //     <h1 className="ml-[50px] text-[20px]">My List</h1>
                   
-                  {
-                    bookmarkLoading ?
-                      <div className="flex items-center justify-start ml-[50px] mt-6 p-2">
-                        <ArrowPathIcon className="w-[30px] h-[30px] animate-spin mr-2" />
-                        <span>Loading</span>
-                      </div>
-                    :
-                    dataBookmark && dataBookmark.length > 0 ?
-                        <Carousel 
-                          data={ dataBookmark }
-                          user={user} 
-                          maxItems={ dataBookmark.length } 
-                          bookmarkData={dataBookmark}
-                          baseWidth={290}
-                          target="m"
-                          fetchHandler={fetchBookmarks}
-                        />
-                      :
-                        <div className="flex items-center justify-start ml-[50px] mt-6 p-2">No bookmarks found</div>
+              //     {
+              //       bookmarkLoading ?
+              //         <div className="flex items-center justify-start ml-[50px] mt-6 p-2">
+              //           <ArrowPathIcon className="w-[30px] h-[30px] animate-spin mr-2" />
+              //           <span>Loading</span>
+              //         </div>
+              //       :
+              //       dataBookmark && dataBookmark.length > 0 ?
+              //           <Carousel 
+              //             data={ dataBookmark }
+              //             user={user} 
+              //             maxItems={ dataBookmark.length } 
+              //             bookmarkData={dataBookmark}
+              //             baseWidth={290}
+              //             target="m"
+              //             fetchHandler={fetchBookmarks}
+              //           />
+              //         :
+              //           <div className="flex items-center justify-start ml-[50px] mt-6 p-2">No bookmarks found</div>
                         
 
-                  }
+              //     }
                   
-                </section>
+              //   </section>
             }
             
             

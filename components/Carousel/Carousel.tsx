@@ -1,5 +1,5 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IAuthState } from "../../ts/states/auth_state";
 import Thumbnail from "../Thumbnail/Thumbnail";
 import styles from "./Carousel.module.css"
@@ -12,6 +12,7 @@ const Carousel: React.FC<{
     bookmarkData?:any[] | null,
     baseWidth?:number,
     target:string,
+    isThumbnail?: boolean,
     fetchHandler:()=>void
 }> = ({
     data, 
@@ -20,6 +21,7 @@ const Carousel: React.FC<{
     bookmarkData = null,
     baseWidth = 290,
     target,
+    isThumbnail = true,
     fetchHandler
 }) => {
 
@@ -30,6 +32,16 @@ const Carousel: React.FC<{
     const [translateWidth, setTranslateWidth] = useState(0)
     const [currentIndex, setCurrentIndex] = useState(0)
     const [maxIndex, setMaxIndex] = useState(3)
+
+    const isMounted = useRef(false)
+
+    useEffect(() => {
+        isMounted.current = true;
+
+        return () => {
+            isMounted.current = false;
+        };
+    }, [])
 
     const resize_ob = new ResizeObserver(function(entries) {
         let rect = entries[0].contentRect;  
@@ -59,7 +71,6 @@ const Carousel: React.FC<{
             }
         }
 
-
         if (currentIndex >= maxIndex) {
             const newIndex = maxIndex - 1
             setCurrentIndex(newIndex < 0 ? 0 : maxIndex - 1)
@@ -69,7 +80,6 @@ const Carousel: React.FC<{
         setTranslateWidth(newTrackWidth)
         setMaxIndex(Math.ceil(MAX_ITEMS / visibleThumbnail))
 
-    //    console.log(visibleItem * maxIndex)
     });    
 
     if (typeof window !== 'undefined' && typeof document !== 'undefined') {
@@ -99,9 +109,7 @@ const Carousel: React.FC<{
             setVisibleItem(visibleThumbnail);
             setTranslateWidth(newTrackWidth)
             setMaxIndex(Math.ceil(MAX_ITEMS / visibleThumbnail))
-
-        }
-    
+        }    
     },[])
 
     const prevHandler = () => {
@@ -151,7 +159,12 @@ const Carousel: React.FC<{
                                 <div  className={`flex items-start justify-center border-0 cursor-pointer h-[100%] w-[290px] p-[2px] ${target}_carousel_li`}
                                 key={i}
                                 >
-                                    <Thumbnail user={user} result={item} bookmarkData={bookmarkData} fetchHandler={fetchHandler} />                            
+                                    {
+                                        isThumbnail ? 
+                                            <Thumbnail user={user} result={item} bookmarkData={bookmarkData} fetchHandler={fetchHandler} />                            
+                                        :
+                                            <div>poster card</div>
+                                    }
                                 </div>
                             )
                             })

@@ -20,7 +20,7 @@ export const useMovieDetail = (movie_id: string) => {
     // const recommendation = recommendations && { recommendations: recommendations }
     
     return {
-        data: cast ? { ...data,  ...casts } : data,
+        movie_detail: cast ? { ...data,  ...casts } : data,
         recommendations: recommendations && recommendations,
         isLoading: !error && !data,
         isError: error || castError || recommendationsError
