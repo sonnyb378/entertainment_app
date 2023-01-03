@@ -73,12 +73,14 @@ const Carousel: React.FC<{
 
         if (currentIndex >= maxIndex) {
             const newIndex = maxIndex - 1
-            setCurrentIndex(newIndex < 0 ? 0 : maxIndex - 1)
+            isMounted.current && setCurrentIndex(newIndex < 0 ? 0 : maxIndex - 1)
         }
 
-        setVisibleItem(visibleThumbnail);
-        setTranslateWidth(newTrackWidth)
-        setMaxIndex(Math.ceil(MAX_ITEMS / visibleThumbnail))
+        if (isMounted.current) {
+            setVisibleItem(visibleThumbnail);
+            setTranslateWidth(newTrackWidth)
+            setMaxIndex(Math.ceil(MAX_ITEMS / visibleThumbnail))
+        }
 
     });    
 
