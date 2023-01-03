@@ -1,11 +1,7 @@
 import { IAuthState } from "../../ts/states/auth_state";
 import { IResult } from "../Search/SearchResultItem/SearchResultItem";
-import BackdropImage from "./BackdropImage/BackdropImage";
-import PosterImage from "./PosterImage/PosterImage";
 import Image from "next/image"
 import no_result from "../../assets/no_result.png"
-import MediaTypeShow from "./MediaType/Show";
-import MediaTypePerson from "./MediaType/Person";
 
 import { PlusIcon, PlayIcon, MinusIcon, CheckIcon } from "@heroicons/react/24/solid";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
@@ -13,15 +9,34 @@ import { useEffect, useState } from "react";
 
 import { useAppContext } from "../../context/state";
 import { useRouter } from "next/router";
-import Video from "./Video/Video";
+import Video from "../Thumbnail/Video/Video";
+import BackdropImage from "../Thumbnail/BackdropImage/BackdropImage";
+import PosterImage from "../Thumbnail/PosterImage/PosterImage";
+import MediaTypeShow from "../Thumbnail/MediaType/Show";
+import MediaTypePerson from "../Thumbnail/MediaType/Person";
 
 
-const Thumbnail:React.FC<{ 
+import num_1 from "../../assets/num_1.png"
+import num_2 from "../../assets/num_2.png"
+import num_3 from "../../assets/num_3.png"
+import num_4 from "../../assets/num_4.png"
+import num_5 from "../../assets/num_5.png"
+import num_6 from "../../assets/num_6.png"
+import num_7 from "../../assets/num_7.png"
+import num_8 from "../../assets/num_8.png"
+import num_9 from "../../assets/num_9.png"
+import num_10 from "../../assets/num_10.png"
+
+const PopularCard:React.FC<{ 
+    visibleItems: number,
+    indexCount: number,
     user: IAuthState, 
     result:IResult,
     bookmarkData?:any[]|null,
     fetchHandler: () => void
 }> = ({ 
+        visibleItems,
+        indexCount,
         user, 
         result,
         bookmarkData = null,
@@ -46,7 +61,24 @@ const Thumbnail:React.FC<{
             }
         }, [bookmarkData])
 
+        let number_image;
+
+        switch(indexCount + 1) {
+            case 1: number_image = num_1; break;
+            case 2: number_image = num_2; break;
+            case 3: number_image = num_3; break;
+            case 4: number_image = num_4; break;
+            case 5: number_image = num_5; break;
+            case 6: number_image = num_6; break;
+            case 7: number_image = num_7; break;
+            case 8: number_image = num_8; break;
+            case 9: number_image = num_9; break;
+            case 10: number_image = num_10; break;
+            default: number_image = num_1; break;
+        }
         // console.log("thumbnail: bookmarkData: ", bookmarkData)
+
+    const borderSize = 0;
 
     return (
         <div
@@ -55,9 +87,9 @@ const Thumbnail:React.FC<{
             data-testid="thumbnail"
             >
                 
-                <div id={`expand_${result.id}`} className={`${ expand ? "flex opacity-100 z-[3000]" : "flex opacity-0 z-[1000] scale-[80%]"} 
+                <div id={`expand_${result.id}`} className={`${ expand ? "flex opacity-100 z-[5000] mr-[10px]" : "flex opacity-0 z-[1000] scale-[80%]"} 
                     flex-col overflow-hidden absolute items-center justify-start w-[120%] h-auto bg-black shadow-xl rounded-md border-2 
-                    duration-200 transition-all -mt-[50px] border-btnprimary`}
+                    duration-200 transition-all -mt-[50px] border-btnprimary ml-[12px] `}
                     onMouseLeave={(e:React.MouseEvent<HTMLElement>) => onLeaveHandler!(e, () => {
                         setExpand(false)
                     })}
@@ -141,37 +173,87 @@ const Thumbnail:React.FC<{
                 
                 <div
                     id={`collapsed_${result.id}`}
-                    onMouseEnter={() => setIsHover(true)}
                     onMouseOver={ (e:React.MouseEvent<HTMLElement>) => onEnterHandler!(e, () => {
                         setExpand(true)
                     })}
                     onMouseLeave={(e:React.MouseEvent<HTMLElement>) => onLeaveHandler!(e, (timer:NodeJS.Timer) => {
                         if (timer) clearTimeout(timer)
-                        setIsHover(false)
                     })}  
-                    className={`flex ${ expand && "scale-[120%]" } flex-col items-center justify-start z-[2000] w-full relative duration-200 transition-all border-0 rounded-md overflow-hidden`}>
-                    <span className={`${isHover ? "flex" : "hidden"} z-[2000] items-center justify-center absolute top-2 left-2 px-2 text-[10px] bg-black`}>
-                        Keep hovering to autoplay
-                    </span>
+                    className={`flex ${ expand && "scale-[120%] opacity-0" } flex-col items-center justify-start relative duration-200 transition-all 
+                        border-${borderSize} overflow-hidden w-[98%] 
+                        sm:border-red-500 
+                        md:border-blue-500 
+                        lg:border-green-500 
+                        xl:border-purple-500
+                        2xl:border-orange-500
+                    `}
+                >
+
                     {
-                        result.backdrop_path ? <BackdropImage expand={expand} user={user} src={result.backdrop_path} media_type={result.media_type} /> : 
-                        result.poster_path ? <PosterImage expand={expand} user={user} src={result.poster_path} media_type={result.media_type} /> :                                     
-                        <div className="image-container relative w-full border-0" data-testid="backdrop_image_container">
-                            <Image 
-                                src={ no_result } 
-                                layout="fill"
-                                priority={true}
-                                className={`object-contain cursor-pointer !relative !h-[unset] z-[1000]`}
-                            />                    
-                        </div>                                                  
+                        result.poster_path ? 
+                            <div className="flex items-center justify-center w-full h-[100%] relative border-0 border-green-500">
+                                <div className={`image-container relative h-[100%] -mb-[0px] border-${borderSize} border-orange-500 z-[1103]
+                                        ${
+                                            visibleItems > 1 ?
+                                                indexCount+1 !== 10 ? 
+                                                    "w-[80%] left-[30px] "+
+                                                    "sm:w-[80%] sm:left-[40px] "+
+                                                    "md:w-[90%] md:left-[35px]"
+                                                : 
+                                                    "w-[80%] left-[10px] "+
+                                                    ""
+                                                
+                                            :
+                                                indexCount+1 !== 10 ? "w-[90%] left-[50px]" : "w-[90%] left-[20px]"
+                                        }
+                                    `}>
+                                        
+                                        <Image 
+                                            src={number_image}
+                                            layout="fill"
+                                            priority={true}
+                                            className={`z-[1001] !relative !h-[unset] object-cover`}
+                                        />
+                                        
+                                </div>
+                                <div className={`image-container relative h-[100%] w-[70%] border-${borderSize} border-gray-500 rounded-sm overflow-hidden 
+                                    z-[1101] 
+                                    ${
+                                        visibleItems > 1 ?
+                                            indexCount+1 !== 10 ? 
+                                                "right-[20px] "+
+                                                "sm:right-[40px] "+
+                                                "md:right-[30px]" 
+                                            : 
+                                                "right-[20px] "+
+                                                ""
+                                        :
+                                            indexCount+1 !== 10 ? "right-[50px]" : "right-[50px]"
+                                    }   
+                                `}>
+                                    <Image 
+                                        src={`${process.env.NEXT_PUBLIC_TMDB_IMAGE_PATH}${result.poster_path}`}
+                                        layout="fill"
+                                        className={`object-contain cursor-pointer !relative !h-[unset]`}
+                                    />
+                                </div>
+                            </div>
+                            
+                        :                                     
+                            <div className="image-container relative w-full border-0" data-testid="backdrop_image_container">
+                                <Image 
+                                    src={ no_result } 
+                                    layout="fill"
+                                    priority={true}
+                                    className={`object-contain cursor-pointer !relative !h-[unset] z-[1000]`}
+                                />                    
+                            </div>                                                  
                     }
-                    {
-                        result.media_type !== "person" ? <MediaTypeShow result={result} /> : <MediaTypePerson result={result} />
-                    }
+                    
                 </div>
                 
         </div>   
     )
 }
 
-export default Thumbnail;
+export default PopularCard;

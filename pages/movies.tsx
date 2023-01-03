@@ -194,9 +194,9 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
               <h1 className="ml-[50px] text-[20px]">Popular</h1>
 
               <Carousel 
-                data={recommendationsArr} 
+                data={recommendationsArr.slice(0,10)} 
                 user={user} 
-                maxItems={18} 
+                maxItems={10} 
                 bookmarkData={dataBookmark}
                 baseWidth={290}
                 target="p"
@@ -207,7 +207,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
             </section>
 
 
-            <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]">
+            <section className="flex flex-col px-[0px] z-[1000] border-0 w-full relative mt-[50px]">
               <h1 className="ml-[50px] text-[20px]">Recommended Movies</h1>
 
               <Carousel 

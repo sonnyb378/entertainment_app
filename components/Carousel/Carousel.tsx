@@ -1,6 +1,7 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { useEffect, useRef, useState } from "react";
 import { IAuthState } from "../../ts/states/auth_state";
+import PopularCard from "../PopularCard/PopularCard";
 import Thumbnail from "../Thumbnail/Thumbnail";
 import styles from "./Carousel.module.css"
 
@@ -124,7 +125,6 @@ const Carousel: React.FC<{
         setCurrentIndex(currentIndex + 1)
     }
 
-    // console.log("carousel: ", data, currentIndex, visibleItem * maxIndex, visibleItem, maxIndex, MAX_ITEMS)
 
     return(
         <div className="flex flex-col  border-0 w-full relative">
@@ -165,7 +165,7 @@ const Carousel: React.FC<{
                                         isThumbnail ? 
                                             <Thumbnail user={user} result={item} bookmarkData={bookmarkData} fetchHandler={fetchHandler} />                            
                                         :
-                                            <div>poster card</div>
+                                            <PopularCard visibleItems={visibleItem} indexCount={i} user={user} result={item} bookmarkData={bookmarkData} fetchHandler={fetchHandler} /> 
                                     }
                                 </div>
                             )
