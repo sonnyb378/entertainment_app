@@ -27,6 +27,7 @@ import { fake_trending, fake_featured } from "../model/fake_trending";
 import { useMovieDetail } from "../lib/hooks/useMovieDetail";
 import { movieRecommendations } from "../model/fake_detail";
 import { useAppContext } from "../context/state";
+import { fake_popular } from "../model/fake_popular";
 
 
 const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
@@ -38,12 +39,13 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
     const router = useRouter();
     const dispatch = useAppDispatch();
 
-    // const { trending, featured_id } = data;
+    // const { trending, featured_id, popular } = data;
 
     const featured_id = "555604"
     const trending = fake_trending;
     const featured = fake_featured;
     const recommendations = movieRecommendations;
+    const popular = fake_popular;
 
     // const { movie_detail: featured, recommendations, isLoading, isError } = useMovieDetail(`${featured_id}`); 
 
@@ -194,7 +196,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
               <h1 className="ml-[50px] text-[20px]">Popular</h1>
 
               <Carousel 
-                data={recommendationsArr.slice(0,10)} 
+                data={popular.slice(0,10)} 
                 user={user} 
                 maxItems={10} 
                 bookmarkData={dataBookmark}
@@ -295,12 +297,13 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
 
   // export const getServerSideProps: GetServerSideProps = async (context:any) => {
     
-  //   const [reqTrending] = await Promise.all([
+  //   const [reqTrending, reqPopular] = await Promise.all([
   //     await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}trending/movie/day?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}`).then(res => res.data)   
+  //     await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}movie/popular?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&region=US&page=1`).then(res => res.data)   
   //   ])
 
-  //   const [resTrending] = await Promise.all([
-  //     reqTrending
+  //   const [resTrending, resPopular] = await Promise.all([
+  //     reqTrending, reqPopular
   //   ])
 
   //   // console.log("resTrending[getRandom(resTrending.length-1)]: ", resTrending.results[getRandom(resTrending.results.length-1)])
@@ -310,7 +313,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
   //       data: {
   //         trending: resTrending ? [].concat(...resTrending.results) : [],
   //         featured_id: resTrending && resTrending.results[getRandom(resTrending.results.length-1)].id,
-  //         popular: []
+  //         popular: resPopular ? [].concat(...resPopular.results) : [],
   //       }
   //     },
   //     // revalidate: 10,

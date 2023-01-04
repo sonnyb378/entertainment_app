@@ -216,7 +216,7 @@ const PopularCard:React.FC<{
                                         />
                                         
                                 </div>
-                                <div className={`image-container relative h-[100%] w-[70%] border-${borderSize} border-gray-500 rounded-sm overflow-hidden 
+                                <div className={`image-container relative h-[100%] w-[70%] border border-btnprimary rounded-sm overflow-hidden 
                                     z-[1101] 
                                     ${
                                         visibleItems > 1 ?
