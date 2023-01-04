@@ -51,7 +51,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
 
   let recommendationsArr:any[] = [];
   
-  recommendations && recommendations.results && recommendations.results.slice(0,18).map((item) => {
+  recommendations && recommendations.results && recommendations.results.slice(0,20).map((item) => {
     recommendationsArr.push(item)
   })
 
@@ -181,7 +181,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
               <Carousel 
                 data={trending} 
                 user={user} 
-                maxItems={18} 
+                maxItems={trending.length} 
                 bookmarkData={dataBookmark}
                 baseWidth={290}
                 target="t"
@@ -213,7 +213,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
               <Carousel 
                 data={recommendationsArr} 
                 user={user} 
-                maxItems={18} 
+                maxItems={recommendationsArr.length} 
                 bookmarkData={dataBookmark}
                 baseWidth={290}
                 target="r"

@@ -180,7 +180,7 @@ const PopularCard:React.FC<{
                         if (timer) clearTimeout(timer)
                     })}  
                     className={`flex ${ expand && "scale-[120%] opacity-0" } flex-col items-center justify-start relative duration-200 transition-all 
-                        border-${borderSize} overflow-hidden w-[98%] 
+                        border-${borderSize} overflow-hidden w-[100%] 
                         sm:border-red-500 
                         md:border-blue-500 
                         lg:border-green-500 
@@ -198,7 +198,7 @@ const PopularCard:React.FC<{
                                                 indexCount+1 !== 10 ? 
                                                     "w-[80%] left-[30px] "+
                                                     "sm:w-[80%] sm:left-[40px] "+
-                                                    "md:w-[90%] md:left-[35px]"
+                                                    "md:w-[80%] md:left-[35px]"
                                                 : 
                                                     "w-[80%] left-[10px] "+
                                                     ""
