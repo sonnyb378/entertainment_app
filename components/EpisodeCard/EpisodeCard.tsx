@@ -2,6 +2,7 @@ import styles from "./EpisodeCard.module.css"
 import Image from "next/image"
 import { PlayCircleIcon } from "@heroicons/react/24/solid"
 import Info from "../Info/Info"
+import no_result from "../../assets/no_result.png"
 
 export interface IEpisodeCard {
     data:any
@@ -15,18 +16,21 @@ const EpisodeCard:React.FC<IEpisodeCard> = ({ data }) => {
         ">
             <div id="episode_overlay" className="flex items-center justify-center absolute w-full h-[100%] bg-white top-0 left-0 rounded-[5px] opacity-0 bg-opacity-0 z-[1000]
                 hover:opacity-100 hover:bg-opacity-10">
-                <PlayCircleIcon className="w-[80px] h-[80px] bg-btnprimary rounded-full p-0 m-0" />
+                <PlayCircleIcon className="w-[80px] h-[80px] bg-btnprimary rounded-full p-0 m-0 drop-shadow-md" />
             </div>
 
-            <div className="image-container relative flex mr-[10px] w-[300px] h-[169px] border-0">
-                <Image 
-                    src={`${process.env.NEXT_PUBLIC_TMDB_IMAGE_PATH}${data.still_path}`}
-                    layout="responsive"
-                    priority={true}  
-                    width={300}
-                    height={169}  
-                    className="object-cover !position !h-[unset]"
-                />
+            <div className="image-container relative mr-[10px] w-[300px] h-[169px] border-0">
+                {
+                    <Image 
+                        src={ data && data.still_path ?  `${ process.env.NEXT_PUBLIC_TMDB_IMAGE_PATH }${data.still_path}` : no_result}
+                        layout="responsive"
+                        priority={true}  
+                        width={300}
+                        height={169}  
+                        className="object-cover !position !h-[unset]"
+                    />  
+                }
+                
             </div>
             <div className="flex flex-col items-start justify-center w-full">
                 <h1 className="text-lg text-[#61A5C3]">S.{data.season_number}-Ep. { data.episode_number} : { data.name } </h1>

@@ -24,35 +24,40 @@ import Carousel from "../../components/Carousel/Carousel";
 import PreviousMap from "postcss/lib/previous-map";
 
 import { useBookmark } from "../../lib/hooks/useBookmark";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetStaticProps } from "next";
 import axios from "axios";
 import { fake_tv_episodes } from "../../model/fake_tv_episodes";
 import EpisodeCard from "../../components/EpisodeCard/EpisodeCard";
+import SelectSeason from "../../components/SelectSeason/SelectSeason";
 
 const TV: NextPageWithLayout = (props:any) => {
   const router = useRouter();
   const { setBookmark } = useAppContext()
   const user = useAppSelector<IAuthState>(selectAuth);
   
+
   const [isBookmarked, setIsBookmarked] = useState(false)
   const [dataBookmark, setDataBookmark] = useState<any>([])
+  const [isEpisodesLoading, setIsEpisodesLoading] = useState(false)
+  const [episodes, setEpisodes] = useState(props.episodes ? props.episodes : fake_tv_episodes)
 
   const dispatch = useAppDispatch() 
 
+  // const [ fakeFetch, setFakeFetch ] = useState(false)
+
   // const { data, recommendations, isLoading, isError } = useTVDetail(props.tv_id); 
-  // const season_one = props.episodes
+  // const episodes = props.episodes
 
   const isLoading = false;
   const isError = undefined;
   const data = tvData
   const recommendations = tvRecommendations;
-  const episodes = fake_tv_episodes;
+  // const episodes = fake_tv_episodes;
 
   // const { bookmark_data, bookmarkLoading, fetchBookmarks } = useBookmark();
 
   // console.log("detail: ", bookmark_data, bookmarkLoading)
 
-  console.log("season index: ", episodes)
 
   let timer: NodeJS.Timer;
 
@@ -62,9 +67,21 @@ const TV: NextPageWithLayout = (props:any) => {
     recommendationsArr.push(item)
   })
 
+  const fetchSeasonEpisodes = async (season_number: string, callback: (season_number:string) => void) => {
+    setIsEpisodesLoading(true)
+    callback(season_number)
+
+    const episodes = await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}tv/${props.tv_id}/season/${season_number}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US`).then(res => res.data) 
+    
+    setIsEpisodesLoading(false)
+    setEpisodes(episodes && episodes.episodes)
+    
+  }
+
   const fetchBookmarks = () => {
     console.log("fake fetchBookmarks")
   }
+
 
   // useEffect(() => {
   //   fetchBookmarks();
@@ -217,16 +234,29 @@ const TV: NextPageWithLayout = (props:any) => {
 
             <section className="flex flex-col items-start justify-center px-[0px] z-[2000] border-0 w-full relative mb-[20px]">              
               <div className="flex flex-col py-6 border-0 border-red-500 w-full px-[50px]">
-                <h1 className="text-[20px]">Season 1 Button</h1>
-                <div className="flex flex-col w-full border-0 mt-[10px]" id="episodes_container">
-                    {
-                      episodes && episodes.length > 0 && episodes.map((episode, i) => {
-                        return (
-                          <EpisodeCard key={i} data={episode} />
-                        )
-                      })
-                    }
-                </div>
+                <h1 className="text-[20px]">                  
+                  <SelectSeason data={data} onClickHandler={fetchSeasonEpisodes} />
+                </h1>
+
+                {
+                  !isEpisodesLoading ? 
+                
+                  <div className="flex flex-col w-full border-0 mt-[10px]" id="episodes_container">
+                      {
+                        episodes && episodes.length > 0 && episodes.map((episode:any, i:any) => {
+                          return (
+                            <EpisodeCard key={i} data={episode}  />
+                          )
+                        })
+                      }
+                  </div>
+                  :
+                  <div className="flex items-center justify-start w-full border-0 mt-[10px]" id="episodes_container">
+                    <ArrowPathIcon className="mt-[10px] w-[40px] h-[40px] animate-spin mr-[5px]" /> 
+                    <span>Loading Episodes</span>
+                  </div>
+                }
+
               </div>
             </section>
 
@@ -313,7 +343,6 @@ const TV: NextPageWithLayout = (props:any) => {
 
   export const  getServerSideProps: GetServerSideProps = async (context:any) => {
     
-  //   // TODO: fetch season 1
     const tvID = context.params.id;
 
   //   const [reqSeason] = await Promise.all([

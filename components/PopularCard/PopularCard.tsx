@@ -1,3 +1,4 @@
+import styles from "./PopularCard.module.css"
 import { IAuthState } from "../../ts/states/auth_state";
 import { IResult } from "../Search/SearchResultItem/SearchResultItem";
 import Image from "next/image"
@@ -82,7 +83,7 @@ const PopularCard:React.FC<{
 
     return (
         <div
-            className="flex flex-col items-center justify-start w-full relative"
+            className={ styles.popularcard_container}
             id="thumbnail"
             data-testid="thumbnail"
             >

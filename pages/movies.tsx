@@ -39,15 +39,16 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
     const router = useRouter();
     const dispatch = useAppDispatch();
 
-    const { trending, featured_id, popular } = data;
-
-    // const featured_id = "555604"
-    // const trending = fake_trending;
+    // const { trending, popular } = data;
+    
+    // featured id: "555604"
+    const trending = fake_trending;
     const featured = fake_featured;
     const recommendations = movieRecommendations;
-    // const popular = fake_popular;
-
-    // const { movie_detail: featured, recommendations, isLoading, isError } = useMovieDetail(`${featured_id}`); 
+    const popular = fake_popular;
+    
+    // const feature_id = trending && trending[getRandom(trending.results.length-1)].id;
+    // const { movie_detail: featured, recommendations, isLoading, isError } = useMovieDetail(`${feature_id}`); 
 
     // const { bookmark_data, bookmarkLoading, fetchBookmarks } = useBookmark();
 
@@ -325,7 +326,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
   //     props: {
   //       data: {
   //         trending: resTrending ? [].concat(...resTrending.results) : [],
-  //         featured_id: resTrending && resTrending.results[getRandom(resTrending.results.length-1)].id,
+  //      //   featured_id: resTrending && resTrending.results[getRandom(resTrending.results.length-1)].id,
   //         popular: resPopular ? [].concat(...resPopular.results) : [],
   //       }
   //     },
