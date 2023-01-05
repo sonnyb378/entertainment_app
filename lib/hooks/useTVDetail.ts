@@ -10,9 +10,22 @@ export const useTVDetail = (tv_id: string) => {
         `${process.env.NEXT_PUBLIC_TMDB_API_URL}tv/${tv_id}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US`,
         fetcher)
 
+    const { data: cast, error: castError } = useSWR(
+        `${process.env.NEXT_PUBLIC_TMDB_API_URL}tv/${tv_id}/credits?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US`,
+        fetcher)
+
+    const { data: recommendations, error: recommendationsError } = useSWR(
+        `${process.env.NEXT_PUBLIC_TMDB_API_URL}tv/${tv_id}/recommendations?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&page=1`,
+        fetcher)
+        
+    const casts = cast && { casts: { ...cast } }
+
+    
+    
     return {
-        data: data,
+        tv_detail: cast ? { ...data,  ...casts } : data,
+        recommendations: recommendations && recommendations,
         isLoading: !error && !data,
-        isError: error
+        isError: error || castError || recommendationsError
     }
 }

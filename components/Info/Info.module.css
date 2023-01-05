@@ -4,7 +4,7 @@
 }
 
 .info_container_notitle {
-  @apply flex px-4 my-0;
+  @apply flex px-0 my-0;
 }
 
 .info_title {

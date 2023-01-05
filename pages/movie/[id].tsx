@@ -50,7 +50,7 @@ const Movie: NextPageWithLayout = (props:any) => {
 
   let recommendationsArr:any[] = [];
   
-  recommendations && recommendations.results && recommendations.results.slice(0,18).map((item) => {
+  recommendations && recommendations.results && recommendations.results.slice(0,20).map((item) => {
     recommendationsArr.push(item)
   })
 

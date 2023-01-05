@@ -9,15 +9,20 @@ const Info:React.FC<{
     const valuesArr:any[] = [];
     let displayValue: string | number | undefined = undefined;
 
+
     if (typeof value === "object" && value) {
         value.slice(0,5).map((item, i) => {
-            valuesArr.push(item.name)
+            if (item.name) {
+                valuesArr.push(item.name)                
+            } else {
+                valuesArr.push(item)
+            }
         })        
     }
     if (valueFor === "runtime") {
         const hr = Math.floor(Number(value) / 60);
         const mins = (Number(value) % 60)
-        displayValue = `${hr > 0 ? `${hr}hr` : ""}${hr>1 ? "s":""}. ${mins}mins.`
+        displayValue = `${hr > 0 ? `${hr}hr` : ""}${hr>1 ? "s.":""} ${mins}mins.`
     }
 
     return (
@@ -27,10 +32,13 @@ const Info:React.FC<{
                 title && <span className={ styles.info_title }>{ title }:</span>
             }
             {
-                title ? <span className={ styles.info_value}>{ valuesArr.length > 0 ? valuesArr.join(" ● ") : value }</span> :
-                valueFor === "runtime" ? 
-                    <span className={ styles.info_runtime }>{ displayValue }</span>
-                : ""
+                title ? 
+                    <span className={ styles.info_value}>{ valuesArr.length > 0 ? valuesArr.join(" ● ") : value }</span> 
+                :
+                    valueFor === "runtime" ? 
+                        <span className={ styles.info_runtime }>{ displayValue }</span>
+                    : 
+                        <span>{ valuesArr.length > 0 ? valuesArr.join(" ● ") : value }</span>
             }
             
         </div> : null

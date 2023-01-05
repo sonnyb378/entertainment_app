@@ -39,13 +39,13 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
     const router = useRouter();
     const dispatch = useAppDispatch();
 
-    // const { trending, featured_id, popular } = data;
+    const { trending, featured_id, popular } = data;
 
-    const featured_id = "555604"
-    const trending = fake_trending;
+    // const featured_id = "555604"
+    // const trending = fake_trending;
     const featured = fake_featured;
     const recommendations = movieRecommendations;
-    const popular = fake_popular;
+    // const popular = fake_popular;
 
     // const { movie_detail: featured, recommendations, isLoading, isError } = useMovieDetail(`${featured_id}`); 
 
@@ -295,10 +295,23 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
 
   };
 
-  // export const getServerSideProps: GetServerSideProps = async (context:any) => {
+  export const getStaticProps: GetStaticProps = async (context:any) => {
+    return {
+      props: {
+        data: {
+          trending : fake_trending,
+          featured_id: "555604",
+          popular: fake_popular,
+        }
+      },
+      // revalidate: 10,
+    }  
+  }
+
+  // export const getStaticProps: GetStaticProps = async (context:any) => {
     
   //   const [reqTrending, reqPopular] = await Promise.all([
-  //     await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}trending/movie/day?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}`).then(res => res.data)   
+  //     await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}trending/movie/day?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}`).then(res => res.data),
   //     await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}movie/popular?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&region=US&page=1`).then(res => res.data)   
   //   ])
 

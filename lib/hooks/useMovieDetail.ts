@@ -17,7 +17,7 @@ export const useMovieDetail = (movie_id: string) => {
         fetcher)
         
     const casts = cast && { casts: { ...cast } }
-    // const recommendation = recommendations && { recommendations: recommendations }
+    
     
     return {
         movie_detail: cast ? { ...data,  ...casts } : data,
