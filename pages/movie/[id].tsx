@@ -17,7 +17,7 @@ import { useAppContext } from "../../context/state";
 import { PlayCircleIcon, PlusCircleIcon, MinusCircleIcon } from "@heroicons/react/24/outline";
 import Thumbnail from "../../components/Thumbnail/Thumbnail";
 
-import { movieData, movieRecommendations } from "../../model/fake_detail";
+import { movieData } from "../../model/fake_detail";
 import { collection, DocumentData, onSnapshot, QuerySnapshot, Unsubscribe } from "firebase/firestore";
 import { db } from "../../firebase";
 import Carousel from "../../components/Carousel/Carousel";
@@ -35,12 +35,11 @@ const Movie: NextPageWithLayout = (props:any) => {
 
   const dispatch = useAppDispatch() 
 
-  // const { movie_detail: data, recommendations, isLoading, isError } = useMovieDetail(props.movie_id); 
+  // const { movie_detail: data, isLoading, isError } = useMovieDetail(props.movie_id); 
 
   const isLoading = false;
   const isError = undefined;
   const data = movieData
-  const recommendations = movieRecommendations;
 
   // const { bookmark_data, bookmarkLoading, fetchBookmarks } = useBookmark();
 
@@ -50,9 +49,12 @@ const Movie: NextPageWithLayout = (props:any) => {
 
   let recommendationsArr:any[] = [];
   
-  recommendations && recommendations.results && recommendations.results.slice(0,20).map((item:any) => {
-    recommendationsArr.push(item)
-  })
+  if (data) {
+    data.recommendations && data.recommendations.results && data.recommendations.results.slice(0,20).map((item:any) => {
+      recommendationsArr.push(item)
+    })
+
+  }
 
   const fetchBookmarks = () => {
     console.log("fake fetchBookmarks")
@@ -136,7 +138,7 @@ const Movie: NextPageWithLayout = (props:any) => {
                   <Info title="Release Date" value={data.release_date} />
                   <Info title="Country" value={data.production_countries} />
                   <Info title="Production Company" value={data.production_companies} />
-                  <Info title="Cast" value={ data.casts?.cast } />
+                  <Info title="Cast" value={ data.credits?.cast } />
                   <Info title="Genres" value={data.genres} />
 
                   <div className="flex flex-col w-full items-center justify-start space-x-2 border-0 p-4 mt-4 space-y-2

@@ -25,7 +25,6 @@ import Info from "../components/Info/Info";
 import CustomBtn from "../components/Button/CustomBtn/CustomBtn";
 import { fake_trending, fake_featured } from "../model/fake_trending";
 import { useMovieDetail } from "../lib/hooks/useMovieDetail";
-import { movieRecommendations } from "../model/fake_detail";
 import { useAppContext } from "../context/state";
 import { fake_popular } from "../model/fake_popular";
 
@@ -39,24 +38,20 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
     const router = useRouter();
     const dispatch = useAppDispatch();
 
-    const { trending, popular } = data;
-    
-    // featured id: "555604"
-    // const trending = fake_trending;
+    const { trending, popular } = data;  
     const featured = fake_featured;
-    const recommendations = movieRecommendations;
-    // const popular = fake_popular;
     
-    // const feature_id = trending && trending[getRandom(trending.results.length-1)].id;
-    // const { movie_detail: featured, recommendations, isLoading, isError } = useMovieDetail(`${feature_id}`); 
-
+    // const feature_id = trending && trending[getRandom(trending.length-1)].id;
+    // const { movie_detail: featured, isLoading, isError } = useMovieDetail(`${feature_id}`); 
     // const { bookmark_data, bookmarkLoading, fetchBookmarks } = useBookmark();
 
   let recommendationsArr:any[] = [];
   
-  recommendations && recommendations.results && recommendations.results.slice(0,20).map((item:any) => {
-    recommendationsArr.push(item)
-  })
+  if (featured) {
+    featured.recommendations && featured.recommendations.results && featured.recommendations.results.slice(0,20).map((item:any) => {
+      recommendationsArr.push(item)
+    })
+  }
 
   const fetchBookmarks = () => {
     console.log("fake fetchBookmarks")
@@ -150,7 +145,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                         <Info title="Release Date" value={featured.release_date} />
                         <Info title="Country" value={featured.production_countries} />
                         <Info title="Production Company" value={featured.production_companies} />
-                        <Info title="Cast" value={ featured.casts?.cast } /> 
+                        <Info title="Cast" value={ featured.credits?.cast } /> 
                         <Info title="Genres" value={featured.genres} />
 
                         <div className="flex flex-col w-full items-center justify-start border-0 p-0 mt-4 space-y-2
@@ -305,7 +300,6 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
       props: {
         data: {
           trending : fake_trending,
-          featured_id: "555604",
           popular: fake_popular,
         }
       },

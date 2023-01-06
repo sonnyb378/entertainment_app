@@ -17,7 +17,7 @@ import { useAppContext } from "../../context/state";
 import { PlayCircleIcon, PlusCircleIcon, MinusCircleIcon } from "@heroicons/react/24/outline";
 import Thumbnail from "../../components/Thumbnail/Thumbnail";
 
-import { tvData, tvRecommendations } from "../../model/fake_tv_detail";
+import { tvData } from "../../model/fake_tv_detail";
 import { collection, DocumentData, onSnapshot, QuerySnapshot, Unsubscribe } from "firebase/firestore";
 import { db } from "../../firebase";
 import Carousel from "../../components/Carousel/Carousel";
@@ -39,31 +39,37 @@ const TV: NextPageWithLayout = (props:any) => {
   const [isBookmarked, setIsBookmarked] = useState(false)
   const [dataBookmark, setDataBookmark] = useState<any>([])
   const [isEpisodesLoading, setIsEpisodesLoading] = useState(false)
-  const [episodes, setEpisodes] = useState(props.episodes ? props.episodes : fake_tv_episodes)
-
+  // const [episodes, setEpisodes] = useState(props.episodes ? props.episodes : fake_tv_episodes)
+  
   const dispatch = useAppDispatch() 
 
-  // const { tv_detail: data, recommendations, isLoading, isError } = useTVDetail(props.tv_id); 
+  // const { tv_detail: data, isLoading, isError } = useTVDetail(props.tv_id); 
 
   const isLoading = false;
   const isError = undefined;
   const data = tvData
-  const recommendations = tvRecommendations;
 
   // const { bookmark_data, bookmarkLoading, fetchBookmarks } = useBookmark();
-
 
   let timer: NodeJS.Timer;
 
   let recommendationsArr:any[] = [];
+  let episodes:any[] = [];
   
-  recommendations && recommendations.results && recommendations.results.slice(0,20).map((item:any) => {
-    recommendationsArr.push(item)
-  })
+  if (data) {
+    data.recommendations && data.recommendations.results && data.recommendations.results.slice(0,20).map((item:any) => {
+      recommendationsArr.push(item)
+    })
+
+    data["season/1"] && data["season/1"].episodes.length > 0  && data["season/1"].episodes.map((episode:any) => {
+      episodes.push(episode)
+    })
+    
+  }
 
   const fetchSeasonEpisodes = async (season_number: string, callback: (season_number:string) => void) => {
     // setIsEpisodesLoading(true)
-    // callback(season_number)
+    callback(season_number)
 
     // const episodes = await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}tv/${props.tv_id}/season/${season_number}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US`).then(res => res.data) 
     
@@ -165,7 +171,7 @@ const TV: NextPageWithLayout = (props:any) => {
                   <div className="w-full p-4 text-[15px] ">{ data.overview }</div>
                   
                   <Info title="Created By" value={ data.created_by } />
-                  <Info title="Cast" value={ data.casts?.cast } />
+                  <Info title="Cast" value={ data.credits?.cast } />
                   
                   <Info title="Audio Languages" value={data.spoken_languages} />
 
@@ -184,7 +190,7 @@ const TV: NextPageWithLayout = (props:any) => {
                           fetchBookmarks()
                         })} />
                     }
-                    <div>{
+                    <div className="flex items-center justify-start space-x-2">{
                       data.networks.map((network:any, i:any) => {
                         return (
                           <div key={i} className="flex items-center justify-center p-[5px] relative bg-white rounded-full">
@@ -341,19 +347,9 @@ const TV: NextPageWithLayout = (props:any) => {
     
     const tvID = context.params.id;
 
-    // const [reqSeason] = await Promise.all([
-    //   await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}tv/${tvID}/season/1?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US`).then(res => res.data),
-    // ])
-
-    // const [resSeason] = await Promise.all([
-    //   reqSeason
-    // ])
-
-
     return {
         props: {
-            tv_id: tvID,
-            // episodes: resSeason && resSeason.id ? [].concat(...resSeason.episodes) : [],
+            tv_id: tvID
         }
     }
   }

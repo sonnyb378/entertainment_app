@@ -23,7 +23,6 @@ import Carousel from "../components/Carousel/Carousel";
 import axios from "axios";
 import { GetStaticProps } from "next";
 import { fake_tv_featured, fake_tv_trending } from "../model/fake_tv_trending";
-import { tvRecommendations } from "../model/fake_tv_detail";
 import { fake_tv_popular } from "../model/fake_tv_popular";
 
 
@@ -37,28 +36,21 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
     const dispatch = useAppDispatch();
 
     const { trending, popular } = data;
-
-    // featured id: "105971"
-    // const trending = fake_tv_trending;
     const featured = fake_tv_featured;
-    const recommendations = tvRecommendations;
-    // const popular = fake_tv_popular;
-
-    // const feature_id = trending && trending[getRandom(trending.results.length-1)].id;
-    // const { tv_detail: featured, recommendations, isLoading, isError } = useTVDetail(`${feature_id}`); 
-
+    
+    // const feature_id = trending && trending[getRandom(trending.length-1)].id;
+    // const { tv_detail: featured, isLoading, isError } = useTVDetail(`${feature_id}`); 
     // const { bookmark_data, bookmarkLoading, fetchBookmarks } = useBookmark();
 
     let recommendationsArr:any[] = [];
   
-    recommendations && recommendations.results && recommendations.results.slice(0,20).map((item:any) => {
-      recommendationsArr.push(item)
-    })
+    if (featured) {
+      featured.recommendations && featured.recommendations.results && featured.recommendations.results.slice(0,20).map((item:any) => {
+        recommendationsArr.push(item)
+      })
 
-    // console.log("tv trending: ", trending)
-    // console.log("tv popular: ", popular)
-    // console.log("tv featured: ", featured)
-    // console.log("tv recommendations: ", recommendationsArr)
+    }
+    
 
     const fetchBookmarks = () => {
       console.log("fake fetchBookmarks")
@@ -159,7 +151,7 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
                         {
                           featured.created_by && featured.created_by.length > 0 && <Info title="Created By" value={ featured.created_by } />
                         }
-                        <Info title="Cast" value={ featured.casts?.cast } />
+                        <Info title="Cast" value={ featured.credits?.cast } />
                   
                         <Info title="Audio Languages" value={featured.spoken_languages} />
 
@@ -181,7 +173,7 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
                           <CustomBtn title="More Info" Icon={QuestionMarkCircleIcon} onClickHandler={() => {
                             router.push(`/tv/${ featured.id}`)
                           }} />
-                          <div>
+                          <div className="flex items-center justify-start space-x-2">
                             {
                             featured.networks.map((network:any, i:any) => {
                               return (
@@ -335,7 +327,6 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
       props: {
         data: {
           trending : fake_tv_trending,
-          featured_id: "216005",
           popular: fake_tv_popular,
         }
       },
