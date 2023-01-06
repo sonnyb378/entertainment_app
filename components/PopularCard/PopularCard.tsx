@@ -81,6 +81,8 @@ const PopularCard:React.FC<{
 
     const borderSize = 0;
 
+    // console.log("PopularCard: ", result)
+
     return (
         <div
             className={ styles.popularcard_container}
@@ -110,10 +112,10 @@ const PopularCard:React.FC<{
                             />
                         :
                             result.backdrop_path ? 
-                                <BackdropImage expand={expand} user={user} src={result.backdrop_path} media_type={result.media_type}  /> 
+                                <BackdropImage expand={expand} user={user} src={result.backdrop_path} media_type={ result.media_type }  /> 
                                 : 
                                 result.poster_path ? 
-                                    <PosterImage expand={expand} user={user} src={result.poster_path}  media_type={result.media_type} /> 
+                                    <PosterImage expand={expand} user={user} src={result.poster_path}  media_type={ result.media_type } /> 
                                     : 
                                     <div className="image-container relative w-full border-0" data-testid="backdrop_image_container">
                                         <Image 
@@ -164,7 +166,7 @@ const PopularCard:React.FC<{
                             </div>
                         </div>               
                         {
-                            result.media_type !== "person" ? <MediaTypeShow result={result} /> : <MediaTypePerson result={result} />
+                            result.media_type !== "person" ? <MediaTypeShow result={ result } /> : <MediaTypePerson result={ result } />
                         }          
                         <div className="w-full bg-gray-900 bg-opacity-70 flex-1"></div>               
                     </div>

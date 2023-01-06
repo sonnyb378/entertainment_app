@@ -43,27 +43,21 @@ const TV: NextPageWithLayout = (props:any) => {
 
   const dispatch = useAppDispatch() 
 
-  // const [ fakeFetch, setFakeFetch ] = useState(false)
-
-  // const { data, recommendations, isLoading, isError } = useTVDetail(props.tv_id); 
-  // const episodes = props.episodes
+  // const { tv_detail: data, recommendations, isLoading, isError } = useTVDetail(props.tv_id); 
 
   const isLoading = false;
   const isError = undefined;
   const data = tvData
   const recommendations = tvRecommendations;
-  // const episodes = fake_tv_episodes;
 
   // const { bookmark_data, bookmarkLoading, fetchBookmarks } = useBookmark();
-
-  // console.log("detail: ", bookmark_data, bookmarkLoading)
 
 
   let timer: NodeJS.Timer;
 
   let recommendationsArr:any[] = [];
   
-  recommendations && recommendations.results && recommendations.results.slice(0,20).map((item) => {
+  recommendations && recommendations.results && recommendations.results.slice(0,20).map((item:any) => {
     recommendationsArr.push(item)
   })
 
@@ -107,7 +101,7 @@ const TV: NextPageWithLayout = (props:any) => {
   // }, [bookmark_data])
 
     
-    // if (isError) return <div>Error occured while fetching TV details. Please try again.</div>
+    if (isError) return <div>Error occured while fetching TV details. Please try again.</div>
 
     return (
       <div className="flex flex-col items-start justify-center w-full overflow-hidden pb-[100px] -mt-[4px]" data-testid="tv_container">
@@ -150,7 +144,7 @@ const TV: NextPageWithLayout = (props:any) => {
                     {
                       data.number_of_seasons && data.number_of_seasons > 0 && 
                         <>
-                          <div className="mr-[2px] p-2 border border-green-500 text-green-500">
+                          <div className="mr-[10px] p-2 border border-green-500 text-green-500">
                             Seasons: { data.number_of_seasons }
                           </div>  
                           
@@ -189,7 +183,7 @@ const TV: NextPageWithLayout = (props:any) => {
                         })} />
                     }
                     <div>{
-                      data.networks.map((network, i) => {
+                      data.networks.map((network:any, i:any) => {
                         return (
                           <div key={i} className="flex items-center justify-center p-[5px] relative bg-white rounded-full">
                             <div className="image-container relative  border-0 border-red-500 rounded-full w-[30px] h-[30px]">
@@ -266,7 +260,7 @@ const TV: NextPageWithLayout = (props:any) => {
               <Carousel 
                 data={recommendationsArr} 
                 user={user} 
-                maxItems={18} 
+                maxItems={ recommendationsArr.length } 
                 bookmarkData={dataBookmark}
                 baseWidth={290}
                 target="r"
@@ -345,13 +339,13 @@ const TV: NextPageWithLayout = (props:any) => {
     
     const tvID = context.params.id;
 
-  //   const [reqSeason] = await Promise.all([
-  //     await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}tv/${tvID}/season/1?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US`).then(res => res.data),
-  //   ])
+    // const [reqSeason] = await Promise.all([
+    //   await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}tv/${tvID}/season/1?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US`).then(res => res.data),
+    // ])
 
-  //   const [resSeason] = await Promise.all([
-  //     reqSeason
-  //   ])
+    // const [resSeason] = await Promise.all([
+    //   reqSeason
+    // ])
 
 
     return {

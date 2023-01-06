@@ -14,7 +14,8 @@ const Carousel: React.FC<{
     baseWidth?:number,
     target:string,
     isThumbnail?: boolean,
-    fetchHandler:()=>void
+    fetchHandler:()=>void,
+    mediaType?:string
 }> = ({
     data, 
     user, 
@@ -23,7 +24,8 @@ const Carousel: React.FC<{
     baseWidth = 290,
     target,
     isThumbnail = true,
-    fetchHandler
+    fetchHandler,
+    mediaType = "movie",
 }) => {
 
     const THUMBNAIL_BASEWIDTH = baseWidth;
@@ -187,7 +189,14 @@ const Carousel: React.FC<{
                                             isThumbnail ? 
                                                 <Thumbnail user={user} result={item} bookmarkData={bookmarkData} fetchHandler={fetchHandler} />                            
                                             :
-                                                <PopularCard visibleItems={visibleItem} indexCount={i} user={user} result={item} bookmarkData={bookmarkData} fetchHandler={fetchHandler} /> 
+                                                <PopularCard 
+                                                    visibleItems={visibleItem} 
+                                                    indexCount={i} 
+                                                    user={user} 
+                                                    result={ {...item, media_type: mediaType }} 
+                                                    bookmarkData={bookmarkData} 
+                                                    fetchHandler={fetchHandler} 
+                                                /> 
                                         }
                                     </div>
                                 )

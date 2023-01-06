@@ -39,13 +39,13 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
     const router = useRouter();
     const dispatch = useAppDispatch();
 
-    // const { trending, popular } = data;
+    const { trending, popular } = data;
     
     // featured id: "555604"
-    const trending = fake_trending;
+    // const trending = fake_trending;
     const featured = fake_featured;
     const recommendations = movieRecommendations;
-    const popular = fake_popular;
+    // const popular = fake_popular;
     
     // const feature_id = trending && trending[getRandom(trending.results.length-1)].id;
     // const { movie_detail: featured, recommendations, isLoading, isError } = useMovieDetail(`${feature_id}`); 
@@ -54,7 +54,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
 
   let recommendationsArr:any[] = [];
   
-  recommendations && recommendations.results && recommendations.results.slice(0,20).map((item) => {
+  recommendations && recommendations.results && recommendations.results.slice(0,20).map((item:any) => {
     recommendationsArr.push(item)
   })
 
@@ -75,7 +75,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
     // useEffect(() => {
     //   let bookmarkArr:any[] = [];
     //   if (bookmark_data) {
-    //     setIsBookmarked(bookmark_data.findIndex((movie:any) => movie.id === featured_id) !== -1)
+    //     setIsBookmarked(bookmark_data.findIndex((movie:any) => movie.id === feature_id) !== -1)
     //     bookmark_data && bookmark_data.map((bookmark:any, i:any) => {
     //       const data = {
     //         id: bookmark.data().id,
@@ -135,9 +135,9 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                       <div className="flex flex-col items-start justify-start border-0 pb-[0px] h-[100%] w-full">
                         
                         <div className="w-full p-4 text-[30px] font-bold">{ featured.title || featured.original_title }</div>
-                        <div className="flex items-start justify-start p-4">
+                        <div className="flex items-center justify-start p-4 border-0">
                           <Info title="" valueFor="runtime" value={featured.runtime} />
-                          <span className="mr-[10px] text-[11px]">●</span>
+                          <span className="ml-[10px] mr-[10px] text-[11px]">●</span>
                           <div className="flex items-start justify-start text-[12px] border-0">
                             <span className="mr-[10px]">{ Math.floor(featured.vote_average) } / 10</span> 
                             <span className="mr-[10px]">-</span> 
@@ -167,8 +167,11 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                                 fetchBookmarks()
                               })} />
                           }
-                          <CustomBtn title="More Info" Icon={QuestionMarkCircleIcon} onClickHandler={() => console.log("QuestionMarkCircleIcon: ",featured.id)} />
+                          <CustomBtn title="More Info" Icon={QuestionMarkCircleIcon} onClickHandler={() => {
+                            router.push(`/movie/${ featured.id}`)
+                          }} />
                         </div>
+
                       </div>
                   </div> 
                 </>
@@ -205,6 +208,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                 target="p"
                 fetchHandler={fetchBookmarks}
                 isThumbnail={false}
+                mediaType="movie"
               />
 
             </section>
@@ -320,13 +324,10 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
   //     reqTrending, reqPopular
   //   ])
 
-  //   // console.log("resTrending[getRandom(resTrending.length-1)]: ", resTrending.results[getRandom(resTrending.results.length-1)])
-
   //   return {
   //     props: {
   //       data: {
   //         trending: resTrending ? [].concat(...resTrending.results) : [],
-  //      //   featured_id: resTrending && resTrending.results[getRandom(resTrending.results.length-1)].id,
   //         popular: resPopular ? [].concat(...resPopular.results) : [],
   //       }
   //     },

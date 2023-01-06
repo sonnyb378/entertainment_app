@@ -4,7 +4,7 @@
 }
 
 .info_container_notitle {
-  @apply flex px-0 my-0;
+  @apply flex items-center justify-start px-0 my-0 border-0;
 }
 
 .info_title {
@@ -16,5 +16,5 @@
 }
 
 .info_runtime {
-  @apply text-[12px] border border-green-700 px-[5px] py-[2px];
+  @apply text-[12px] border border-green-700 px-[5px] py-[2px] ml-[15px] mr-[10px];
 }

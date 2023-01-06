@@ -35,7 +35,7 @@ const Movie: NextPageWithLayout = (props:any) => {
 
   const dispatch = useAppDispatch() 
 
-  // const { data, recommendations, isLoading, isError } = useMovieDetail(props.movie_id); 
+  // const { movie_detail: data, recommendations, isLoading, isError } = useMovieDetail(props.movie_id); 
 
   const isLoading = false;
   const isError = undefined;
@@ -50,7 +50,7 @@ const Movie: NextPageWithLayout = (props:any) => {
 
   let recommendationsArr:any[] = [];
   
-  recommendations && recommendations.results && recommendations.results.slice(0,20).map((item) => {
+  recommendations && recommendations.results && recommendations.results.slice(0,20).map((item:any) => {
     recommendationsArr.push(item)
   })
 
@@ -82,7 +82,7 @@ const Movie: NextPageWithLayout = (props:any) => {
   // }, [bookmark_data])
 
     
-    // if (isError) return <div>Error occured while fetching movie details. Please try again.</div>
+    if (isError) return <div>Error occured while fetching movie details. Please try again.</div>
 
     return (
       <div className="flex flex-col items-start justify-center w-full overflow-hidden pb-[100px] -mt-[4px]" data-testid="movie_container">
@@ -121,7 +121,7 @@ const Movie: NextPageWithLayout = (props:any) => {
                   xl:w-[70%] xl:ml-[100px] xl:mr-[100px]">
                   
                   <div className="w-full p-4 text-[30px] font-bold">{ data.title || data.original_title }</div>
-                  <div className="flex items-center justify-start">
+                  <div className="flex items-center justify-start">                    
                     <Info title="" valueFor="runtime" value={data.runtime} />
                     <span className="mr-[10px] text-[11px]">●</span>
                     <div className="flex items-center justify-start text-[12px]">
@@ -184,7 +184,7 @@ const Movie: NextPageWithLayout = (props:any) => {
               <Carousel 
                 data={recommendationsArr} 
                 user={user} 
-                maxItems={18} 
+                maxItems={recommendationsArr.length} 
                 bookmarkData={dataBookmark}
                 baseWidth={290}
                 target="r"

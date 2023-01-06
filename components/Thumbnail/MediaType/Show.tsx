@@ -15,6 +15,8 @@ const MediaTypeShow: React.FC<{ result: IResult}> = ({ result}) => {
             genres.push(genre?.name)
         })
     }
+
+    // console.log("mediaTypeShow: ", result)
     
     return(
         <div className={ styles.media_type_show_container }  data-testid="mediatype_show">
