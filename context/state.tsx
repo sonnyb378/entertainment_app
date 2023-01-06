@@ -44,30 +44,31 @@ export const AppContextWrapper: React.FC<{ children: React.ReactNode }> = ({ chi
       
       if (!isBookmarked) {
 
-        const genres:any = [];
-        if (result.genres) {
-          result.genres.map((genre:any) => {
-            genres.push(genre.id)
-          })
-        }
+        // const genres:any = [];
+        // if (result.genres) {
+        //   result.genres.map((genre:any) => {
+        //     genres.push(genre.id)
+        //   })
+        // }
 
-        await setDoc(doc(db, "bookmark", `${user.id}`), {
-          user_id: user.id
-        })
-        await setDoc(doc(db, "bookmark", `${user.id}`, `${media_type}`, `${result.id}`), {
-          id: result.id,
-          name: result.name || result.title || result.original_name || result.original_title,
-          backdrop_path: result.backdrop_path,
-          poster_path: result.poster_path,
-          media_type: media_type,
-          genre_ids: genres.length > 0 ? genres : result.genre_ids
-        })
-
+        // await setDoc(doc(db, "bookmark", `${user.id}`), {
+        //   user_id: user.id
+        // })
+        // await setDoc(doc(db, "bookmark", `${user.id}`, `${media_type}`, `${result.id}`), {
+        //   id: result.id,
+        //   name: result.name || result.title || result.original_name || result.original_title,
+        //   backdrop_path: result.backdrop_path,
+        //   poster_path: result.poster_path,
+        //   media_type: media_type,
+        //   genre_ids: genres.length > 0 ? genres : result.genre_ids
+        // })
+        callback(`adding bookmark: ${result.id}`)
       } else {
-        await deleteDoc(doc(db, "bookmark", `${user.id}`, `${media_type}`, `${result.id}` ));
+        // await deleteDoc(doc(db, "bookmark", `${user.id}`, `${media_type}`, `${result.id}` ));
+        callback(`deleting bookmark: ${result.id}`)
       }
 
-      callback(result.id)
+      // callback(result.id)
     } catch (e) {
       // console.error("Error adding document: ", e);
       callback(e)

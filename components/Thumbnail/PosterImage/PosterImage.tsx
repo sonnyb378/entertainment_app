@@ -8,6 +8,8 @@ const PosterImage: React.FC<{
     src:string,
     media_type: string
 }> = ({ user, expand = false, src, media_type }) => {
+
+
     return (
         <div className="image-container relative w-full h-full" data-testid="poster_image_container"> 
             <Image 

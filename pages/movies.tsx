@@ -197,7 +197,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
             </section>
 
             <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]">
-              <h1 className="ml-[50px] text-[20px]">Popular</h1>
+              <h1 className="ml-[50px] text-[20px]">Popular Movies</h1>
 
               <Carousel 
                 data={popular.slice(0,10)} 

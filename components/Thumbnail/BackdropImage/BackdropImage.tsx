@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { BookmarkIcon } from "@heroicons/react/24/solid";
 import { IAuthState } from "../../../ts/states/auth_state";
+import { useEffect } from "react";
 
 const BackdropImage: React.FC<{ 
     user:IAuthState, 
@@ -9,12 +10,14 @@ const BackdropImage: React.FC<{
     src: string,
     media_type: string
 }> = ({ user, expand = false, src, media_type }) => {
+
+
     return (
         <div className="image-container relative w-full" data-testid="backdrop_image_container">   
             <Image 
                 src={ `${process.env.NEXT_PUBLIC_TMDB_IMAGE_PATH}${src}` } 
                 layout="fill"
-                priority={true}
+                priority={ true }
                 className={`object-contain cursor-pointer !relative !h-[unset] z-[1000]`}
             />   
             {

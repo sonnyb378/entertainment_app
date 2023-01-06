@@ -62,13 +62,15 @@ const TV: NextPageWithLayout = (props:any) => {
   })
 
   const fetchSeasonEpisodes = async (season_number: string, callback: (season_number:string) => void) => {
-    setIsEpisodesLoading(true)
-    callback(season_number)
+    // setIsEpisodesLoading(true)
+    // callback(season_number)
 
-    const episodes = await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}tv/${props.tv_id}/season/${season_number}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US`).then(res => res.data) 
+    // const episodes = await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}tv/${props.tv_id}/season/${season_number}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US`).then(res => res.data) 
     
-    setIsEpisodesLoading(false)
-    setEpisodes(episodes && episodes.episodes)
+    // setIsEpisodesLoading(false)
+    // setEpisodes(episodes && episodes.episodes)
+
+    console.log("fetch season episodes : ", season_number)
     
   }
 
