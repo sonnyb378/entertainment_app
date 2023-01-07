@@ -43,8 +43,6 @@ const Movie: NextPageWithLayout = (props:any) => {
 
   // const { bookmark_data, bookmarkLoading, fetchBookmarks } = useBookmark();
 
-  // console.log("detail: ", bookmark_data, bookmarkLoading)
-
   let timer: NodeJS.Timer;
 
   let recommendationsArr:any[] = [];

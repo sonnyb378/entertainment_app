@@ -145,7 +145,7 @@ const Carousel: React.FC<{
 
 
     return(
-        <div className="flex flex-col  border-0 w-full relative">
+        <div className="flex flex-col border-0 w-full relative">
             <div id={`${target}_track`} className="hidden ml-[50px] border-2
                  sm:border-red-500 
                  md:border-blue-500 
@@ -193,7 +193,7 @@ const Carousel: React.FC<{
                                                     visibleItems={visibleItem} 
                                                     indexCount={i} 
                                                     user={user} 
-                                                    result={ {...item, media_type: mediaType }} 
+                                                    result={ item.media_type ? {...item} : {...item, media_type: mediaType } } 
                                                     bookmarkData={bookmarkData} 
                                                     fetchHandler={fetchHandler} 
                                                 /> 

@@ -39,7 +39,6 @@ const TV: NextPageWithLayout = (props:any) => {
   const [isBookmarked, setIsBookmarked] = useState(false)
   const [dataBookmark, setDataBookmark] = useState<any>([])
   const [isEpisodesLoading, setIsEpisodesLoading] = useState(false)
-  // const [episodes, setEpisodes] = useState(props.episodes ? props.episodes : fake_tv_episodes)
   
   const dispatch = useAppDispatch() 
 
