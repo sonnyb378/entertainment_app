@@ -84,7 +84,7 @@ const Person: NextPageWithLayout = (props:any) => {
         xl:border-purple-500
         2xl:border-orange-500
       " data-testid="person_container">
-        {/* <div className="w-0 xl:w-[15%]"></div> */}
+        
         <div className="flex flex-1 items-start justify-start w-full space-x-[20px] h-[100%] p-4">
 
           <div className="flex flex-col items-start justify-start min-w-[300px] h-[100%] border-0 border-red-500">
@@ -160,7 +160,7 @@ const Person: NextPageWithLayout = (props:any) => {
           </div>
 
         </div>
-        {/* <div className="w-0 xl:w-[15%]"></div> */}
+        
 
       </div> 
     );

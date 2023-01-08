@@ -47,6 +47,7 @@ const Thumbnail:React.FC<{
         }, [bookmarkData])
 
         // console.log("thumbnail: bookmarkData: ", bookmarkData)
+        // console.log("thumbnail: ", result)
 
     return (
         <div
