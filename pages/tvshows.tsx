@@ -24,13 +24,15 @@ import axios from "axios";
 import { GetStaticProps } from "next";
 import { fake_tv_featured, fake_tv_trending } from "../model/fake_tv_trending";
 import { fake_tv_popular } from "../model/fake_tv_popular";
+import { fadeScreen } from "../lib/fadeScreen";
 
 
 const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
     const user = useAppSelector<IAuthState>(selectAuth);    
-    const [dataBookmark, setDataBookmark] = useState<any>([])
+
     const [isBookmarked, setIsBookmarked] = useState(false)
     const { setBookmark } = useAppContext()
+    const { videoIsPlayed, showID } = useAppContext();
 
     const router = useRouter();
     const dispatch = useAppDispatch();
@@ -38,12 +40,13 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
     const { trending, popular } = data;
     const featured = fake_tv_featured;
     
+    
     // const feature_id = trending && trending[getRandom(trending.length-1)].id;
     // const { tv_detail: featured, isLoading, isError } = useTVDetail(`${feature_id}`); 
-    // const { bookmark_data, bookmarkLoading, fetchBookmarks } = useBookmark();
+    // const { dataBookmark, bookmarkLoading, fetchBookmarks } = useBookmark();
+    let dataBookmark:any[] = []
 
-    let recommendationsArr:any[] = [];
-  
+    let recommendationsArr:any[] = [];  
     if (featured) {
       featured.recommendations && featured.recommendations.results && featured.recommendations.results.slice(0,20).map((item:any) => {
         recommendationsArr.push(item)
@@ -62,28 +65,15 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
       }))
     },[])
 
+    useEffect(() => {
+      fadeScreen(videoIsPlayed, () => {
+        router.push("/watch/"+showID)
+      })
+    }, [videoIsPlayed])
+    
   // useEffect(() => {
   //   fetchBookmarks();
   // }, [])
-
-  // useEffect(() => {
-  //   let bookmarkArr:any[] = [];
-  //   if (bookmark_data) {
-  //     setIsBookmarked(bookmark_data.findIndex((movie:any) => movie.id === feature_id) !== -1)
-  //     bookmark_data && bookmark_data.map((bookmark:any, i:any) => {
-  //       const data = {
-  //         id: bookmark.data().id,
-  //         name: bookmark.data().name,
-  //         media_type: bookmark.data().media_type,
-  //         genre_ids: bookmark.data().genre_ids,
-  //         backdrop_path: bookmark.data().backdrop_path,
-  //         poster_path: bookmark.data().poster_path,
-  //       }
-  //       bookmarkArr.push(data)      
-  //     })
-  //     setDataBookmark(bookmarkArr) 
-  //   }    
-  // }, [bookmark_data])
 
 
     return (

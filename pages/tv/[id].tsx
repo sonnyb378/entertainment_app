@@ -29,15 +29,15 @@ import axios from "axios";
 import { fake_tv_episodes } from "../../model/fake_tv_episodes";
 import EpisodeCard from "../../components/EpisodeCard/EpisodeCard";
 import SelectSeason from "../../components/SelectSeason/SelectSeason";
+import { fadeScreen } from "../../lib/fadeScreen";
 
 const TV: NextPageWithLayout = (props:any) => {
   const router = useRouter();
   const { setBookmark } = useAppContext()
   const user = useAppSelector<IAuthState>(selectAuth);
-  
+  const { videoIsPlayed, showID } = useAppContext();
 
   const [isBookmarked, setIsBookmarked] = useState(false)
-  const [dataBookmark, setDataBookmark] = useState<any>([])
   const [isEpisodesLoading, setIsEpisodesLoading] = useState(false)
   
   const dispatch = useAppDispatch() 
@@ -48,7 +48,8 @@ const TV: NextPageWithLayout = (props:any) => {
   const isError = undefined;
   const data = tvData
 
-  // const { bookmark_data, bookmarkLoading, fetchBookmarks } = useBookmark();
+  // const { dataBookmark, bookmarkLoading, fetchBookmarks } = useBookmark();
+  let dataBookmark:any[] = []
 
   let timer: NodeJS.Timer;
 
@@ -83,29 +84,16 @@ const TV: NextPageWithLayout = (props:any) => {
     console.log("fake fetchBookmarks")
   }
 
+  useEffect(() => {
+    fadeScreen(videoIsPlayed, () => {
+      router.push("/watch/"+showID)
+    })
+  }, [videoIsPlayed])
+
 
   // useEffect(() => {
   //   fetchBookmarks();
   // }, [])
-
-  // useEffect(() => {
-  //   let bookmarkArr:any[] = [];
-  //   if (bookmark_data) {
-  //     setIsBookmarked(bookmark_data.findIndex((tv:any) => tv.id === props.tv_id) !== -1)
-  //     bookmark_data && bookmark_data.map((bookmark:any, i:any) => {
-  //       const data = {
-  //         id: bookmark.data().id,
-  //         name: bookmark.data().name,
-  //         media_type: bookmark.data().media_type,
-  //         genre_ids: bookmark.data().genre_ids,
-  //         backdrop_path: bookmark.data().backdrop_path,
-  //         poster_path: bookmark.data().poster_path,
-  //       }
-  //       bookmarkArr.push(data)      
-  //     })
-  //     setDataBookmark(bookmarkArr) 
-  //   }    
-  // }, [bookmark_data])
 
     
     if (isError) return <div>Error occured while fetching TV details. Please try again.</div>

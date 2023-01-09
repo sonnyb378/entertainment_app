@@ -15,14 +15,15 @@ import { useAppContext } from "../../context/state";
 import { useBookmark } from "../../lib/hooks/useBookmark";
 import { ArrowPathIcon } from "@heroicons/react/24/solid";
 import SearchResultItem from "../../components/Search/SearchResultItem/SearchResultItem";
+import { fadeScreen } from "../../lib/fadeScreen";
 
 const MyList: NextPageWithLayout = () => {
     const user = useAppSelector<IAuthState>(selectAuth);  
     const router = useRouter();
     const dispatch = useAppDispatch();
-    const [dataBookmark, setDataBookmark] = useState<any>([])
+    const { videoIsPlayed, showID } = useAppContext();
 
-    const { bookmark_data, bookmarkLoading, fetchBookmarks } = useBookmark();
+    const { dataBookmark, bookmarkLoading, fetchBookmarks } = useBookmark();
 
     useEffect(() => {
       fetchBookmarks();
@@ -35,25 +36,13 @@ const MyList: NextPageWithLayout = () => {
       }))
     },[])
 
+    
     useEffect(() => {
-      let bookmarkArr:any[] = [];
-      if (bookmark_data) {
-        bookmark_data && bookmark_data.map((bookmark:any, i:any) => {
-          const data = {
-            id: bookmark.data().id,
-            name: bookmark.data().name,
-            media_type: bookmark.data().media_type,
-            genre_ids: bookmark.data().genre_ids,
-            backdrop_path: bookmark.data().backdrop_path,
-            poster_path: bookmark.data().poster_path,
-          }
-          bookmarkArr.push(data)      
-        })
-        setDataBookmark(bookmarkArr) 
-      }    
-    }, [bookmark_data])
+      fadeScreen(videoIsPlayed, () => {
+        router.push("/watch/"+showID)
+      })
+    }, [videoIsPlayed])
 
-    // console.log("dataBookmark: ", dataBookmark, bookmarkLoading)
  
     return (
       <div className="flex flex-col items-start justify-center w-[90%] p-5 relative" data-testid="mylist_container">

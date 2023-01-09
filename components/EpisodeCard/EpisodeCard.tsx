@@ -3,12 +3,14 @@ import Image from "next/image"
 import { PlayCircleIcon } from "@heroicons/react/24/solid"
 import Info from "../Info/Info"
 import no_result from "../../assets/no_result.png"
+import { useAppContext } from "../../context/state"
 
 export interface IEpisodeCard {
     data:any
 }
 
 const EpisodeCard:React.FC<IEpisodeCard> = ({ data }) => {
+    const { setVideoIsPlayed } = useAppContext()
     return(
         <div className="flex items-start justify-center p-2 rounded-md bg-[#40424A] my-2 border-4 border-[#40424A] relative
         hover:cursor-pointer
@@ -16,7 +18,10 @@ const EpisodeCard:React.FC<IEpisodeCard> = ({ data }) => {
         ">
             <div id="episode_overlay" className="flex items-center justify-center absolute w-full h-[100%] bg-white top-0 left-0 rounded-[5px] opacity-0 bg-opacity-0 z-[1000]
                 hover:opacity-100 hover:bg-opacity-10">
-                <PlayCircleIcon className="w-[80px] h-[80px] bg-btnprimary rounded-full p-0 m-0 drop-shadow-md" />
+                <PlayCircleIcon 
+                    onClick={ () => setVideoIsPlayed(true, data.id) }
+                    className="w-[80px] h-[80px] bg-btnprimary rounded-full p-0 m-0 drop-shadow-md" 
+                />
             </div>
 
             <div className="image-container relative mr-[10px] w-[300px] h-[169px] border-0">

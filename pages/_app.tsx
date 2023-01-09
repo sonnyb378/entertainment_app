@@ -29,5 +29,6 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       </Provider>  
     </AppContextWrapper>
     );
+
 }
 export default wrapper.withRedux(MyApp);

@@ -12,6 +12,9 @@ import { IResult } from "../components/Search/SearchResultItem/SearchResultItem"
 export interface ContextState {
   setIsFullscreen: () => void,
   isFullscreen: boolean,
+  setVideoIsPlayed: (isPlay:boolean, showID:number) => void,
+  videoIsPlayed: boolean;
+  showID: number;
   setBookmark: (id:any, media_type:string, isBookmarked:boolean, callback:(id:any) => void) => void,
   ctxOnEnterHandler:(e:React.MouseEvent<HTMLElement>, callback:() => void) => void,
   ctxOnLeaveHandler:(e:React.MouseEvent<HTMLElement>, callback: (...args:any[]) => void) => void
@@ -21,6 +24,9 @@ const initialState = {
   setIsFullscreen: () => {},
   isFullscreen: false,
   setBookmark: () => {},
+  setVideoIsPlayed: (isPlay:boolean, showID:number) => {},
+  videoIsPlayed: false,
+  showID: 0,
   ctxOnEnterHandler: (e:React.MouseEvent<HTMLElement>, callback:() => void) => {},
   ctxOnLeaveHandler: (e:React.MouseEvent<HTMLElement>, callback: (...args:any[]) => void) => {},
 };
@@ -76,6 +82,16 @@ export const AppContextWrapper: React.FC<{ children: React.ReactNode }> = ({ chi
 
   }
 
+  const setVideoIsPlayed = (isPlay:boolean, showID:number) => {
+    setContextState((prev) => {
+      return {
+        ...prev,
+        videoIsPlayed: isPlay,
+        showID: showID
+      }
+    })
+  }
+
   const setIsFullscreen = () => {
     setContextState((prev) => {
       return {
@@ -109,6 +125,9 @@ export const AppContextWrapper: React.FC<{ children: React.ReactNode }> = ({ chi
     setIsFullscreen,
     isFullscreen: contextState.isFullscreen,
     setBookmark,
+    setVideoIsPlayed,
+    videoIsPlayed: contextState.videoIsPlayed,
+    showID: contextState.showID,
     ctxOnEnterHandler,
     ctxOnLeaveHandler
   }

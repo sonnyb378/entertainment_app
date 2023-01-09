@@ -46,6 +46,8 @@ const PopularCard:React.FC<{
         
         const { 
             setBookmark,
+            setVideoIsPlayed,
+            videoIsPlayed,
             ctxOnEnterHandler: onEnterHandler,
             ctxOnLeaveHandler: onLeaveHandler
         } = useAppContext();
@@ -82,6 +84,16 @@ const PopularCard:React.FC<{
     const borderSize = 0;
 
     // console.log("PopularCard: ", result)
+
+    if (videoIsPlayed) {
+        if (typeof window !== 'undefined') {
+            const mainComponent = document.getElementById("main_component");
+            mainComponent!.style.scale = "110%";
+            mainComponent!.style.opacity = "0";
+            mainComponent!.style.transition = "all 1s";
+            mainComponent!.style.overflow = "hidden";
+        }
+    }
 
     return (
         <div
@@ -135,9 +147,7 @@ const PopularCard:React.FC<{
                             
                             <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
                                 hover:text-white hover:bg-btnhighlight hover:border-btnhighlight">
-                                <PlayIcon className="w-[20px] h-[20px]" onClick={ () => {
-                                    console.log("will play ",result.id)
-                                }} />
+                                <PlayIcon className="w-[20px] h-[20px]" onClick={ () => setVideoIsPlayed(true, result.id) } />
                             </div>
                             <div className="flex-1"></div>
                             {

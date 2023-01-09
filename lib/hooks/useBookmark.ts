@@ -24,12 +24,29 @@ export const useBookmark = () => {
     
         if (!docSnapTV.empty) tvList.push(...docSnapTV.docs);
 
-        setBookmarks([...movieList, ...tvList])
+
+        let bookmarkCombine:any[] = [...movieList, ...tvList];
+        let bookmarkArr:any[] = [];
+
+        if (bookmarkCombine) {
+            bookmarkCombine && bookmarkCombine.map((bookmark:any, i:any) => {
+                const data = {
+                    id: bookmark.data().id,
+                    name: bookmark.data().name,
+                    media_type: bookmark.data().media_type,
+                    genre_ids: bookmark.data().genre_ids,
+                    backdrop_path: bookmark.data().backdrop_path,
+                    poster_path: bookmark.data().poster_path,
+                }
+                bookmarkArr.push(data)      
+            })
+            setBookmarks(bookmarkArr)
+        } 
 
     }
 
     return {
-        bookmark_data: bookmarks,
+        dataBookmark: bookmarks,
         bookmarkLoading: !bookmarks,
         fetchBookmarks
     }

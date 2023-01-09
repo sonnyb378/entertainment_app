@@ -3,7 +3,7 @@ import Main from "../components/Layout/Main/Main";
 import { NextPageWithLayout } from "./page";
 
 import Router, { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 
 import { useAppSelector, useAppDispatch } from "../app/hooks";
 import { selectAuth } from "../app/store/slices/auth";
@@ -27,14 +27,17 @@ import { fake_trending, fake_featured } from "../model/fake_trending";
 import { useMovieDetail } from "../lib/hooks/useMovieDetail";
 import { useAppContext } from "../context/state";
 import { fake_popular } from "../model/fake_popular";
+import type { AppProps } from 'next/app';
+import { fadeScreen } from "../lib/fadeScreen";
 
 
 const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
     const user = useAppSelector<IAuthState>(selectAuth);    
-    const [dataBookmark, setDataBookmark] = useState<any>([])
-    const [isBookmarked, setIsBookmarked] = useState(false)
-    const { setBookmark } = useAppContext()
 
+    const [isBookmarked, setIsBookmarked] = useState(false)
+    const { setBookmark, setVideoIsPlayed } = useAppContext()
+    const { videoIsPlayed, showID } = useAppContext();
+    
     const router = useRouter();
     const dispatch = useAppDispatch();
 
@@ -43,19 +46,20 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
     
     // const feature_id = trending && trending[getRandom(trending.length-1)].id;
     // const { movie_detail: featured, isLoading, isError } = useMovieDetail(`${feature_id}`); 
-    // const { bookmark_data, bookmarkLoading, fetchBookmarks } = useBookmark();
+    // const { dataBookmark, bookmarkLoading, fetchBookmarks } = useBookmark();
+    let dataBookmark:any[] = []
 
-  let recommendationsArr:any[] = [];
-  
-  if (featured) {
-    featured.recommendations && featured.recommendations.results && featured.recommendations.results.slice(0,20).map((item:any) => {
-      recommendationsArr.push(item)
-    })
-  }
+    let recommendationsArr:any[] = [];
+    
+    if (featured) {
+      featured.recommendations && featured.recommendations.results && featured.recommendations.results.slice(0,20).map((item:any) => {
+        recommendationsArr.push(item)
+      })
+    }
 
-  const fetchBookmarks = () => {
-    console.log("fake fetchBookmarks")
-  }
+    const fetchBookmarks = () => {
+      console.log("fake fetchBookmarks")
+    }
 
     useEffect(() => {
       dispatch(setCurrentUrl({
@@ -63,31 +67,18 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
       }))
     }, [])
 
+
+    useEffect(() => {
+      fadeScreen(videoIsPlayed, () => {
+        router.push("/watch/"+showID)
+      })
+    }, [videoIsPlayed])
+  
+  
     // useEffect(() => {
     //   fetchBookmarks();
     // }, [])
-  
-    // useEffect(() => {
-    //   let bookmarkArr:any[] = [];
-    //   if (bookmark_data) {
-    //     setIsBookmarked(bookmark_data.findIndex((movie:any) => movie.id === feature_id) !== -1)
-    //     bookmark_data && bookmark_data.map((bookmark:any, i:any) => {
-    //       const data = {
-    //         id: bookmark.data().id,
-    //         name: bookmark.data().name,
-    //         media_type: bookmark.data().media_type,
-    //         genre_ids: bookmark.data().genre_ids,
-    //         backdrop_path: bookmark.data().backdrop_path,
-    //         poster_path: bookmark.data().poster_path,
-    //       }
-    //       bookmarkArr.push(data)      
-    //     })
-    //     setDataBookmark(bookmarkArr) 
-    //   }    
-    // }, [bookmark_data])
-
-
-    
+ 
    
     return (
       <div className="flex flex-col items-start justify-center w-full overflow-hidden pb-[100px] -mt-[4px]" data-testid="movies_container">
@@ -151,7 +142,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                         <div className="flex flex-col w-full items-center justify-start border-0 p-0 mt-4 space-y-2
                         sm:space-y-0 sm:space-x-2 sm:flex-row
                         lg:space-x-2">
-                          <CustomBtn title="Play" Icon={PlayCircleIcon} onClickHandler={() => console.log("PlayCircleIcon: ",featured.id)} />
+                          <CustomBtn title="Play" Icon={PlayCircleIcon} onClickHandler={() => setVideoIsPlayed(true, featured.id)   } />
                           {
                             !isBookmarked ? 
                               user && user.accessToken && <CustomBtn title="Add to List" Icon={PlusCircleIcon} onClickHandler={() => setBookmark(data, "movie", isBookmarked, (id) => {
@@ -274,9 +265,9 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
     const [pageIsLoading, setPageIsLoading] = useState(true);
     const user = useAppSelector<IAuthState>(selectAuth);
     const router = useRouter();
+    
 
     useEffect(() => {
-      // console.log("movies: (useEffect)")
       if (!user || !user.accessToken) {
         router.push("/signin");
       } else {
@@ -284,6 +275,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
       }
     },[router.asPath]);
 
+    
 
     if (pageIsLoading) return null;
    

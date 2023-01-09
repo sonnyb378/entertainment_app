@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { useAppContext } from "../../context/state";
 import { useRouter } from "next/router";
 import Video from "./Video/Video";
+import { fadeScreen } from "../../lib/fadeScreen";
 
 
 const Thumbnail:React.FC<{ 
@@ -30,10 +31,13 @@ const Thumbnail:React.FC<{
         
         const { 
             setBookmark,
+            setVideoIsPlayed,
+            videoIsPlayed,
             ctxOnEnterHandler: onEnterHandler,
             ctxOnLeaveHandler: onLeaveHandler
         } = useAppContext();
 
+       
         const [expand, setExpand] = useState(false);
         const [isHover, setIsHover] = useState(false);
         const router = useRouter();
@@ -46,8 +50,6 @@ const Thumbnail:React.FC<{
             }
         }, [bookmarkData])
 
-        // console.log("thumbnail: bookmarkData: ", bookmarkData)
-        // console.log("thumbnail: ", result)
 
     return (
         <div
@@ -56,120 +58,118 @@ const Thumbnail:React.FC<{
             data-testid="thumbnail"
             >
                 
-                <div id={`expand_${result.id}`} className={`${ expand ? "flex opacity-100 z-[3000]" : "flex opacity-0 z-[1000] scale-[80%]"} 
-                    flex-col overflow-hidden absolute items-center justify-start w-[120%] h-auto bg-black shadow-xl rounded-md border-2 
-                    duration-200 transition-all -mt-[50px] border-btnprimary`}
-                    onMouseLeave={(e:React.MouseEvent<HTMLElement>) => onLeaveHandler!(e, () => {
-                        setExpand(false)
-                    })}
-                >
-                    {
-                        // expand ? <iframe width="w-full" height='169' src={`https://www.youtube-nocookie.com/embed/mkomfZHG5q4?autoplay=${expand ? 1: 0}&mute=1&enablejsapi=1`} 
-                        //      title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+            <div id={`expand_${result.id}`} className={`${ expand ? "flex opacity-100 z-[3000]" : "flex opacity-0 z-[1000] scale-[80%]"} 
+                flex-col overflow-hidden absolute items-center justify-start w-[120%] h-auto bg-black shadow-xl rounded-md border-2 
+                duration-200 transition-all -mt-[50px] border-btnprimary`}
+                onMouseLeave={(e:React.MouseEvent<HTMLElement>) => onLeaveHandler!(e, () => {
+                    setExpand(false)
+                })}
+            >
+                {
+                    // expand ? <iframe width="w-full" height='169' src={`https://www.youtube-nocookie.com/embed/mkomfZHG5q4?autoplay=${expand ? 1: 0}&mute=1&enablejsapi=1`} 
+                    //      title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
 
-                        result.media_type !== "person" &&
-                            expand ? <Video 
-                                result={result} 
-                                expand={expand} 
-                                user={user} 
-                                src="/train.mp4" 
-                                isBookmarked={isBookmarked} 
-                                fetchHandler={fetchHandler}
-                            />
-                        :
-                            result.backdrop_path ? 
-                                <BackdropImage expand={expand} user={user} src={result.backdrop_path} media_type={result.media_type}  /> 
+                    result.media_type !== "person" &&
+                        expand ? <Video 
+                            result={result} 
+                            expand={expand} 
+                            user={user} 
+                            src="/train.mp4" 
+                            isBookmarked={isBookmarked} 
+                            fetchHandler={fetchHandler}
+                        />
+                    :
+                        result.backdrop_path ? 
+                            <BackdropImage expand={expand} user={user} src={result.backdrop_path} media_type={result.media_type}  /> 
+                            : 
+                            result.poster_path ? 
+                                <PosterImage expand={expand} user={user} src={result.poster_path}  media_type={result.media_type} /> 
                                 : 
-                                result.poster_path ? 
-                                    <PosterImage expand={expand} user={user} src={result.poster_path}  media_type={result.media_type} /> 
-                                    : 
-                                    <div className="image-container relative w-full border-0" data-testid="backdrop_image_container">
-                                        <Image 
-                                            src={ no_result } 
-                                            layout="fill"
-                                            priority={ true }
-                                            className={`object-contain cursor-pointer !relative !h-[unset] z-[1000]`}
-                                        />                        
-                                    </div>
-                        
-                        
-                    }
-                    <div className="flex flex-1 flex-col items-center justify-start w-full relative">
-                        <div id="gradient" className="flex h-[10px] -top-[10px] absolute z-[1000] w-full items-center justify-start 
-                            bg-gradient-to-t from-[#0a0f19] via-[#0a0f19] border-0"></div>
-                        <div className="flex pt-2 pb-1 z-[1100] relative w-full items-center justify-start bg-gray-900 bg-opacity-70 space-x-2 px-[13px]">
-                            
-                            <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
-                                hover:text-white hover:bg-btnhighlight hover:border-btnhighlight">
-                                <PlayIcon className="w-[20px] h-[20px]" onClick={ () => {
-                                    console.log("will play ",result.id)
-                                }} />
-                            </div>
-                            <div className="flex-1"></div>
-                            {
-                                user && user.accessToken && 
-                                <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
-                                    hover:text-btnhighlight hover:border-btnhighlight">
-                                    {
-                                        !isBookmarked ?                                
-                                            <PlusIcon className="w-[20px] h-[20px]" onClick={() => setBookmark(result, result.media_type, isBookmarked, (id:any) => {
-                                                fetchHandler()
-                                            })}/>
-                                        : 
-                                            <CheckIcon className="w-[20px] h-[20px]" onClick={() => setBookmark(result, result.media_type, isBookmarked, (id:any) => {
-                                                fetchHandler();
-                                            })}/>
-                                    }
+                                <div className="image-container relative w-full border-0" data-testid="backdrop_image_container">
+                                    <Image 
+                                        src={ no_result } 
+                                        layout="fill"
+                                        priority={ true }
+                                        className={`object-contain cursor-pointer !relative !h-[unset] z-[1000]`}
+                                    />                        
                                 </div>
-                            }
-                            
+                    
+                    
+                }
+                <div className="flex flex-1 flex-col items-center justify-start w-full relative">
+                    <div id="gradient" className="flex h-[10px] -top-[10px] absolute z-[1000] w-full items-center justify-start 
+                        bg-gradient-to-t from-[#0a0f19] via-[#0a0f19] border-0"></div>
+                    <div className="flex pt-2 pb-1 z-[1100] relative w-full items-center justify-start bg-gray-900 bg-opacity-70 space-x-2 px-[13px]">
+                        
+                        <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
+                            hover:text-white hover:bg-btnhighlight hover:border-btnhighlight">
+                            <PlayIcon className="w-[20px] h-[20px]" onClick={ () => setVideoIsPlayed(true, result.id) } />
+                        </div>
+                        <div className="flex-1"></div>
+                        {
+                            user && user.accessToken && 
                             <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
                                 hover:text-btnhighlight hover:border-btnhighlight">
-                                <ChevronDownIcon className="w-[20px] h-[20px]" onClick={() => {
-                                    router.push(`/${ result.media_type }/${ result.id}`)
-                                    // console.log(`redirect to: /${ result.media_type }/${ result.id}`)
-                                }} />
+                                {
+                                    !isBookmarked ?                                
+                                        <PlusIcon className="w-[20px] h-[20px]" onClick={() => setBookmark(result, result.media_type, isBookmarked, (id:any) => {
+                                            fetchHandler()
+                                        })}/>
+                                    : 
+                                        <CheckIcon className="w-[20px] h-[20px]" onClick={() => setBookmark(result, result.media_type, isBookmarked, (id:any) => {
+                                            fetchHandler();
+                                        })}/>
+                                }
                             </div>
-                        </div>               
-                        {
-                            result.media_type !== "person" ? <MediaTypeShow result={result} /> : <MediaTypePerson result={result} />
-                        }          
-                        <div className="w-full bg-gray-900 bg-opacity-70 flex-1"></div>               
-                    </div>
-                    
-                </div>
-
-                
-                <div
-                    id={`collapsed_${result.id}`}
-                    onMouseEnter={() => setIsHover(true)}
-                    onMouseOver={ (e:React.MouseEvent<HTMLElement>) => onEnterHandler!(e, () => {
-                        setExpand(true)
-                    })}
-                    onMouseLeave={(e:React.MouseEvent<HTMLElement>) => onLeaveHandler!(e, (timer:NodeJS.Timer) => {
-                        if (timer) clearTimeout(timer)
-                        setIsHover(false)
-                    })}  
-                    className={`flex ${ expand && "scale-[120%]" } flex-col items-center justify-start z-[2000] w-full relative duration-200 transition-all border-0 rounded-md overflow-hidden`}>
-                    <span className={`${isHover ? "flex" : "hidden"} z-[2000] items-center justify-center absolute top-2 left-2 px-2 text-[10px] bg-black`}>
-                        Keep hovering to autoplay
-                    </span>
-                    {
-                        result.backdrop_path ? <BackdropImage expand={expand} user={user} src={result.backdrop_path} media_type={result.media_type} /> : 
-                        result.poster_path ? <PosterImage expand={expand} user={user} src={result.poster_path} media_type={result.media_type} /> :                                     
-                        <div className="image-container relative w-full border-0" data-testid="backdrop_image_container">
-                            <Image 
-                                src={ no_result } 
-                                layout="fill"
-                                priority={true}
-                                className={`object-contain cursor-pointer !relative !h-[unset] z-[1000]`}
-                            />                    
-                        </div>                                                  
-                    }
+                        }
+                        
+                        <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
+                            hover:text-btnhighlight hover:border-btnhighlight">
+                            <ChevronDownIcon className="w-[20px] h-[20px]" onClick={() => {
+                                router.push(`/${ result.media_type }/${ result.id}`)
+                                // console.log(`redirect to: /${ result.media_type }/${ result.id}`)
+                            }} />
+                        </div>
+                    </div>               
                     {
                         result.media_type !== "person" ? <MediaTypeShow result={result} /> : <MediaTypePerson result={result} />
-                    }
+                    }          
+                    <div className="w-full bg-gray-900 bg-opacity-70 flex-1"></div>               
                 </div>
+                
+            </div>
+
+            
+            <div
+                id={`collapsed_${result.id}`}
+                onMouseEnter={() => setIsHover(true)}
+                onMouseOver={ (e:React.MouseEvent<HTMLElement>) => onEnterHandler!(e, () => {
+                    setExpand(true)
+                })}
+                onMouseLeave={(e:React.MouseEvent<HTMLElement>) => onLeaveHandler!(e, (timer:NodeJS.Timer) => {
+                    if (timer) clearTimeout(timer)
+                    setIsHover(false)
+                })}  
+                className={`flex ${ expand && "scale-[120%]" } flex-col items-center justify-start z-[2000] w-full relative duration-200 transition-all border-0 rounded-md overflow-hidden`}>
+                <span className={`${isHover ? "flex" : "hidden"} z-[2000] items-center justify-center absolute top-2 left-2 px-2 text-[10px] bg-black`}>
+                    Keep hovering to autoplay
+                </span>
+                {
+                    result.backdrop_path ? <BackdropImage expand={expand} user={user} src={result.backdrop_path} media_type={result.media_type} /> : 
+                    result.poster_path ? <PosterImage expand={expand} user={user} src={result.poster_path} media_type={result.media_type} /> :                                     
+                    <div className="image-container relative w-full border-0" data-testid="backdrop_image_container">
+                        <Image 
+                            src={ no_result } 
+                            layout="fill"
+                            priority={true}
+                            className={`object-contain cursor-pointer !relative !h-[unset] z-[1000]`}
+                        />                    
+                    </div>                                                  
+                }
+                {
+                    result.media_type !== "person" ? <MediaTypeShow result={result} /> : <MediaTypePerson result={result} />
+                }
+            </div>
                 
         </div>   
     )

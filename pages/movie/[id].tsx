@@ -24,14 +24,15 @@ import Carousel from "../../components/Carousel/Carousel";
 import PreviousMap from "postcss/lib/previous-map";
 
 import { useBookmark } from "../../lib/hooks/useBookmark";
+import { fadeScreen } from "../../lib/fadeScreen";
 
 const Movie: NextPageWithLayout = (props:any) => {
   const router = useRouter();
-  const { setBookmark } = useAppContext()
   const user = useAppSelector<IAuthState>(selectAuth);
+  const { setBookmark, setVideoIsPlayed } = useAppContext()
+  const { videoIsPlayed, showID } = useAppContext();
   
   const [isBookmarked, setIsBookmarked] = useState(false)
-  const [dataBookmark, setDataBookmark] = useState<any>([])
 
   const dispatch = useAppDispatch() 
 
@@ -41,7 +42,8 @@ const Movie: NextPageWithLayout = (props:any) => {
   const isError = undefined;
   const data = movieData
 
-  // const { bookmark_data, bookmarkLoading, fetchBookmarks } = useBookmark();
+  // const { dataBookmark, bookmarkLoading, fetchBookmarks } = useBookmark();
+  let dataBookmark:any[] = []
 
   let timer: NodeJS.Timer;
 
@@ -58,29 +60,15 @@ const Movie: NextPageWithLayout = (props:any) => {
     console.log("fake fetchBookmarks")
   }
 
+  useEffect(() => {
+    fadeScreen(videoIsPlayed, () => {
+      router.push("/watch/"+showID)
+    })
+  }, [videoIsPlayed])
+
   // useEffect(() => {
   //   fetchBookmarks();
   // }, [])
-
-  // useEffect(() => {
-  //   let bookmarkArr:any[] = [];
-  //   if (bookmark_data) {
-  //     setIsBookmarked(bookmark_data.findIndex((movie:any) => movie.id === props.movie_id) !== -1)
-  //     bookmark_data && bookmark_data.map((bookmark:any, i:any) => {
-  //       const data = {
-  //         id: bookmark.data().id,
-  //         name: bookmark.data().name,
-  //         media_type: bookmark.data().media_type,
-  //         genre_ids: bookmark.data().genre_ids,
-  //         backdrop_path: bookmark.data().backdrop_path,
-  //         poster_path: bookmark.data().poster_path,
-  //       }
-  //       bookmarkArr.push(data)      
-  //     })
-  //     setDataBookmark(bookmarkArr) 
-  //   }    
-  // }, [bookmark_data])
-
     
     if (isError) return <div>Error occured while fetching movie details. Please try again.</div>
 
@@ -142,7 +130,7 @@ const Movie: NextPageWithLayout = (props:any) => {
                   <div className="flex flex-col w-full items-center justify-start space-x-2 border-0 p-4 mt-4 space-y-2
                   sm:space-y-0 sm:space-x-2 sm:flex-row
                   lg:space-x-2">
-                    <CustomBtn title="Play" Icon={PlayCircleIcon} onClickHandler={() => console.log("PlayCircleIcon: ",data.id)} />
+                    <CustomBtn title="Play" Icon={PlayCircleIcon} onClickHandler={() => setVideoIsPlayed(true, data.id)} />
                     {
                       !isBookmarked ? 
                         user && user.accessToken && <CustomBtn title="Add to List" Icon={PlusCircleIcon} onClickHandler={() => setBookmark(data, "movie", isBookmarked, (id) => {

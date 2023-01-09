@@ -13,6 +13,9 @@ import { fake_person_popular, fake_person_popular2 } from "../../model/fake_pers
 import Image from "next/image"
 import PersonInfo from "../../components/Info/PersonInfo";
 import Carousel from "../../components/Carousel/Carousel";
+import { useAppContext } from "../../context/state";
+import { fadeScreen } from "../../lib/fadeScreen";
+import { useBookmark } from "../../lib/hooks/useBookmark";
 
 export interface IPerson {
 	"adult": boolean,
@@ -33,9 +36,13 @@ export interface IPerson {
 
 const Person: NextPageWithLayout = (props:any) => {
     const router = useRouter();
-    const user = useAppSelector<IAuthState>(selectAuth);  
+    const user = useAppSelector<IAuthState>(selectAuth); 
+    const { videoIsPlayed, showID } = useAppContext(); 
 
     const { data } = props;
+
+    // const { dataBookmark, bookmarkLoading, fetchBookmarks } = useBookmark();
+    let dataBookmark:any[] = []
 
     let movies: any = []
     let tvshows: any = []
@@ -49,7 +56,7 @@ const Person: NextPageWithLayout = (props:any) => {
       })
       movies.filter((item:any) => {
         var i = movieResult.findIndex((x:any) => (x.id == item.id));
-        if(i <= -1){
+        if (i <= -1) {
           movieResult.push(item);
         }
         return null;
@@ -69,12 +76,22 @@ const Person: NextPageWithLayout = (props:any) => {
       })
     }
 
-    // console.log(tvResult)
-    // console.log(movieResult)
+    
+    useEffect(() => {
+      fadeScreen(videoIsPlayed, () => {
+        router.push("/watch/"+showID)
+      })
+    }, [videoIsPlayed])
 
     const fetchBookmarks = () => {
       console.log("fake fetchBookmarks")
     }
+
+
+  // useEffect(() => {
+  //   fetchBookmarks();
+  // }, [])
+
     
     return (
       <div className="flex items-start justify-center w-full p-0 relative border-0 px-4
@@ -127,7 +144,7 @@ const Person: NextPageWithLayout = (props:any) => {
                         data={movieResult} 
                         user={user} 
                         maxItems={movieResult.length} 
-                        bookmarkData={[]}
+                        bookmarkData={dataBookmark}
                         baseWidth={290}
                         target="movie"
                         fetchHandler={fetchBookmarks}
@@ -146,7 +163,7 @@ const Person: NextPageWithLayout = (props:any) => {
                         data={tvResult} 
                         user={user} 
                         maxItems={tvResult.length} 
-                        bookmarkData={[]}
+                        bookmarkData={dataBookmark}
                         baseWidth={290}
                         target="tv"
                         fetchHandler={fetchBookmarks}
