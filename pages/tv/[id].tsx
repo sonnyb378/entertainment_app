@@ -23,22 +23,24 @@ import { db } from "../../firebase";
 import Carousel from "../../components/Carousel/Carousel";
 import PreviousMap from "postcss/lib/previous-map";
 
-import { useBookmark } from "../../lib/hooks/useBookmark";
 import { GetServerSideProps, GetStaticProps } from "next";
 import axios from "axios";
 import { fake_tv_episodes } from "../../model/fake_tv_episodes";
 import EpisodeCard from "../../components/EpisodeCard/EpisodeCard";
 import SelectSeason from "../../components/SelectSeason/SelectSeason";
 import { fadeScreen } from "../../lib/fadeScreen";
+import { IBookmarkData, removeDataBookmarks, selectBookmarkData, setDataBookmarks } from "../../app/store/slices/bookmarks";
 
 const TV: NextPageWithLayout = (props:any) => {
   const router = useRouter();
-  const { setBookmark } = useAppContext()
   const user = useAppSelector<IAuthState>(selectAuth);
-  const { videoIsPlayed, showID } = useAppContext();
+  const { videoIsPlayed, showData } = useAppContext();
 
   const [isBookmarked, setIsBookmarked] = useState(false)
   const [isEpisodesLoading, setIsEpisodesLoading] = useState(false)
+  
+  const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
+  const [dataBookmark, setDataBookmark] = useState<any>([])
   
   const dispatch = useAppDispatch() 
 
@@ -47,9 +49,6 @@ const TV: NextPageWithLayout = (props:any) => {
   const isLoading = false;
   const isError = undefined;
   const data = tvData
-
-  // const { dataBookmark, bookmarkLoading, fetchBookmarks } = useBookmark();
-  let dataBookmark:any[] = []
 
   let timer: NodeJS.Timer;
 
@@ -63,8 +62,7 @@ const TV: NextPageWithLayout = (props:any) => {
 
     data["season/1"] && data["season/1"].episodes.length > 0  && data["season/1"].episodes.map((episode:any) => {
       episodes.push(episode)
-    })
-    
+    })    
   }
 
   const fetchSeasonEpisodes = async (season_number: string, callback: (season_number:string) => void) => {
@@ -80,21 +78,39 @@ const TV: NextPageWithLayout = (props:any) => {
     
   }
 
-  const fetchBookmarks = () => {
-    console.log("fake fetchBookmarks")
-  }
-
   useEffect(() => {
     fadeScreen(videoIsPlayed, () => {
-      router.push("/watch/"+showID)
+      router.push(`/watch/${showData.id}?mt=${showData.media_type}`)
     })
   }, [videoIsPlayed])
 
+  useEffect(() => {
+    setIsBookmarked(bookmarks.data.findIndex((show:any) => show.id === data.id) !== -1)
+    setDataBookmark([...bookmarks.data])
+  }, [bookmarks])
 
-  // useEffect(() => {
-  //   fetchBookmarks();
-  // }, [])
+  const genres:any = [];
+  if (data.genres) {
+    data.genres.map((genre:any) => {
+      genres.push(genre.id)
+    })
+  }
+  const saveBookmark = (data:any) => {
+    dispatch(setDataBookmarks({
+      id: data.id,
+      name: data.title || data.original_title,
+      backdrop_path: data.backdrop_path,
+      poster_path: data.poster_path,
+      media_type: "tv",
+      genre_ids: genres,
+    }))    
+  }
 
+  const deleteBookmark = (showID:number) => {
+    dispatch(
+      removeDataBookmarks({ id: showID })
+    )
+  }
     
     if (isError) return <div>Error occured while fetching TV details. Please try again.</div>
 
@@ -169,13 +185,13 @@ const TV: NextPageWithLayout = (props:any) => {
                     {/* <CustomBtn title="Season" Icon={ChevronDownIcon} onClickHandler={() => console.log("Dropdown season: ",data.id)} /> */}
                     {
                       !isBookmarked ? 
-                        user && user.accessToken && <CustomBtn title="Add to List" Icon={PlusCircleIcon} onClickHandler={() => setBookmark(data, "tv", isBookmarked, (id) => {
-                          fetchBookmarks()
-                        })} />
+                        user && user.accessToken && <CustomBtn title="Add to List" Icon={PlusCircleIcon} onClickHandler={() => 
+                          saveBookmark(data)
+                        } />
                       :
-                        user && user.accessToken &&  <CustomBtn title="Remove from List" Icon={MinusCircleIcon} onClickHandler={() => setBookmark(data, "tv", isBookmarked, (id) => {
-                          fetchBookmarks()
-                        })} />
+                        user && user.accessToken &&  <CustomBtn title="Remove from List" Icon={MinusCircleIcon} onClickHandler={() => 
+                          deleteBookmark(data.id)  
+                        } />
                     }
                     <div className="flex items-center justify-start space-x-2">{
                       data.networks.map((network:any, i:any) => {
@@ -259,39 +275,31 @@ const TV: NextPageWithLayout = (props:any) => {
                 bookmarkData={dataBookmark}
                 baseWidth={290}
                 target="r"
-                fetchHandler={fetchBookmarks}
               />
 
             </section>
             {
-              // user && user.accessToken &&
-              //   <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]">
-              //     <h1 className="ml-[50px] text-[20px]">My List</h1>
+              user && user.accessToken &&
+                <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]">
+                  <h1 className="ml-[50px] text-[20px]">My List</h1>
                   
-              //     {
-              //       bookmarkLoading ?
-              //         <div className="flex items-center justify-start ml-[50px] mt-6 p-2">
-              //           <ArrowPathIcon className="w-[30px] h-[30px] animate-spin mr-2" />
-              //           <span>Loading</span>
-              //         </div>
-              //       :
-              //       dataBookmark && dataBookmark.length > 0 ?
-              //           <Carousel 
-              //             data={ dataBookmark }
-              //             user={user} 
-              //             maxItems={ dataBookmark.length } 
-              //             bookmarkData={dataBookmark}
-              //             baseWidth={290}
-              //             target="m"
-              //             fetchHandler={fetchBookmarks}
-              //           />
-              //         :
-              //           <div className="flex items-center justify-start ml-[50px] mt-6 p-2">No bookmarks found</div>
+                  {
+                    dataBookmark && dataBookmark.length > 0 ?
+                        <Carousel 
+                          data={ dataBookmark }
+                          user={user} 
+                          maxItems={ dataBookmark.length } 
+                          bookmarkData={dataBookmark}
+                          baseWidth={290}
+                          target="m"
+                        />
+                      :
+                        <div className="flex items-center justify-start ml-[50px] mt-6 p-2">No bookmarks found</div>
                         
 
-              //     }
+                  }
                   
-              //   </section>
+                </section>
             }
             
             

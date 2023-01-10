@@ -16,7 +16,6 @@ import { IResult } from "../components/Search/SearchResultItem/SearchResultItem"
 import axios from "axios";
 import { getRandom } from "../lib/getRandom";
 import Carousel from "../components/Carousel/Carousel";
-import { useBookmark } from "../lib/hooks/useBookmark";
 import { ArrowPathIcon, ChevronLeftIcon } from "@heroicons/react/24/solid";
 import { PlayCircleIcon, PlusCircleIcon, MinusCircleIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 
@@ -29,14 +28,17 @@ import { useAppContext } from "../context/state";
 import { fake_popular } from "../model/fake_popular";
 import type { AppProps } from 'next/app';
 import { fadeScreen } from "../lib/fadeScreen";
+import { IBookmarkData, removeDataBookmarks, selectBookmarkData, setDataBookmarks } from "../app/store/slices/bookmarks";
 
 
 const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
     const user = useAppSelector<IAuthState>(selectAuth);    
-
+    
     const [isBookmarked, setIsBookmarked] = useState(false)
-    const { setBookmark, setVideoIsPlayed } = useAppContext()
-    const { videoIsPlayed, showID } = useAppContext();
+    const { videoIsPlayed, setVideoIsPlayed,  showData } = useAppContext();
+
+    const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
+    const [dataBookmark, setDataBookmark] = useState<any>([])
     
     const router = useRouter();
     const dispatch = useAppDispatch();
@@ -44,10 +46,8 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
     const { trending, popular } = data;  
     const featured = fake_featured;
     
-    // const feature_id = trending && trending[getRandom(trending.length-1)].id;
+    const feature_id = trending && trending[getRandom(trending.length-1)].id;
     // const { movie_detail: featured, isLoading, isError } = useMovieDetail(`${feature_id}`); 
-    // const { dataBookmark, bookmarkLoading, fetchBookmarks } = useBookmark();
-    let dataBookmark:any[] = []
 
     let recommendationsArr:any[] = [];
     
@@ -57,9 +57,6 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
       })
     }
 
-    const fetchBookmarks = () => {
-      console.log("fake fetchBookmarks")
-    }
 
     useEffect(() => {
       dispatch(setCurrentUrl({
@@ -70,15 +67,38 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
 
     useEffect(() => {
       fadeScreen(videoIsPlayed, () => {
-        router.push("/watch/"+showID)
+        router.push(`/watch/${showData.id}?mt=${showData.media_type}`)
       })
     }, [videoIsPlayed])
   
+    useEffect(() => {
+      setIsBookmarked(bookmarks.data.findIndex((show:any) => show.id === featured.id) !== -1)
+      setDataBookmark([...bookmarks.data])
+    }, [bookmarks])
   
-    // useEffect(() => {
-    //   fetchBookmarks();
-    // }, [])
- 
+    const genres:any = [];
+    if (featured.genres) {
+      featured.genres.map((genre:any) => {
+        genres.push(genre.id)
+      })
+    }
+
+
+    const saveBookmark = (data:any) => {
+      dispatch(setDataBookmarks({
+        id: data.id,
+        name: data.title || data.name || data.original_title || data.original_name,
+        backdrop_path: data.backdrop_path,
+        poster_path: data.poster_path,
+        media_type: "movie",
+        genre_ids: genres,
+      }))    
+    }
+    const deleteBookmark = (showID:number) => {
+      dispatch(
+        removeDataBookmarks({ id: showID })
+      )
+    }
    
     return (
       <div className="flex flex-col items-start justify-center w-full overflow-hidden pb-[100px] -mt-[4px]" data-testid="movies_container">
@@ -142,16 +162,16 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                         <div className="flex flex-col w-full items-center justify-start border-0 p-0 mt-4 space-y-2
                         sm:space-y-0 sm:space-x-2 sm:flex-row
                         lg:space-x-2">
-                          <CustomBtn title="Play" Icon={PlayCircleIcon} onClickHandler={() => setVideoIsPlayed(true, featured.id)   } />
+                          <CustomBtn title="Play" Icon={PlayCircleIcon} onClickHandler={() => setVideoIsPlayed(true, {...featured, media_type: "movie" })   } />
                           {
                             !isBookmarked ? 
-                              user && user.accessToken && <CustomBtn title="Add to List" Icon={PlusCircleIcon} onClickHandler={() => setBookmark(data, "movie", isBookmarked, (id) => {
-                                fetchBookmarks()
-                              })} />
+                              user && user.accessToken && <CustomBtn title="Add to List" Icon={PlusCircleIcon} onClickHandler={() => 
+                                saveBookmark(featured)
+                              } />
                             :
-                              user && user.accessToken &&  <CustomBtn title="Remove from List" Icon={MinusCircleIcon} onClickHandler={() => setBookmark(data, "movie", isBookmarked, (id) => {
-                                fetchBookmarks()
-                              })} />
+                              user && user.accessToken &&  <CustomBtn title="Remove from List" Icon={MinusCircleIcon} onClickHandler={() => 
+                                deleteBookmark(featured.id)
+                              } />
                           }
                           <CustomBtn title="More Info" Icon={QuestionMarkCircleIcon} onClickHandler={() => {
                             router.push(`/movie/${ featured.id}`)
@@ -177,7 +197,6 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                 bookmarkData={dataBookmark}
                 baseWidth={290}
                 target="t"
-                fetchHandler={fetchBookmarks}
               />
 
             </section>
@@ -192,7 +211,6 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                 bookmarkData={dataBookmark}
                 baseWidth={290}
                 target="p"
-                fetchHandler={fetchBookmarks}
                 isThumbnail={false}
                 mediaType="movie"
               />
@@ -210,40 +228,33 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                 bookmarkData={dataBookmark}
                 baseWidth={290}
                 target="r"
-                fetchHandler={fetchBookmarks}
               />
 
             </section>
             
             {
-              // user && user.accessToken &&
-              //   <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]">
-              //     <h1 className="ml-[50px] text-[20px]">My List</h1>
+              user && user.accessToken &&
+                <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]">
+                  <h1 className="ml-[50px] text-[20px]">My List</h1>
                   
-              //     {
-              //       bookmarkLoading ?
-              //         <div className="flex items-center justify-start ml-[50px] mt-6 p-2">
-              //           <ArrowPathIcon className="w-[30px] h-[30px] animate-spin mr-2" />
-              //           <span>Loading</span>
-              //         </div>
-              //       :
-              //       dataBookmark && dataBookmark.length > 0 ?
-              //           <Carousel 
-              //             data={ dataBookmark }
-              //             user={user} 
-              //             maxItems={ dataBookmark.length } 
-              //             bookmarkData={dataBookmark}
-              //             baseWidth={290}
-              //             target="m"
-              //             fetchHandler={fetchBookmarks}
-              //           />
-              //         :
-              //           <div className="flex items-center justify-start ml-[50px] mt-6 p-2">No bookmarks found</div>
+                  {
+                    
+                      dataBookmark && dataBookmark.length > 0 ?
+                        <Carousel 
+                          data={ dataBookmark }
+                          user={user} 
+                          maxItems={ dataBookmark.length } 
+                          bookmarkData={dataBookmark}
+                          baseWidth={290}
+                          target="m"
+                        />
+                      :
+                        <div className="flex items-center justify-start ml-[50px] mt-6 p-2">No bookmarks found</div>
                         
 
-              //     }
+                  }
                   
-              //   </section>
+                </section>
             }
             
             
@@ -274,8 +285,6 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
         setPageIsLoading(false);
       }
     },[router.asPath]);
-
-    
 
     if (pageIsLoading) return null;
    

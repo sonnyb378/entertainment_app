@@ -15,7 +15,7 @@ import PersonInfo from "../../components/Info/PersonInfo";
 import Carousel from "../../components/Carousel/Carousel";
 import { useAppContext } from "../../context/state";
 import { fadeScreen } from "../../lib/fadeScreen";
-import { useBookmark } from "../../lib/hooks/useBookmark";
+import { IBookmarkData, selectBookmarkData } from "../../app/store/slices/bookmarks";
 
 export interface IPerson {
 	"adult": boolean,
@@ -37,12 +37,10 @@ export interface IPerson {
 const Person: NextPageWithLayout = (props:any) => {
     const router = useRouter();
     const user = useAppSelector<IAuthState>(selectAuth); 
-    const { videoIsPlayed, showID } = useAppContext(); 
+    const { videoIsPlayed, showData } = useAppContext(); 
+    const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
 
     const { data } = props;
-
-    // const { dataBookmark, bookmarkLoading, fetchBookmarks } = useBookmark();
-    let dataBookmark:any[] = []
 
     let movies: any = []
     let tvshows: any = []
@@ -79,18 +77,10 @@ const Person: NextPageWithLayout = (props:any) => {
     
     useEffect(() => {
       fadeScreen(videoIsPlayed, () => {
-        router.push("/watch/"+showID)
+        router.push("/watch/"+showData.id)
       })
     }, [videoIsPlayed])
 
-    const fetchBookmarks = () => {
-      console.log("fake fetchBookmarks")
-    }
-
-
-  // useEffect(() => {
-  //   fetchBookmarks();
-  // }, [])
 
     
     return (
@@ -144,10 +134,9 @@ const Person: NextPageWithLayout = (props:any) => {
                         data={movieResult} 
                         user={user} 
                         maxItems={movieResult.length} 
-                        bookmarkData={dataBookmark}
+                        bookmarkData={bookmarks.data}
                         baseWidth={290}
                         target="movie"
-                        fetchHandler={fetchBookmarks}
                       />
                     </div>
                 </div>
@@ -163,10 +152,9 @@ const Person: NextPageWithLayout = (props:any) => {
                         data={tvResult} 
                         user={user} 
                         maxItems={tvResult.length} 
-                        bookmarkData={dataBookmark}
+                        bookmarkData={bookmarks.data}
                         baseWidth={290}
                         target="tv"
-                        fetchHandler={fetchBookmarks}
                       />
                     </div>
                 </div>        

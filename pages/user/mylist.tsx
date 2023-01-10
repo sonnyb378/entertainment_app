@@ -12,23 +12,18 @@ import { IAuthState } from "../../ts/states/auth_state";
 import { setCurrentUrl } from "../../app/store/slices/url";
 import Thumbnail from "../../components/Thumbnail/Thumbnail";
 import { useAppContext } from "../../context/state";
-import { useBookmark } from "../../lib/hooks/useBookmark";
 import { ArrowPathIcon } from "@heroicons/react/24/solid";
 import SearchResultItem from "../../components/Search/SearchResultItem/SearchResultItem";
 import { fadeScreen } from "../../lib/fadeScreen";
+import { IBookmarkData, selectBookmarkData } from "../../app/store/slices/bookmarks";
 
 const MyList: NextPageWithLayout = () => {
     const user = useAppSelector<IAuthState>(selectAuth);  
     const router = useRouter();
     const dispatch = useAppDispatch();
     const { videoIsPlayed, showID } = useAppContext();
+    const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
 
-    const { dataBookmark, bookmarkLoading, fetchBookmarks } = useBookmark();
-
-    useEffect(() => {
-      fetchBookmarks();
-    }, [])
-  
 
     useEffect(() => {
       dispatch(setCurrentUrl({
@@ -43,45 +38,40 @@ const MyList: NextPageWithLayout = () => {
       })
     }, [videoIsPlayed])
 
- 
     return (
       <div className="flex flex-col items-start justify-center w-[90%] p-5 relative" data-testid="mylist_container">
         <h1 className="text-[30px] text-bold">My List</h1>
-        {
-          bookmarkLoading ?
-            <div className="flex items-center justify-start ml-[50px] mt-6 p-2">
-              <ArrowPathIcon className="w-[30px] h-[30px] animate-spin mr-2" />
-              <span>Loading</span>
-            </div>
-          :
-            <ul 
-                className="flex flex-wrap items-start justify-start border-0 mt-4 w-full relative" 
-                data-testid="results_item_container" 
-                id="results_item_container"
-            >           
-             {
-                dataBookmark && dataBookmark.length > 0 ?
-                  dataBookmark.map((result:any, i:any) => {
-                    return <li key={i} className="flex flex-col items-center justify-center cursor-pointer relative transition-all duration-100 p-0.5 border-0 w-6/12
-                        sm:w-6/12 sm:border-red-500
-                        md:w-4/12 md:border-blue-500
-                        lg:w-3/12 lg:border-green-500
-                        xl:w-3/12 xl:border-purple-500
-                        2xl:w-2/12 2xl:border-orange-500"
-                        id={`thumbnail_container`}
-                        data-testid="thumbnail_container"            
-                    >
-                        <Thumbnail 
-                            user={user} result={result} bookmarkData={dataBookmark} fetchHandler={fetchBookmarks}
-                        />                                                 
-                    </li>  
-                  })
+          {
+          
+                bookmarks.data && bookmarks.data.length > 0 ?            
+                  <ul 
+                      className="flex flex-wrap items-start justify-start border-0 mt-4 w-full relative" 
+                      data-testid="results_item_container" 
+                      id="results_item_container"
+                  > 
+                    {
+                      bookmarks.data.map((result:any, i:any) => {
+                        return <li key={i} className="flex flex-col items-center justify-center cursor-pointer relative transition-all duration-100 p-0.5 border-0 w-6/12
+                            sm:w-6/12 sm:border-red-500
+                            md:w-4/12 md:border-blue-500
+                            lg:w-3/12 lg:border-green-500
+                            xl:w-3/12 xl:border-purple-500
+                            2xl:w-2/12 2xl:border-orange-500"
+                            id={`thumbnail_container`}
+                            data-testid="thumbnail_container"            
+                        >
+                            <Thumbnail 
+                                user={user} result={result} bookmarkData={bookmarks.data}
+                            />                                                 
+                        </li>  
+                      })
+                    }
+                  </ul>
+          
                 :
                   <div className="flex items-center justify-start ml-[50px] mt-6 p-2">No bookmarks found</div>
-              }
-            </ul> 
             
-        }
+          }
       </div> 
     );
     

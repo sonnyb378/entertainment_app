@@ -18,11 +18,13 @@ import storage from "../../lib/persistStorage";
 import authReducer from "./slices/auth";
 import urlReducer from "./slices/url"
 import searchReducer from "./slices/searchResults"
+import bookmarkReducer from "./slices/bookmarks"
   
 const reducers = combineReducers({
   auth: authReducer,
   url: urlReducer,
-  search_results: searchReducer
+  search_results: searchReducer,
+  bookmarks: bookmarkReducer
 });
 
 const persistConfig = {

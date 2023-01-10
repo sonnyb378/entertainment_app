@@ -9,16 +9,18 @@ import { useRouter } from "next/router";
 import { useAppSelector } from "../../app/hooks";
 import { IAuthState } from "../../ts/states/auth_state";
 import { selectAuth } from "../../app/store/slices/auth";
+import { useMovieDetail } from "../../lib/hooks/useMovieDetail";
+import { useTVDetail } from "../../lib/hooks/useTVDetail";
 
 const WatchShow: NextPageWithLayout<{ data: any }> = ({ data }) => {
     const router = useRouter()
     const [showControl, setShowControls] = useState(true)
-    const { setVideoIsPlayed } = useAppContext()
-
-    const { show_id } = data
+    const { setVideoIsPlayed, videoIsPlayed, showData } = useAppContext()
+    
+    const { media_type, show_id } = data
 
     useEffect(() => {
-        setVideoIsPlayed(false, 0)
+        setVideoIsPlayed(false, {})
     },[])
 
     const videoControlsHandler = (callback: (...args: [any]) => void, delay: number) => {
@@ -68,7 +70,9 @@ const WatchShow: NextPageWithLayout<{ data: any }> = ({ data }) => {
                                 <li><SpeakerWaveIcon className="w-[50px] h-[50px]" /></li>
                             </ul>
                         </div>
-                        <div className="flex flex-1 items-center justify-center text-[20px] border-0">title</div>
+                        <div className="flex flex-1 items-center justify-center text-[20px] border-0">
+                            title
+                        </div>
                         <div className="flex items-center justify-center">
                             <ul className="flex items-center justify-center space-x-2">
                                 <li><EllipsisHorizontalCircleIcon className="w-[50px] h-[50px]" /></li>
@@ -121,7 +125,8 @@ WatchShow.getLayout = (page) => {
     return {
         props: {
             data: {
-                show_id: show_id
+                show_id: show_id,
+                media_type: context.query.mt
             }
         }
     }

@@ -6,16 +6,15 @@ import { auth, db } from "../firebase";
 import { useAppSelector } from "../app/hooks";
 import { IAuthState } from "../ts/states/auth_state";
 import { selectAuth } from "../app/store/slices/auth";
-import { collection, addDoc, setDoc, doc, documentId, deleteDoc, FieldValue, arrayUnion, Unsubscribe } from "firebase/firestore"; 
+import { collection, addDoc, setDoc, doc, documentId, deleteDoc, FieldValue, arrayUnion, Unsubscribe, serverTimestamp } from "firebase/firestore"; 
 import { IResult } from "../components/Search/SearchResultItem/SearchResultItem";
 
 export interface ContextState {
   setIsFullscreen: () => void,
   isFullscreen: boolean,
-  setVideoIsPlayed: (isPlay:boolean, showID:number) => void,
+  setVideoIsPlayed: (isPlay:boolean, showData:any) => void,
   videoIsPlayed: boolean;
-  showID: number;
-  setBookmark: (id:any, media_type:string, isBookmarked:boolean, callback:(id:any) => void) => void,
+  showData: any;
   ctxOnEnterHandler:(e:React.MouseEvent<HTMLElement>, callback:() => void) => void,
   ctxOnLeaveHandler:(e:React.MouseEvent<HTMLElement>, callback: (...args:any[]) => void) => void
 }  
@@ -23,10 +22,9 @@ export interface ContextState {
 const initialState = {
   setIsFullscreen: () => {},
   isFullscreen: false,
-  setBookmark: () => {},
-  setVideoIsPlayed: (isPlay:boolean, showID:number) => {},
+  setVideoIsPlayed: (isPlay:boolean, showData:any) => {},
   videoIsPlayed: false,
-  showID: 0,
+  showData: {},
   ctxOnEnterHandler: (e:React.MouseEvent<HTMLElement>, callback:() => void) => {},
   ctxOnLeaveHandler: (e:React.MouseEvent<HTMLElement>, callback: (...args:any[]) => void) => {},
 };
@@ -39,55 +37,16 @@ export const AppContextWrapper: React.FC<{ children: React.ReactNode }> = ({ chi
   
   let timer: NodeJS.Timer;
 
-  const setBookmark = async (
-    result:any, 
-    media_type:string, 
-    isBookmarked: boolean,
-    callback:(id:any) => void
-  ) => {
-
-    try {
-      
-      if (!isBookmarked) {
-
-        // const genres:any = [];
-        // if (result.genres) {
-        //   result.genres.map((genre:any) => {
-        //     genres.push(genre.id)
-        //   })
-        // }
-
-        // await setDoc(doc(db, "bookmark", `${user.id}`), {
-        //   user_id: user.id
-        // })
-        // await setDoc(doc(db, "bookmark", `${user.id}`, `${media_type}`, `${result.id}`), {
-        //   id: result.id,
-        //   name: result.name || result.title || result.original_name || result.original_title,
-        //   backdrop_path: result.backdrop_path,
-        //   poster_path: result.poster_path,
-        //   media_type: media_type,
-        //   genre_ids: genres.length > 0 ? genres : result.genre_ids
-        // })
-        callback(`adding bookmark: ${result.id}`)
-      } else {
-        // await deleteDoc(doc(db, "bookmark", `${user.id}`, `${media_type}`, `${result.id}` ));
-        callback(`deleting bookmark: ${result.id}`)
-      }
-
-      // callback(result.id)
-    } catch (e) {
-      // console.error("Error adding document: ", e);
-      callback(e)
-    }
-
-  }
-
-  const setVideoIsPlayed = (isPlay:boolean, showID:number) => {
+  const setVideoIsPlayed = (isPlay:boolean, showData:any) => {
     setContextState((prev) => {
       return {
         ...prev,
         videoIsPlayed: isPlay,
-        showID: showID
+        showData: {
+          id: showData.id,
+          title: showData.title || showData.name || showData.original_title || showData.original_name,
+          media_type: showData.media_type
+        }
       }
     })
   }
@@ -124,10 +83,9 @@ export const AppContextWrapper: React.FC<{ children: React.ReactNode }> = ({ chi
   const ctx = {
     setIsFullscreen,
     isFullscreen: contextState.isFullscreen,
-    setBookmark,
     setVideoIsPlayed,
     videoIsPlayed: contextState.videoIsPlayed,
-    showID: contextState.showID,
+    showData: contextState.showData,
     ctxOnEnterHandler,
     ctxOnLeaveHandler
   }

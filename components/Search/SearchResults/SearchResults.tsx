@@ -14,7 +14,7 @@ import { IAuthState } from "../../../ts/states/auth_state";
 import { selectAuth } from "../../../app/store/slices/auth";
 import { collection, onSnapshot, Unsubscribe } from "firebase/firestore";
 import { db } from "../../../firebase";
-import { useBookmark } from "../../../lib/hooks/useBookmark";
+import { IBookmarkData, selectBookmarkData } from "../../../app/store/slices/bookmarks";
 
 interface ISearchResultProps {
     keyword: string;
@@ -32,13 +32,13 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
     const [ pageNumber, setPageNumber ] = useState(1)
     const user = useAppSelector<IAuthState>(selectAuth);
     
+    const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
     const [dataBookmark, setDataBookmark] = useState<any>([])
 
     let search_results: IResult[];
 
     const { data } = useBlackAdam(keyword);
 
-    const { bookmark_data, fetchBookmarks } = useBookmark();
 
     // const PAGE_SIZE = 20;
     // const { data, error, size, setSize } = useSWRInfinite((index) => [
@@ -60,27 +60,6 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
     //     setSize(size + 1)
     // }
 
-    useEffect(() => {
-        fetchBookmarks();
-      }, [])
-    
-    useEffect(() => {
-        let bookmarkArr:any[] = [];
-        bookmark_data && bookmark_data.map((bookmark:any, i:any) => {
-            const data = {
-            id: bookmark.data().id,
-            name: bookmark.data().name,
-            media_type: bookmark.data().media_type,
-            genre_ids: bookmark.data().genre_ids,
-            backdrop_path: bookmark.data().backdrop_path,
-            poster_path: bookmark.data().poster_path,
-            }
-            bookmarkArr.push(data)      
-        })
-        setDataBookmark(bookmarkArr) 
-    }, [bookmark_data])
-
-
     // console.log("SearchResults search_results: ", search_results)
 
     // if (isError) return  <div>Sorry an error occurred. Please try again...</div>
@@ -98,8 +77,7 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
                             <SearchResultItem 
                                 key={i} 
                                 result={result} 
-                                bookmarkData={dataBookmark}
-                                fetchHandler={fetchBookmarks}
+                                bookmarkData={bookmarks.data}
                             /> 
                         )                       
                     })

@@ -13,7 +13,6 @@ import { setCurrentUrl } from "../app/store/slices/url";
 import { useAppContext } from "../context/state";
 import { getRandom } from "../lib/getRandom";
 import { useTVDetail } from "../lib/hooks/useTVDetail";
-import { useBookmark } from "../lib/hooks/useBookmark";
 import Image from "next/image";
 import Info from "../components/Info/Info";
 import CustomBtn from "../components/Button/CustomBtn/CustomBtn";
@@ -25,14 +24,17 @@ import { GetStaticProps } from "next";
 import { fake_tv_featured, fake_tv_trending } from "../model/fake_tv_trending";
 import { fake_tv_popular } from "../model/fake_tv_popular";
 import { fadeScreen } from "../lib/fadeScreen";
+import { IBookmarkData, removeDataBookmarks, selectBookmarkData, setDataBookmarks } from "../app/store/slices/bookmarks";
 
 
 const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
     const user = useAppSelector<IAuthState>(selectAuth);    
 
     const [isBookmarked, setIsBookmarked] = useState(false)
-    const { setBookmark } = useAppContext()
-    const { videoIsPlayed, showID } = useAppContext();
+    const { videoIsPlayed, showData } = useAppContext();
+
+    const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
+    const [dataBookmark, setDataBookmark] = useState<any>([])
 
     const router = useRouter();
     const dispatch = useAppDispatch();
@@ -41,10 +43,8 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
     const featured = fake_tv_featured;
     
     
-    // const feature_id = trending && trending[getRandom(trending.length-1)].id;
+    const feature_id = trending && trending[getRandom(trending.length-1)].id;
     // const { tv_detail: featured, isLoading, isError } = useTVDetail(`${feature_id}`); 
-    // const { dataBookmark, bookmarkLoading, fetchBookmarks } = useBookmark();
-    let dataBookmark:any[] = []
 
     let recommendationsArr:any[] = [];  
     if (featured) {
@@ -55,10 +55,6 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
     }
     
 
-    const fetchBookmarks = () => {
-      console.log("fake fetchBookmarks")
-    }
-
     useEffect(() => {
       dispatch(setCurrentUrl({
         currentUrl: router.pathname
@@ -67,14 +63,41 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
 
     useEffect(() => {
       fadeScreen(videoIsPlayed, () => {
-        router.push("/watch/"+showID)
+        router.push(`/watch/${showData.id}?mt=${showData.media_type}`)
       })
     }, [videoIsPlayed])
     
-  // useEffect(() => {
-  //   fetchBookmarks();
-  // }, [])
+    useEffect(() => {
+      setIsBookmarked(bookmarks.data.findIndex((show:any) => show.id === featured.id) !== -1)
+      setDataBookmark([...bookmarks.data])
+    }, [bookmarks])
+  
+   
 
+    const genres:any = [];
+    if (featured.genres) {
+      featured.genres.map((genre:any) => {
+        genres.push(genre.id)
+      })
+    }
+
+
+    const saveBookmark = (data:any) => {
+      dispatch(setDataBookmarks({
+        id: data.id,
+        name: data.title || data.name || data.original_title || data.original_name,
+        backdrop_path: data.backdrop_path,
+        poster_path: data.poster_path,
+        media_type: "tv",
+        genre_ids: genres,
+      }))    
+    }
+  
+    const deleteBookmark = (showID:number) => {
+      dispatch(
+        removeDataBookmarks({ id: showID })
+      )
+    }
 
     return (
       <div className="flex flex-col items-start justify-center w-full overflow-hidden pb-[100px] -mt-[4px]" data-testid="tv_container">
@@ -152,13 +175,13 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
                           {/* <CustomBtn title="Season" Icon={ChevronDownIcon} onClickHandler={() => console.log("Dropdown season: ",data.id)} /> */}
                           {
                             !isBookmarked ? 
-                              user && user.accessToken && <CustomBtn title="Add to List" Icon={PlusCircleIcon} onClickHandler={() => setBookmark(data, "tv", isBookmarked, (id) => {
-                                fetchBookmarks()
-                              })} />
+                              user && user.accessToken && <CustomBtn title="Add to List" Icon={PlusCircleIcon} onClickHandler={() => 
+                                saveBookmark(featured)
+                              } />
                             :
-                              user && user.accessToken &&  <CustomBtn title="Remove from List" Icon={MinusCircleIcon} onClickHandler={() => setBookmark(data, "tv", isBookmarked, (id) => {
-                                fetchBookmarks()
-                              })} />
+                              user && user.accessToken &&  <CustomBtn title="Remove from List" Icon={MinusCircleIcon} onClickHandler={() => 
+                                deleteBookmark(featured.id)
+                              } />
                           }
                           <CustomBtn title="More Info" Icon={QuestionMarkCircleIcon} onClickHandler={() => {
                             router.push(`/tv/${ featured.id}`)
@@ -206,7 +229,6 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
               bookmarkData={dataBookmark}
               baseWidth={290}
               target="t"
-              fetchHandler={fetchBookmarks}
             />
 
           </section>
@@ -221,7 +243,6 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
               bookmarkData={dataBookmark}
               baseWidth={290}
               target="p"
-              fetchHandler={fetchBookmarks}
               isThumbnail={false}
               mediaType="tv"
             />
@@ -239,23 +260,17 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
               bookmarkData={dataBookmark}
               baseWidth={290}
               target="r"
-              fetchHandler={fetchBookmarks}
             />
 
           </section>
-            
-            {/* {
+            {
+          
               user && user.accessToken &&
                 <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]">
                   <h1 className="ml-[50px] text-[20px]">My List</h1>
                   
                   {
-                    bookmarkLoading ?
-                      <div className="flex items-center justify-start ml-[50px] mt-6 p-2">
-                        <ArrowPathIcon className="w-[30px] h-[30px] animate-spin mr-2" />
-                        <span>Loading</span>
-                      </div>
-                    :
+                    
                     dataBookmark && dataBookmark.length > 0 ?
                         <Carousel 
                           data={ dataBookmark }
@@ -264,7 +279,6 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
                           bookmarkData={dataBookmark}
                           baseWidth={290}
                           target="m"
-                          fetchHandler={fetchBookmarks}
                         />
                       :
                         <div className="flex items-center justify-start ml-[50px] mt-6 p-2">No bookmarks found</div>
@@ -273,7 +287,7 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
                   }
                   
                 </section>
-            } */}
+            }
             
               
         </section>

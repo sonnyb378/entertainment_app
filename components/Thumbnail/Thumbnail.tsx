@@ -15,22 +15,21 @@ import { useAppContext } from "../../context/state";
 import { useRouter } from "next/router";
 import Video from "./Video/Video";
 import { fadeScreen } from "../../lib/fadeScreen";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { IBookmarkData, removeDataBookmarks, selectBookmarkData, setDataBookmarks } from "../../app/store/slices/bookmarks";
 
 
 const Thumbnail:React.FC<{ 
     user: IAuthState, 
     result:IResult,
-    bookmarkData?:any[]|null,
-    fetchHandler: () => void
+    bookmarkData?:any[]|null
 }> = ({ 
         user, 
         result,
-        bookmarkData = null,
-        fetchHandler
+        bookmarkData = null
     }) => {
         
         const { 
-            setBookmark,
             setVideoIsPlayed,
             videoIsPlayed,
             ctxOnEnterHandler: onEnterHandler,
@@ -44,19 +43,18 @@ const Thumbnail:React.FC<{
 
         const [isBookmarked, setIsBookmarked] = useState(false);
 
+        const dispatch = useAppDispatch();
+
         useEffect(() => {
-            if (bookmarkData && bookmarkData.length > 0) {
-                setIsBookmarked(bookmarkData?.findIndex((b) => `${b.id}` === `${result.id}`) !== -1)
-            }
+            setIsBookmarked(bookmarkData?.findIndex((b) => `${b.id}` === `${result.id}`) !== -1)
         }, [bookmarkData])
-
-
+        
     return (
         <div
             className="flex flex-col items-center justify-start w-full relative"
             id="thumbnail"
             data-testid="thumbnail"
-            >
+        >
                 
             <div id={`expand_${result.id}`} className={`${ expand ? "flex opacity-100 z-[3000]" : "flex opacity-0 z-[1000] scale-[80%]"} 
                 flex-col overflow-hidden absolute items-center justify-start w-[120%] h-auto bg-black shadow-xl rounded-md border-2 
@@ -75,8 +73,7 @@ const Thumbnail:React.FC<{
                             expand={expand} 
                             user={user} 
                             src="/train.mp4" 
-                            isBookmarked={isBookmarked} 
-                            fetchHandler={fetchHandler}
+                            isBookmarked={isBookmarked}
                         />
                     :
                         result.backdrop_path ? 
@@ -101,24 +98,43 @@ const Thumbnail:React.FC<{
                         bg-gradient-to-t from-[#0a0f19] via-[#0a0f19] border-0"></div>
                     <div className="flex pt-2 pb-1 z-[1100] relative w-full items-center justify-start bg-gray-900 bg-opacity-70 space-x-2 px-[13px]">
                         
-                        <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
-                            hover:text-white hover:bg-btnhighlight hover:border-btnhighlight">
-                            <PlayIcon className="w-[20px] h-[20px]" onClick={ () => setVideoIsPlayed(true, result.id) } />
-                        </div>
+                        {
+                            result.media_type !== "person" &&
+                            <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
+                                hover:text-white hover:bg-btnhighlight hover:border-btnhighlight">
+                                <PlayIcon className="w-[20px] h-[20px]" onClick={ () => setVideoIsPlayed(true, result) } />
+                            </div>
+                        }
+                        
+
                         <div className="flex-1"></div>
                         {
-                            user && user.accessToken && 
+                            user && user.accessToken && result.media_type !== "person" &&  
                             <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
                                 hover:text-btnhighlight hover:border-btnhighlight">
                                 {
-                                    !isBookmarked ?                                
-                                        <PlusIcon className="w-[20px] h-[20px]" onClick={() => setBookmark(result, result.media_type, isBookmarked, (id:any) => {
-                                            fetchHandler()
-                                        })}/>
+                                    !isBookmarked ?                                                                     
+                                        <PlusIcon className="w-[20px] h-[20px]" onClick={() => {
+                                            dispatch(setDataBookmarks({
+                                                id: result.id,
+                                                name: result.title || result.name || result.original_title || result.original_name,
+                                                backdrop_path: result.backdrop_path,
+                                                poster_path: result.poster_path,
+                                                media_type: result.media_type,
+                                                genre_ids: result.genre_ids,
+                                            })) 
+                                        }
+                                            
+                                        }/>
                                     : 
-                                        <CheckIcon className="w-[20px] h-[20px]" onClick={() => setBookmark(result, result.media_type, isBookmarked, (id:any) => {
-                                            fetchHandler();
-                                        })}/>
+                                        <CheckIcon className="w-[20px] h-[20px]" onClick={() => 
+                                            {
+                                                setExpand(false)
+                                                dispatch(
+                                                    removeDataBookmarks({ id: result.id })
+                                                )
+                                            }
+                                        }/>
                                 }
                             </div>
                         }

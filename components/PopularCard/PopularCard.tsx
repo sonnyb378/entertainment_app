@@ -27,25 +27,24 @@ import num_7 from "../../assets/num_7.png"
 import num_8 from "../../assets/num_8.png"
 import num_9 from "../../assets/num_9.png"
 import num_10 from "../../assets/num_10.png"
+import { removeDataBookmarks, setDataBookmarks } from "../../app/store/slices/bookmarks";
+import { useAppDispatch } from "../../app/hooks";
 
 const PopularCard:React.FC<{ 
     visibleItems: number,
     indexCount: number,
     user: IAuthState, 
     result:IResult,
-    bookmarkData?:any[]|null,
-    fetchHandler: () => void
+    bookmarkData?:any[]|null
 }> = ({ 
         visibleItems,
         indexCount,
         user, 
         result,
-        bookmarkData = null,
-        fetchHandler
+        bookmarkData = null
     }) => {
         
         const { 
-            setBookmark,
             setVideoIsPlayed,
             videoIsPlayed,
             ctxOnEnterHandler: onEnterHandler,
@@ -58,10 +57,10 @@ const PopularCard:React.FC<{
 
         const [isBookmarked, setIsBookmarked] = useState(false);
 
+        const dispatch = useAppDispatch();
+
         useEffect(() => {
-            if (bookmarkData && bookmarkData.length > 0) {
-                setIsBookmarked(bookmarkData?.findIndex((b) => `${b.id}` === `${result.id}`) !== -1)
-            }
+            setIsBookmarked(bookmarkData?.findIndex((b) => `${b.id}` === `${result.id}`) !== -1)
         }, [bookmarkData])
 
         let number_image;
@@ -79,11 +78,9 @@ const PopularCard:React.FC<{
             case 10: number_image = num_10; break;
             default: number_image = num_1; break;
         }
-        // console.log("thumbnail: bookmarkData: ", bookmarkData)
+        
 
     const borderSize = 0;
-
-    // console.log("PopularCard: ", result)
 
     if (videoIsPlayed) {
         if (typeof window !== 'undefined') {
@@ -119,8 +116,7 @@ const PopularCard:React.FC<{
                                 expand={expand} 
                                 user={user} 
                                 src="/train.mp4" 
-                                isBookmarked={isBookmarked} 
-                                fetchHandler={fetchHandler}
+                                isBookmarked={isBookmarked}
                             />
                         :
                             result.backdrop_path ? 
@@ -147,7 +143,7 @@ const PopularCard:React.FC<{
                             
                             <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
                                 hover:text-white hover:bg-btnhighlight hover:border-btnhighlight">
-                                <PlayIcon className="w-[20px] h-[20px]" onClick={ () => setVideoIsPlayed(true, result.id) } />
+                                <PlayIcon className="w-[20px] h-[20px]" onClick={ () => setVideoIsPlayed(true, result) } />
                             </div>
                             <div className="flex-1"></div>
                             {
@@ -156,13 +152,22 @@ const PopularCard:React.FC<{
                                     hover:text-btnhighlight hover:border-btnhighlight">
                                     {
                                         !isBookmarked ?                                
-                                            <PlusIcon className="w-[20px] h-[20px]" onClick={() => setBookmark(result, result.media_type, isBookmarked, (id:any) => {
-                                                fetchHandler()
-                                            })}/>
+                                            <PlusIcon className="w-[20px] h-[20px]" onClick={() => 
+                                                dispatch(setDataBookmarks({
+                                                    id: result.id,
+                                                    name: result.title || result.name || result.original_title || result.original_name,
+                                                    backdrop_path: result.backdrop_path,
+                                                    poster_path: result.poster_path,
+                                                    media_type: result.media_type,
+                                                    genre_ids: result.genre_ids,
+                                                  })) 
+                                            }/>
                                         : 
-                                            <CheckIcon className="w-[20px] h-[20px]" onClick={() => setBookmark(result, result.media_type, isBookmarked, (id:any) => {
-                                                fetchHandler();
-                                            })}/>
+                                            <CheckIcon className="w-[20px] h-[20px]" onClick={() => 
+                                                dispatch(
+                                                    removeDataBookmarks({ id: result.id })
+                                                  )
+                                            }/>
                                     }
                                 </div>
                             }
