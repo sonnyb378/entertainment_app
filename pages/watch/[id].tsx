@@ -11,13 +11,14 @@ import { IAuthState } from "../../ts/states/auth_state";
 import { selectAuth } from "../../app/store/slices/auth";
 import { useMovieDetail } from "../../lib/hooks/useMovieDetail";
 import { useTVDetail } from "../../lib/hooks/useTVDetail";
+import axios from "axios";
 
 const WatchShow: NextPageWithLayout<{ data: any }> = ({ data }) => {
     const router = useRouter()
     const [showControl, setShowControls] = useState(true)
     const { setVideoIsPlayed, videoIsPlayed, showData } = useAppContext()
     
-    const { media_type, show_id } = data
+    const { info } = data
 
     useEffect(() => {
         setVideoIsPlayed(false, {})
@@ -71,7 +72,9 @@ const WatchShow: NextPageWithLayout<{ data: any }> = ({ data }) => {
                             </ul>
                         </div>
                         <div className="flex flex-1 items-center justify-center text-[20px] border-0">
-                            title
+                            {
+                                info.title || info.name || info.original_title || info.original_name
+                            }
                         </div>
                         <div className="flex items-center justify-center">
                             <ul className="flex items-center justify-center space-x-2">
@@ -122,11 +125,17 @@ WatchShow.getLayout = (page) => {
     
     const show_id = context.params.id;
 
+    const [reqShow] = await Promise.all([
+        await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}${context.query.mt}/${show_id}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US`).then(res => res.data)
+    ]) 
+    const [resShow] = await Promise.all([
+        reqShow
+    ])
+
     return {
         props: {
             data: {
-                show_id: show_id,
-                media_type: context.query.mt
+                info: { ...resShow },
             }
         }
     }
