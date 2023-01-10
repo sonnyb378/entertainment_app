@@ -10,13 +10,13 @@ export interface ISelectSeason {
 
 const SelectSeason: React.FC<ISelectSeason> = ({ data, onClickHandler }) => {
     const initialSeasonName = data.seasons.find((season:any) => season.season_number === 1)?.name 
-    const [ seasonName, setSeasonName] = useState(initialSeasonName)
+    const [seasonName, setSeasonName] = useState(initialSeasonName)
     const [show, setShow] = useState(false)
-    // console.log("season: ", season)
 
     return (
         <div className="flex flex-col items-start justify-start relative">                    
             <div className="items-start justify-start relative">
+                
                 <button className="flex items-center justify-start px-6 py-4 border-2 text-slate-200 border-btnprimary text-[18px] w-full
                 hover:border-slate-400"
                     onClick={() => setShow(!show)}

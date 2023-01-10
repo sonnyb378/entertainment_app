@@ -54,28 +54,35 @@ const TV: NextPageWithLayout = (props:any) => {
   let timer: NodeJS.Timer;
 
   let recommendationsArr:any[] = [];
-  // let episodes:any[] = [];
   
   if (data) {
     data.recommendations && data.recommendations.results && data.recommendations.results.slice(0,20).map((item:any) => {
       recommendationsArr.push(item)
     })
-
-    data["season/1"] && data["season/1"].episodes.length > 0  && data["season/1"].episodes.map((episode:any) => {
-      episodes.push(episode)
-    })    
   }
+
+  useEffect(() => {
+    //
+    // initial episodes
+    //
+    if (data && data["season/1"]) {
+      if (data["season/1"] && data["season/1"].episodes.length > 0) {
+        setEpisodes(data["season/1"].episodes)
+      }   
+    }
+  },[data])
 
   const fetchSeasonEpisodes = async (season_number: string, callback: (season_number:string) => void) => {
     setIsEpisodesLoading(true)
     callback(season_number)
 
-    const episodes = await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}tv/${props.tv_id}/season/${season_number}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US`).then(res => res.data) 
+    const season_episodes = await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}tv/${props.tv_id}/season/${season_number}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US`).then(res => res.data) 
+    
+    // console.log("fetch season episodes : ", season_number, season_episodes.episodes)
     
     setIsEpisodesLoading(false)
-    setEpisodes(episodes && episodes.episodes)
+    setEpisodes(season_episodes.episodes)
 
-    // console.log("fetch season episodes : ", season_number)
     
   }
 
@@ -124,7 +131,7 @@ const TV: NextPageWithLayout = (props:any) => {
     return (
       <div className="flex flex-col items-start justify-center w-full overflow-hidden pb-[100px] -mt-[4px]" data-testid="tv_container">
         {
-            isLoading && <div className="flex items-center justify-start w-full">
+            isLoading && <div className="flex items-center justify-start w-full p-6">
                 <ArrowPathIcon className="w-[30px] h-[30px] animate-spin mr-2" />
                 <span>Loading</span>
             </div>
