@@ -124,9 +124,16 @@ WatchShow.getLayout = (page) => {
   export const  getServerSideProps: GetServerSideProps = async (context:any) => {
     
     const show_id = context.params.id;
+    let url: string = `${context.query.mt}/${show_id}`
 
+    if (context.query.mt === "tv" && context.query.s) {
+        url = `tv/${context.query.t}/season/${context.query.s}/episode/${context.query.e}`
+    }
+    
     const [reqShow] = await Promise.all([
-        await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}${context.query.mt}/${show_id}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US`).then(res => res.data)
+        await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}${url}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US`, {
+            headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+          }).then(res => res.data)
     ]) 
     const [resShow] = await Promise.all([
         reqShow

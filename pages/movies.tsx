@@ -296,37 +296,41 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
 
   };
 
-  export const getStaticProps: GetStaticProps = async (context:any) => {
-    return {
-      props: {
-        data: {
-          trending : fake_trending,
-          popular: fake_popular,
-        }
-      },
-      // revalidate: 10,
-    }  
-  }
-
   // export const getStaticProps: GetStaticProps = async (context:any) => {
-    
-  //   const [reqTrending, reqPopular] = await Promise.all([
-  //     await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}trending/movie/day?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}`).then(res => res.data),
-  //     await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}movie/popular?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&region=US&page=1`).then(res => res.data)   
-  //   ])
-
-  //   const [resTrending, resPopular] = await Promise.all([
-  //     reqTrending, reqPopular
-  //   ])
-
   //   return {
   //     props: {
   //       data: {
-  //         trending: resTrending ? [].concat(...resTrending.results) : [],
-  //         popular: resPopular ? [].concat(...resPopular.results) : [],
+  //         trending : fake_trending,
+  //         popular: fake_popular,
   //       }
   //     },
   //     // revalidate: 10,
-  //   }
-
+  //   }  
   // }
+
+  export const getStaticProps: GetStaticProps = async (context:any) => {
+    
+    const [reqTrending, reqPopular] = await Promise.all([
+      await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}trending/movie/day?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}`,{
+        headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+      }).then(res => res.data),
+      await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}movie/popular?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&region=US&page=1`, {
+        headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+      }).then(res => res.data)   
+    ])
+
+    const [resTrending, resPopular] = await Promise.all([
+      reqTrending, reqPopular
+    ])
+
+    return {
+      props: {
+        data: {
+          trending: resTrending ? [].concat(...resTrending.results) : [],
+          popular: resPopular ? [].concat(...resPopular.results) : [],
+        }
+      },
+      // revalidate: 10,
+    }
+
+  }

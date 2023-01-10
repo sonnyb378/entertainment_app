@@ -39,11 +39,12 @@ const Movie: NextPageWithLayout = (props:any) => {
 
   const dispatch = useAppDispatch() 
 
-  // const { movie_detail: data, isLoading, isError } = useMovieDetail(props.movie_id); 
+  const { movie_detail: data, isLoading, isError } = useMovieDetail(props.movie_id); 
 
-  const isLoading = false;
-  const isError = undefined;
-  const data = movieData
+  // const isLoading = false;
+  // const isError = undefined;
+  // const data = movieData
+  // console.log("dataBookmark: ", dataBookmark)
 
   let timer: NodeJS.Timer;
 
@@ -61,14 +62,19 @@ const Movie: NextPageWithLayout = (props:any) => {
     })
   }, [videoIsPlayed])
 
- 
   useEffect(() => {
-    setIsBookmarked(bookmarks.data.findIndex((show:any) => show.id === data.id) !== -1)
     setDataBookmark([...bookmarks.data])
+  },[])
+
+  useEffect(() => {
+    if (data) {
+      setIsBookmarked(bookmarks.data.findIndex((show:any) => show.id === data.id) !== -1)
+      setDataBookmark([...bookmarks.data])
+    }
   }, [bookmarks])
 
   const genres:any = [];
-  if (data.genres) {
+  if (data && data.genres) {
     data.genres.map((genre:any) => {
       genres.push(genre.id)
     })
@@ -118,12 +124,12 @@ const Movie: NextPageWithLayout = (props:any) => {
                 lg:top-0 lg:left-0
                 xl:w-[70%] ">
                 
-                <div className="flex items-center justify-start w-full py-4">
+                {/* <div className="flex items-center justify-start w-full py-4">
                     <ChevronLeftIcon className="w-[30px] h-[30px] mr-[10px] border border-btnprimary bg-btnprimary rounded-full p-1 
                     hover:cursor-pointer hover:border-white" 
                     onClick={ () => router.back() } />
                     <span>Back</span>
-                </div>
+                </div> */}
 
                 <div className="flex flex-col border-0 h-[100%] w-full
                   xl:w-[70%] xl:ml-[100px] xl:mr-[100px]">

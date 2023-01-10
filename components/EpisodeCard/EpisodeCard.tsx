@@ -19,7 +19,7 @@ const EpisodeCard:React.FC<IEpisodeCard> = ({ data }) => {
             <div id="episode_overlay" className="flex items-center justify-center absolute w-full h-[100%] bg-white top-0 left-0 rounded-[5px] opacity-0 bg-opacity-0 z-[1000]
                 hover:opacity-100 hover:bg-opacity-10">
                 <PlayCircleIcon 
-                    onClick={ () => setVideoIsPlayed(true, {...data, media_type: "tv" } ) }
+                    onClick={ () => setVideoIsPlayed(true, {...data, season_number: data.season_number, media_type: "tv" } ) }
                     className="w-[80px] h-[80px] bg-btnprimary rounded-full p-0 m-0 drop-shadow-md" 
                 />
             </div>

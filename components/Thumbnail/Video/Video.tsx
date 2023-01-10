@@ -24,24 +24,7 @@ const Video: React.FC<{
                 expand && user && user.accessToken &&
                 <div className="flex absolute top-0 right-0 items-center justify-end z-[1000] w-full p-2 space-x-2">
 
-                    <div className={`p-2 ${isBookmarked ? "bg-btnprimary rounded-full":"" }  `}
-                            // onClick={ () =>  {
-                            //     !isBookmarked ? 
-                            //         dispatch(setDataBookmarks({
-                            //             id: result.id,
-                            //             name: result.title || result.name || result.original_title || result.original_name,
-                            //             backdrop_path: result.backdrop_path,
-                            //             poster_path: result.poster_path,
-                            //             media_type: result.media_type,
-                            //             genre_ids: result.genre_ids,
-                            //         }))  
-                            //     :          
-                            //         dispatch(
-                            //             removeDataBookmarks({ id: result.id })
-                            //         )
-                            //     }
-                            // }
-                        >
+                    <div className={`p-2 ${isBookmarked ? "bg-btnprimary rounded-full":"" } `}>
                         {
                             isBookmarked ? 
                                 <BookmarkIconSolid className={`w-[18px] h-[18px] text-white } `} />

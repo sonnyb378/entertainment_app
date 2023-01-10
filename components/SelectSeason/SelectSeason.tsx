@@ -28,7 +28,7 @@ const SelectSeason: React.FC<ISelectSeason> = ({ data, onClickHandler }) => {
                 <div className={`${show ? "flex" : "hidden" } items-start justify-start pl-0 absolute z-[1200] w-full bg-gray-500 drop-shadow-md`}>
                     <ul className="w-full">
                         {
-                        data && data.seasons && data.seasons.filter((season:any) => season.season_number > 0 ).map((season:any, i:any) => {
+                        data && data.seasons && data.seasons.filter((season:any) => season.season_number > 0 && season.episode_count > 0 ).map((season:any, i:any) => {
                             return (
                             <li 
                                 key={i} 

@@ -45,7 +45,9 @@ export const AppContextWrapper: React.FC<{ children: React.ReactNode }> = ({ chi
         showData: {
           id: showData.id,
           title: showData.title || showData.name || showData.original_title || showData.original_name,
-          media_type: showData.media_type
+          media_type: showData.media_type,
+          season_number: showData.season_number,
+          episode_number: showData.episode_number
         }
       }
     })

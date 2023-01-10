@@ -204,23 +204,23 @@ const Person: NextPageWithLayout = (props:any) => {
 
     const personID = context.params.id
     
-    // const [reqPerson] = await Promise.all([
-    //   await axios.get(
-    //     `${process.env.NEXT_PUBLIC_TMDB_API_URL}person/${personID}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&append_to_response=combined_credits`,
-    //     {
-    //       headers: { "Accept-Encoding": "gzip,deflate,compress" } 
-    //     }
-    //     ).then(res => res.data),
-    // ])
+    const [reqPerson] = await Promise.all([
+      await axios.get(
+        `${process.env.NEXT_PUBLIC_TMDB_API_URL}person/${personID}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&append_to_response=combined_credits`,
+        {
+          headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+        }
+        ).then(res => res.data),
+    ])
 
-    // const [resPerson] = await Promise.all([
-    //   reqPerson
-    // ])
+    const [resPerson] = await Promise.all([
+      reqPerson
+    ])
 
     return {
         props: {
             person_id: personID,
-            data: fake_person_popular //resPerson
+            data: resPerson //fake_person_popular
         }
     }
   }
