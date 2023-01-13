@@ -4,11 +4,8 @@ import { ChevronDownIcon, FilmIcon, TvIcon, BookmarkIcon } from "@heroicons/reac
 
 import { useRouter } from "next/router"
 
-export interface INavigation {
-    show: boolean;
-}
 
-const Navigation: React.FC<INavigation> = ({ show }) => {
+const Navigation: React.FC = () => {
     const router = useRouter();
     const [showDropdown, setShowDropdown] = useState(false)
 
@@ -23,8 +20,6 @@ const Navigation: React.FC<INavigation> = ({ show }) => {
             })
 
         }
-        
-
     },[showDropdown])
 
     function redirectHandler (e: React.MouseEvent<HTMLUListElement>) {
@@ -48,12 +43,16 @@ const Navigation: React.FC<INavigation> = ({ show }) => {
     return (
         <nav className="flex-1 items-center justify-start w-full pl-2 relative" id="navigation_container" data-testid="navigation_container">
             
-            <button onClick={ toggleDropDown } className={`flex items-center justify-start text-white hover:text-yellow-500 md:hidden`}>
+            <button 
+                onClick={ toggleDropDown } 
+                className={`flex items-center justify-start text-white hover:text-yellow-500 md:hidden`} 
+                data-testid="toggle_dropdown_btn"
+            >
                 <h1 className="">Browse</h1>
                 <ChevronDownIcon className="flex w-[20px] h-[20px] items-start ml-2" />
             </button>
 
-            <ul className={ !showDropdown ? styles.navigation : styles.show_navigation } onClick={redirectHandler} data-testid="nav" id="ul_navigation">
+            <ul className={ !showDropdown ? styles.navigation : styles.show_navigation } onClick={redirectHandler} data-testid="toggle_nav" id="ul_navigation">
                 <li data-testid="nav_movies">
                     <FilmIcon className="w-[20px] h-[20px] mr-1 md:hidden" />Movies
                 </li>

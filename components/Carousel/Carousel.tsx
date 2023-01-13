@@ -26,19 +26,18 @@ const Carousel: React.FC<{
     mediaType = "movie",
 }) => {
 
-    const THUMBNAIL_BASEWIDTH = baseWidth;
-    const MAX_ITEMS = maxItems;
-
     const [visibleItem, setVisibleItem] = useState(6);
+    const [maxIndex, setMaxIndex] = useState(3)
     const [translateWidth, setTranslateWidth] = useState(0)
     const [currentIndex, setCurrentIndex] = useState(0)
-    const [maxIndex, setMaxIndex] = useState(3)
+    
+    const THUMBNAIL_BASEWIDTH = baseWidth;
+    const MAX_ITEMS = maxItems;
 
     const isMounted = useRef(false)
 
     useEffect(() => {
         isMounted.current = true;
-
         return () => {
             isMounted.current = false;
         };
@@ -143,69 +142,81 @@ const Carousel: React.FC<{
 
 
     return(
-        <div className="flex flex-col border-0 w-full relative">
+        <div className="flex flex-col border-0 w-full relative" data-testid="carousel_maincontainer">
             <div id={`${target}_track`} className="hidden ml-[50px] border-2
                  sm:border-red-500 
                  md:border-blue-500 
                  lg:border-green-500 
                  xl:border-purple-500
                  2xl:border-orange-500
-            "> { translateWidth }, max index: {maxIndex}, current index: {currentIndex}, singleItemWidth: { Math.floor(translateWidth / visibleItem) } , visible items: {visibleItem}, MAX_ITEMS: { MAX_ITEMS }</div>
+            "> 
+                translateWidth: { translateWidth }, 
+                data length: {data?.length}, 
+                max index: {maxIndex}, 
+                current index: {currentIndex}, 
+                singleItemWidth: { Math.floor(translateWidth / visibleItem) } , 
+                visible items: {visibleItem}, 
+                MAX_ITEMS: { MAX_ITEMS }
+            </div>
               <div 
                 id={`${target}_carousel`} 
                 className={ styles.carousel }
                 data-testid="carousel" 
               >
-                
                     <div
                         onClick={prevHandler} 
-                        className={ styles.prev_btn }>
+                        className={ styles.prev_btn }
+                        data-testid="prev_btn"
+                    >
                         <ChevronLeftIcon className="w-[30px] h-[30px] border-0 text-white" />
                     </div>
                     <div 
                         onClick={nextHandler}
-                        className={ styles.next_btn }>
+                        className={ styles.next_btn }
+                        data-testid="next_btn"
+                    >
                         <ChevronRightIcon className="w-[30px] h-[30px] border-0 text-white" />
                     </div>
                     
                     <div id={`${target}_carousel_ul`} className={ styles.carousel_ul }>
-                    <div
-                        className="border-0 cursor-pointer h-[100%] w-[50px] p-[2px]"
-                        id="filler_start"
-                        data-testid="filler_start"
-                    ></div>
-                    {
-                        
-                        data && data.length > 0 && 
+                        <div
+                            className="border-0 cursor-pointer h-[100%] w-[50px] p-[2px]"
+                            id="filler_start"
+                            data-testid="filler_start"
+                        ></div>
+                        {
+                            
+                            data && data.length > 0 && 
 
-                            data.slice(0, (visibleItem * maxIndex) > MAX_ITEMS ? MAX_ITEMS : visibleItem * maxIndex).map((item:any, i:any) => {
-                                return (
-                                    <div  className={`flex items-start justify-center border-0 cursor-pointer h-[100%] w-[290px] p-[2px] ${target}_carousel_li`}
-                                    key={i}
-                                    >
-                                        {
-                                            isThumbnail ? 
-                                                <Thumbnail user={user} result={item} bookmarkData={bookmarkData} />                            
-                                            :
-                                                <PopularCard 
-                                                    visibleItems={visibleItem} 
-                                                    indexCount={i} 
-                                                    user={user} 
-                                                    result={ item.media_type ? {...item} : {...item, media_type: mediaType } } 
-                                                    bookmarkData={bookmarkData}
-                                                /> 
-                                        }
-                                    </div>
-                                )
-                                })
-                        
+                                data.slice(0, (visibleItem * maxIndex) > MAX_ITEMS ? MAX_ITEMS : visibleItem * maxIndex).map((item:any, i:any) => {
+                                    return (
+                                        <div  
+                                            className={`flex items-start justify-center border-0 cursor-pointer h-[100%] w-[290px] p-[2px] ${target}_carousel_li`}
+                                            key={i}
+                                        >
+                                            {
+                                                isThumbnail ? 
+                                                    <Thumbnail user={user} result={item} bookmarkData={bookmarkData} />                            
+                                                :
+                                                    <PopularCard 
+                                                        visibleItems={visibleItem} 
+                                                        indexCount={i} 
+                                                        user={user} 
+                                                        result={ item.media_type ? {...item} : {...item, media_type: mediaType } } 
+                                                        bookmarkData={bookmarkData}
+                                                    /> 
+                                            }
+                                        </div>
+                                    )
+                                    })
+                            
 
-                    }
-                    <div
-                        className="border-0 cursor-pointer h-[100%] w-[50px] p-[2px]"
-                        id="filler_end"
-                        data-testid="filler_end"
-                    ></div>
+                        }
+                        <div
+                            className="border-0 cursor-pointer h-[100%] w-[50px] p-[2px]"
+                            id="filler_end"
+                            data-testid="filler_end"
+                        ></div>
 
                     </div>
 

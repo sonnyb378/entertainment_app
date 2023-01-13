@@ -90,7 +90,16 @@ describe("test sign in page", () => {
     })
 
     it("must not render 'Sign In' button, when email and password are empty", () => {
-        const { debug, container } = render(<Signin />)
+        const {container } = render(<Signin />)
+
+        const emailField = container.querySelector("input[name='email_address']")!
+        expect(emailField).toBeInTheDocument()
+        fireEvent.change(emailField, { target: { value: "" }}) 
+
+        const passwordField = container.querySelector("input[name='password']")!
+        expect(passwordField).toBeInTheDocument()        
+        fireEvent.change(passwordField, { target: { value: "" }})
+
         const signinContainer = screen.getByTestId("signin_container")
         expect(signinContainer).toBeInTheDocument();
 
@@ -105,7 +114,7 @@ describe("test sign in page", () => {
         expect(signinContainer).toBeInTheDocument();
 
         const emailField = container.querySelector("input[name='email_address']")!
-        expect(emailField).toBeInTheDocument()        
+        expect(emailField).toBeInTheDocument()
         fireEvent.change(emailField, { target: { value: "demo@demo.com" }})
 
         const passwordField = container.querySelector("input[name='password']")!
@@ -155,7 +164,6 @@ describe("test sign in page", () => {
 
         const signinContainer = screen.getByTestId("signin_container")
         expect(signinContainer).toBeInTheDocument();
-
      
         await waitFor(() => {           
             // debug()

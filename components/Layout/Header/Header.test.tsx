@@ -26,7 +26,8 @@ jest.mock("../../../app/store/slices/auth", () => ({
 }))
 
 jest.mock("../../../app/hooks", () => ({
-    useAppDispatch: jest.fn()
+    useAppDispatch: jest.fn(),
+    useAppSelector: jest.fn()
 }))
 
 global.window = Object.create(window);
@@ -195,33 +196,7 @@ describe('Header', () => {
 
     })
 
-    // it("must mock signOut handler", () => {
-    //     const user = useAuthState as jest.Mock;        
-    //     user.mockReturnValue([true]);
-
-    //     const dispatch = useAppDispatch as jest.Mock;
-
-    //     const mockSetAuthData = setAuthData as unknown as jest.Mock;
-    //     const mockUserAuth = jest.fn()
-    //     mockSetAuthData.mockReturnValue(mockUserAuth)
-    //     dispatch.mockReturnValue(mockSetAuthData)
-
-    //     render(<Header />)
-    //     const headerComponent = screen.getByTestId("header")
-    //     expect(headerComponent).toBeInTheDocument();
-
-    //     const logoutButton = within(headerComponent).getByText("Logout")
-    //     expect(logoutButton).toBeInTheDocument();
-
-    //     fireEvent.click(logoutButton)
-
-    //     expect(mockSetAuthData).toHaveBeenCalledWith({
-    //         id: null,
-    //         accessToken: null,
-    //         expiresAt: null,
-    //     })
-
-    // })
+    
 
     
 

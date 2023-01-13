@@ -40,17 +40,28 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
     const dispatch = useAppDispatch();
 
     const { trending, popular } = data;
-    const featured = fake_tv_featured;
+    // const featured = fake_tv_featured;
     
     
     const feature_id = trending && trending[getRandom(trending.length-1)].id;
-    // const { tv_detail: featured, isLoading, isError } = useTVDetail(`${feature_id}`); 
+    const { tv_detail: featured, isLoading: featuredIsLoading, isError:featuredHasError } = useTVDetail(`${feature_id}`); 
 
     let recommendationsArr:any[] = [];  
-    if (featured) {
+    const genres:any = [];
+
+    if (!featuredIsLoading) {
       featured.recommendations && featured.recommendations.results && featured.recommendations.results.slice(0,20).map((item:any) => {
         recommendationsArr.push(item)
       })
+
+      
+      if (featured.genres) {
+        featured.genres.map((genre:any) => {
+          genres.push(genre.id)
+        })
+      } else {
+        genres.push([...featured.genre_ids])
+      }
 
     }
     
@@ -68,20 +79,13 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
     }, [videoIsPlayed])
     
     useEffect(() => {
-      setIsBookmarked(bookmarks.data.findIndex((show:any) => show.id === featured.id) !== -1)
+      if (!featuredIsLoading) {
+        setIsBookmarked(bookmarks.data.findIndex((show:any) => show.id === featured.id) !== -1)
+      }
       setDataBookmark([...bookmarks.data])
     }, [bookmarks])
   
    
-
-    const genres:any = [];
-    if (featured.genres) {
-      featured.genres.map((genre:any) => {
-        genres.push(genre.id)
-      })
-    }
-
-
     const saveBookmark = (data:any) => {
       dispatch(setDataBookmarks({
         id: data.id,

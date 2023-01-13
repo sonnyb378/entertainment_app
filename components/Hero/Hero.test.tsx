@@ -7,7 +7,7 @@ import Hero from "./Hero"
 jest.mock('next/image', () => ({
     __esModule: true,
     default: (props: any) => {
-      return <img {...props} />
+      return <img {...props } priority="true" />
     },
   }))
 
@@ -24,13 +24,15 @@ describe("<Hero />", () => {
     })
 
     it("must display the <Image />", async () => {
-        render(<Hero />)
-        const heroComponent = screen.getByTestId("hero")
+        const { debug, container} = render(<Hero />)
+        const heroComponent = within(container).getByTestId("hero")
         expect(heroComponent).toBeInTheDocument();
 
-        const img = within(heroComponent).getByTestId("image_container")
+        const img = within(container).getByTestId("image_container")
         expect(img).toBeInTheDocument();
-       
+        
+        // debug();
+
     })
 
 

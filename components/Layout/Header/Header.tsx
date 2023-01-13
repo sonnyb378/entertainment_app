@@ -48,8 +48,7 @@ const Header: React.FC<IHeader> = ({ children }) => {
                 <div className={styles.nav_container}>
                     <Logo />
                     {
-                        user ? <Navigation show={!!user} /> : <div className="flex-1"></div>
-                        
+                        user ? <Navigation /> : <div className="flex-1"></div>                        
                     }
                     <SearchField />
                     {

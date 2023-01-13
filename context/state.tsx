@@ -29,7 +29,7 @@ const initialState = {
   ctxOnLeaveHandler: (e:React.MouseEvent<HTMLElement>, callback: (...args:any[]) => void) => {},
 };
 
-const AppContext = createContext<ContextState>(initialState);
+export const AppContext = createContext<ContextState>(initialState);
 
 export const AppContextWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [contextState, setContextState] = useState<ContextState>(initialState);

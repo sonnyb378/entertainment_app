@@ -15,7 +15,9 @@ const EpisodeCard:React.FC<IEpisodeCard> = ({ data }) => {
         <div className={`flex items-start justify-center p-2 rounded-md bg-[#40424A] my-2 border-4 border-[#40424A] relative
             ${ data.runtime && data.overview !== "" && "hover:cursor-pointer" }
             hover:border-4 hover:border-[#3F546E]
-        `}>
+        `}
+        data-testid="episode_card"
+        >
             {
                 data.runtime && data.overview !== "" &&
                 <div 
@@ -25,6 +27,7 @@ const EpisodeCard:React.FC<IEpisodeCard> = ({ data }) => {
                     <PlayCircleIcon 
                         onClick={ () => setVideoIsPlayed(true, {...data, season_number: data.season_number, media_type: "tv" } ) }
                         className="w-[80px] h-[80px] bg-btnprimary rounded-full p-0 m-0 drop-shadow-md" 
+                        data-testid="play_button"
                     />
                 </div>
             }

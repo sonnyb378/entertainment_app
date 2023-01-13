@@ -44,19 +44,28 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
     const dispatch = useAppDispatch();
 
     const { trending, popular } = data;  
-    const featured = fake_featured;
+    // const featured = fake_featured;
     
     const feature_id = trending && trending[getRandom(trending.length-1)].id;
-    // const { movie_detail: featured, isLoading, isError } = useMovieDetail(`${feature_id}`); 
+    const { movie_detail: featured, isLoading: featuredIsLoading, isError: featuredHasError } = useMovieDetail(`${feature_id}`); 
 
     let recommendationsArr:any[] = [];
-    
-    if (featured) {
+    const genres:any = [];
+
+    if (!featuredIsLoading) {
       featured.recommendations && featured.recommendations.results && featured.recommendations.results.slice(0,20).map((item:any) => {
         recommendationsArr.push(item)
       })
-    }
 
+      
+      if (featured.hasOwnProperty('genres')) {
+        featured.genres.map((genre:any) => {
+          genres.push(genre.id)
+        })
+      } else {
+        genres.push([...feature_id.genre_ids])
+      }
+    }
 
     useEffect(() => {
       dispatch(setCurrentUrl({
@@ -72,16 +81,11 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
     }, [videoIsPlayed])
   
     useEffect(() => {
-      setIsBookmarked(bookmarks.data.findIndex((show:any) => show.id === featured.id) !== -1)
+      if (!featuredIsLoading) {
+        setIsBookmarked(bookmarks.data.findIndex((show:any) => show.id === featured.id) !== -1)
+      }
       setDataBookmark([...bookmarks.data])
-    }, [bookmarks])
-  
-    const genres:any = [];
-    if (featured.genres) {
-      featured.genres.map((genre:any) => {
-        genres.push(genre.id)
-      })
-    }
+    }, [bookmarks])  
 
 
     const saveBookmark = (data:any) => {
@@ -94,6 +98,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
         genre_ids: genres,
       }))    
     }
+
     const deleteBookmark = (showID:number) => {
       dispatch(
         removeDataBookmarks({ id: showID })
@@ -157,7 +162,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                         <Info title="Country" value={featured.production_countries} />
                         <Info title="Production Company" value={featured.production_companies} />
                         <Info title="Cast" value={ featured.credits?.cast } /> 
-                        <Info title="Genres" value={featured.genres} />
+                        <Info title="Genres" value={featured.genre_ids} />
 
                         <div className="flex flex-col w-full items-center justify-start border-0 p-0 mt-4 space-y-2
                         sm:space-y-0 sm:space-x-2 sm:flex-row

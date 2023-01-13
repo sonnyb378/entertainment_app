@@ -52,6 +52,12 @@ describe("Homepage", () => {
         jest.spyOn(React, "useState")
         .mockImplementationOnce(() => [false, setState])
         
+        const router = useRouter as jest.Mock;
+        const mockRouter = {
+            asPath: jest.fn()
+        }
+        router.mockReturnValue(mockRouter)
+
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector.mockReturnValue({
             accessToken: null
@@ -63,7 +69,7 @@ describe("Homepage", () => {
 
     })
 
-    it("must render redirect to movies is user is logged in", () => {  
+    it("must redirect to /movies if user is logged in", () => {  
         const setState = jest.fn();
         jest.spyOn(React, "useState")
         .mockImplementationOnce(() => [true, setState])

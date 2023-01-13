@@ -1,9 +1,9 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import {within} from '@testing-library/dom';
-
 import Main from "./Main"
 
+import { useRouter } from "next/router"
 import { useAuthState } from "react-firebase-hooks/auth";
 
 jest.mock("../../../firebase", () => ({}))
@@ -16,6 +16,11 @@ jest.mock("next/head", () => ({
     }
 }))
 
+jest.mock("next/router", () => ({
+    __esModule: true,
+    useRouter: jest.fn()
+})) 
+
 describe("<Main />", () => {
 
     beforeAll(() => {
@@ -27,6 +32,12 @@ describe("<Main />", () => {
     })
 
     it("must display the <Main /> component", () => {
+        const router = useRouter as jest.Mock;
+        const mockRouter = {
+            asPath: jest.fn()
+        }
+        router.mockReturnValue(mockRouter)
+        
         render(<Main showHero={true} ></Main>)
         const mainComponent = screen.getByTestId("main_component")
         expect(mainComponent).toBeInTheDocument();        

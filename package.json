@@ -13,7 +13,8 @@
     "start": "next start",
     "lint": "next lint",
     "prettier": "prettier --write .",
-    "test": "jest"
+    "test": "jest",
+    "clear_jest": "jest --clearCache"
   },
   "dependencies": {
     "@heroicons/react": "^2.0.12",

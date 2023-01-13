@@ -206,6 +206,8 @@ describe("test register page", () => {
 
     })
     
+
+
     it("must mock register", async () => {
 
         const dispatch = useAppDispatch as jest.Mock;
@@ -235,7 +237,15 @@ describe("test register page", () => {
         fireEvent.click(signInButton);
         
         await waitFor(() => {
-            expect(mockRouter.replace).toHaveBeenCalledWith("./movies")
+            /*
+                uncomment code in /pages/register.tsx  - line: 77
+            */
+            // for active registration
+            // expect(mockRouter.replace).toHaveBeenCalledWith("./movies")
+
+            // for disabled registration
+            const registerDisabled = screen.getByText("Registration disabled.")
+            expect(registerDisabled).toBeInTheDocument();
         })
 
     })

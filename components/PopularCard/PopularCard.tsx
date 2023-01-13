@@ -47,15 +47,16 @@ const PopularCard:React.FC<{
         const { 
             setVideoIsPlayed,
             videoIsPlayed,
-            ctxOnEnterHandler: onEnterHandler,
-            ctxOnLeaveHandler: onLeaveHandler
+            ctxOnEnterHandler,
+            ctxOnLeaveHandler
         } = useAppContext();
 
         const [expand, setExpand] = useState(false);
         const [isHover, setIsHover] = useState(false);
+        const [isBookmarked, setIsBookmarked] = useState(false);
+
         const router = useRouter();
 
-        const [isBookmarked, setIsBookmarked] = useState(false);
 
         const dispatch = useAppDispatch();
 
@@ -96,15 +97,18 @@ const PopularCard:React.FC<{
         <div
             className={ styles.popularcard_container}
             id="thumbnail"
-            data-testid="thumbnail"
+            data-testid="popular_card"
             >
                 
-                <div id={`expand_${result.id}`} className={`${ expand ? "flex opacity-100 z-[5000] mr-[10px]" : "flex opacity-0 z-[1000] scale-[80%]"} 
+                <div 
+                    id={`expand_${result.id}`} 
+                    className={`${ expand ? "flex opacity-100 z-[5000] mr-[10px]" : "flex opacity-0 z-[1000] scale-[80%]"} 
                     flex-col overflow-hidden absolute items-center justify-start w-[120%] h-auto bg-black shadow-xl rounded-md border-2 
                     duration-200 transition-all -mt-[50px] border-btnprimary ml-[12px] `}
-                    onMouseLeave={(e:React.MouseEvent<HTMLElement>) => onLeaveHandler!(e, () => {
+                    onMouseLeave={(e:React.MouseEvent<HTMLElement>) => ctxOnLeaveHandler(e, () => {
                         setExpand(false)
                     })}
+                    data-testid={`expand_${result.id}`}
                 >
                     {
                         // expand ? <iframe width="w-full" height='169' src={`https://www.youtube-nocookie.com/embed/mkomfZHG5q4?autoplay=${expand ? 1: 0}&mute=1&enablejsapi=1`} 
@@ -143,7 +147,7 @@ const PopularCard:React.FC<{
                             
                             <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
                                 hover:text-white hover:bg-btnhighlight hover:border-btnhighlight">
-                                <PlayIcon className="w-[20px] h-[20px]" onClick={ () => setVideoIsPlayed(true, result) } />
+                                <PlayIcon className="w-[20px] h-[20px]" onClick={ () => setVideoIsPlayed(true, result) } data-testid="play_button" />
                             </div>
                             <div className="flex-1"></div>
                             {
@@ -161,23 +165,31 @@ const PopularCard:React.FC<{
                                                     media_type: result.media_type,
                                                     genre_ids: result.genre_ids,
                                                   })) 
-                                            }/>
+                                                }
+                                                data-testid="add_bookmark_button"
+                                            />
+
                                         : 
                                             <CheckIcon className="w-[20px] h-[20px]" onClick={() => 
                                                 dispatch(
                                                     removeDataBookmarks({ id: result.id })
                                                   )
-                                            }/>
+                                                }
+                                                data-testid="remove_bookmark_button"
+                                            />
                                     }
                                 </div>
                             }
                             
                             <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
                                 hover:text-btnhighlight hover:border-btnhighlight">
-                                <ChevronDownIcon className="w-[20px] h-[20px]" onClick={() => {
-                                    router.push(`/${ result.media_type }/${ result.id}`)
-                                    // console.log(`redirect to: /${ result.media_type }/${ result.id}`)
-                                }} />
+                                <ChevronDownIcon 
+                                    className="w-[20px] h-[20px]" 
+                                    onClick={() => {
+                                        router.push(`/${ result.media_type }/${ result.id}`)
+                                    }} 
+                                    data-testid="view_detail_button"
+                                />
                             </div>
                         </div>               
                         {
@@ -191,10 +203,11 @@ const PopularCard:React.FC<{
                 
                 <div
                     id={`collapsed_${result.id}`}
-                    onMouseOver={ (e:React.MouseEvent<HTMLElement>) => onEnterHandler!(e, () => {
+                    data-testid={`collapsed_${result.id}`}
+                    onMouseOver={ (e:React.MouseEvent<HTMLElement>) => ctxOnEnterHandler(e, () => {
                         setExpand(true)
                     })}
-                    onMouseLeave={(e:React.MouseEvent<HTMLElement>) => onLeaveHandler!(e, (timer:NodeJS.Timer) => {
+                    onMouseLeave={(e:React.MouseEvent<HTMLElement>) => ctxOnLeaveHandler(e, (timer:NodeJS.Timer) => {
                         if (timer) clearTimeout(timer)
                     })}  
                     className={`flex ${ expand && "scale-[120%] opacity-0" } flex-col items-center justify-start relative duration-200 transition-all 

@@ -20,13 +20,15 @@ const MediaTypeShow: React.FC<{ result: IResult}> = ({ result}) => {
         <div className={ styles.media_type_show_container }  data-testid="mediatype_show">
             
             <div className="flex flex-col items-start justify-center w-full mt-1">
-                <h1 className="text-xs flex-1 text-md text-white w-full font-bold pr-2 line-clamp-1">
+                <h1 className="text-xs flex-1 text-md text-white w-full font-bold pr-2 line-clamp-1" data-testid="title_container">
                     { result.name || result.title || result.original_name || result.original_title }
                 </h1>
                 <div className="flex flex-1 items-start justify-start mt-1
                     text-[11px] mr-1 py-[3px] leading-1 text-slate-300 line-clamp-1
                     sm:leading-0
-                    ">
+                    "
+                    data-testid="genre_container"
+                >
                     {
                         genres.length > 0 ?
                             genres.join(" ● ")

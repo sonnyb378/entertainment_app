@@ -69,6 +69,12 @@ describe("<Avatar />", () => {
         const user = useAuthState as jest.Mock;        
         user.mockReturnValue([true]);
 
+        const router = useRouter as jest.Mock;
+        const mockRouter = {
+            replace: jest.fn()
+        }
+        router.mockReturnValue(mockRouter);
+
         const dispatch = useAppDispatch as jest.Mock;
         const mockSetAuthData = setAuthData as unknown as jest.Mock;
         const mockUserAuth = jest.fn()

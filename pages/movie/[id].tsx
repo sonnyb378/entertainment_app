@@ -79,6 +79,7 @@ const Movie: NextPageWithLayout = (props:any) => {
       genres.push(genre.id)
     })
   }
+  
   const saveBookmark = (data:any) => {
     dispatch(setDataBookmarks({
       id: data.id,

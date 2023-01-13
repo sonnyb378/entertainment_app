@@ -17,7 +17,7 @@ const BackdropImage: React.FC<{
             <Image 
                 src={ `${process.env.NEXT_PUBLIC_TMDB_IMAGE_PATH}${src}` } 
                 layout="fill"
-                priority={ true }
+                priority={true}
                 className={`object-contain cursor-pointer !relative !h-[unset] z-[1000]`}
             />   
             {
