@@ -15,7 +15,6 @@ const MediaTypePerson: React.FC<{ result: IResult}> = ({ result }) => {
             genres.push(genre?.name)
         })
     }
-
     
     return(
         <div className={ styles.media_type_person_container } data-testid="mediatype_person">
@@ -34,7 +33,7 @@ const MediaTypePerson: React.FC<{ result: IResult}> = ({ result }) => {
                 </div>   
             </div>                                        
             <div className="hidden sm:flex">
-                <UserCircleIcon className=" w-[18px] h-[18px]" />
+                <UserCircleIcon className=" w-[18px] h-[18px]" data-testid="person_icon"/>
             </div>    
                                 
         </div> 

@@ -6,7 +6,7 @@ import { IFakeResponse, useBlackAdam, useLimitless, useLOTR, useStarTrek, useZer
 
 import ResultCardLoading from "../SearchResultItem/ResultCardLoading/ResultCardLoading";
 
-import useSWRInfinite, { SWRInfiniteKeyLoader } from 'swr/infinite'
+import useSWRInfinite from 'swr/infinite'
 
 import SearchResultItem, { IResult } from "../SearchResultItem/SearchResultItem";
 import { useAppSelector } from "../../../app/hooks";
@@ -51,7 +51,6 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
         keyword
     ], fetcherInfinite)
 
-    
     search_results = data ? [].concat(...data) : [];
     const isLoading = !data && !error;
     const isError = error;
@@ -63,62 +62,75 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
         setSize(size + 1)
     }
 
-    // console.log("SearchResults search_results: ", search_results)
-
     if (isError) return  <div>Sorry an error occurred. Please try again...</div>
 
     return (
         <div  className="flex flex-col items-start justify-center w-full p-5 relative" data-testid="search_results_container">
-            <ul 
-                className="flex flex-wrap items-start justify-start border-0 mt-4 w-full relative" 
-                data-testid="results_item_container" 
-                id="results_item_container"
-            >
-                {
-                    // data.results && data.results.map((result:any, i:any) => {
-                    //     return (
-                    //         <SearchResultItem 
-                    //             key={i} 
-                    //             result={result} 
-                    //             bookmarkData={bookmarks.data}
-                    //         /> 
-                    //     )                       
-                    // })
-                }
+            {
+                isEmpty && <div className="mt-4">No Records Found</div>
+            }
 
-                {
-                    isEmpty && <div className="mt-4">No Records Found</div>
-                }
-                {
-                    search_results.map((result, i) => {
-                        return (
-                            <SearchResultItem 
-                                key={i} 
-                                result={result}
-                                bookmarkData={dataBookmark}
-                            />
-                        )                       
-                    })
-                }
-                {
-                    isLoadingMore && <ResultCardLoading count={12}/>
-                }
-
-                {
-                    !isReachingEnd &&
-                    <button
-                        className="flex w-full items-center justify-center text-lg p-2 mt-2 bg-btnprimary rounded-sm cursor-pointer hover:bg-btnhighlight"
-                        disabled={ isLoadingMore || isReachingEnd }
-                        onClick={ getMoreData.bind(this, size) }
-                    >
-
-                        Load More
-
-                    </button>
-                }
-            </ul>
-         
+            {
+                search_results &&
             
+                <ul 
+                    className="flex flex-wrap items-start justify-start border-0 mt-4 w-full relative" 
+                    data-testid="results_item_container" 
+                    id="results_item_container"
+                >
+                    {
+                        // data.results && data.results.map((result:any, i:any) => {
+                        //     return (
+                        //         <SearchResultItem 
+                        //             key={i} 
+                        //             result={result} 
+                        //             bookmarkData={bookmarks.data}
+                        //         /> 
+                        //     )                       
+                        // })
+                    }
+
+                    
+                    {
+                        search_results.map((result, i) => {
+                            return (
+                                <SearchResultItem 
+                                    key={i} 
+                                    result={result}
+                                    bookmarkData={dataBookmark}
+                                />
+                            )                       
+                        })
+                    }
+                    {
+                        // isLoadingMore && <ResultCardLoading count={12} />
+                    }
+                    {
+                        // !isReachingEnd &&
+                        // <button
+                        //     className="flex w-full items-center justify-center text-lg p-2 mt-2 bg-btnprimary rounded-sm cursor-pointer hover:bg-btnhighlight"
+                        //     disabled={ isLoadingMore || isReachingEnd }
+                        //     onClick={ getMoreData.bind(this, size) }
+                        // >
+                        //     Load More
+                        // </button>
+                    }
+                </ul>
+            }
+            {
+                isLoadingMore && <ResultCardLoading count={12} />         
+            }
+            {
+                !isReachingEnd &&
+                <button
+                    className="flex w-full items-center justify-center text-lg p-2 mt-2 bg-btnprimary rounded-sm cursor-pointer hover:bg-btnhighlight"
+                    disabled={ isLoadingMore || isReachingEnd }
+                    onClick={ getMoreData.bind(this, size) }
+                    data-testid="loadmore_button"
+                >
+                    Load More
+                </button>
+            }
         </div> 
     )
 }

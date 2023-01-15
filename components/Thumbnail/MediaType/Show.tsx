@@ -40,8 +40,8 @@ const MediaTypeShow: React.FC<{ result: IResult}> = ({ result}) => {
             <div className="hidden sm:flex">
                 { 
                     result.media_type === "movie" ?
-                    <FilmIcon className=" w-[18px] h-[18px]" /> : 
-                    <TvIcon className=" w-[18px] h-[18px]" />
+                    <FilmIcon className=" w-[18px] h-[18px]" data-testid="film_icon" /> : 
+                    <TvIcon className=" w-[18px] h-[18px]"  data-testid="tv_icon" />
                 }
             </div> 
 

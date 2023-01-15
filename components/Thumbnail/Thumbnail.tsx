@@ -39,15 +39,17 @@ const Thumbnail:React.FC<{
        
         const [expand, setExpand] = useState(false);
         const [isHover, setIsHover] = useState(false);
-        const router = useRouter();
-
         const [isBookmarked, setIsBookmarked] = useState(false);
+
+        const router = useRouter();
 
         const dispatch = useAppDispatch();
 
         useEffect(() => {
             setIsBookmarked(bookmarkData?.findIndex((b) => `${b.id}` === `${result.id}`) !== -1)
         }, [bookmarkData])
+
+        // console.log("thumbnail: ", result)
         
     return (
         <div
@@ -56,12 +58,15 @@ const Thumbnail:React.FC<{
             data-testid="thumbnail"
         >
                 
-            <div id={`expand_${result.id}`} className={`${ expand ? "flex opacity-100 z-[3000]" : "flex opacity-0 z-[1000] scale-[80%]"} 
+            <div 
+                id={`expand_${result.id}`} 
+                className={`${ expand ? "flex opacity-100 z-[3000]" : "flex opacity-0 z-[1000] scale-[80%]"} 
                 flex-col overflow-hidden absolute items-center justify-start w-[120%] h-auto bg-black shadow-xl rounded-md border-2 
                 duration-200 transition-all -mt-[50px] border-btnprimary`}
                 onMouseLeave={(e:React.MouseEvent<HTMLElement>) => onLeaveHandler!(e, () => {
                     setExpand(false)
                 })}
+                data-testid={`expand_${result.id}`} 
             >
                 {
                     // expand ? <iframe width="w-full" height='169' src={`https://www.youtube-nocookie.com/embed/mkomfZHG5q4?autoplay=${expand ? 1: 0}&mute=1&enablejsapi=1`} 
@@ -102,7 +107,7 @@ const Thumbnail:React.FC<{
                             result.media_type !== "person" &&
                             <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
                                 hover:text-white hover:bg-btnhighlight hover:border-btnhighlight">
-                                <PlayIcon className="w-[20px] h-[20px]" onClick={ () => setVideoIsPlayed(true, result) } />
+                                <PlayIcon className="w-[20px] h-[20px]" onClick={ () => setVideoIsPlayed(true, result) } data-testid="play_button" />
                             </div>
                         }
                         
@@ -115,26 +120,29 @@ const Thumbnail:React.FC<{
                                 {
                                     !isBookmarked ?                                                                     
                                         <PlusIcon className="w-[20px] h-[20px]" onClick={() => {
-                                            dispatch(setDataBookmarks({
-                                                id: result.id,
-                                                name: result.title || result.name || result.original_title || result.original_name,
-                                                backdrop_path: result.backdrop_path,
-                                                poster_path: result.poster_path,
-                                                media_type: result.media_type,
-                                                genre_ids: result.genre_ids,
-                                            })) 
-                                        }
-                                            
-                                        }/>
+                                                dispatch(setDataBookmarks({
+                                                    id: result.id,
+                                                    name: result.title || result.name || result.original_title || result.original_name,
+                                                    backdrop_path: result.backdrop_path,
+                                                    poster_path: result.poster_path,
+                                                    media_type: result.media_type,
+                                                    genre_ids: result.genre_ids,
+                                                })) 
+                                            }                                            
+                                            }
+                                            data-testid="add_bookmark_button"
+                                        />
                                     : 
                                         <CheckIcon className="w-[20px] h-[20px]" onClick={() => 
-                                            {
-                                                setExpand(false)
-                                                dispatch(
-                                                    removeDataBookmarks({ id: result.id })
-                                                )
+                                                {
+                                                    setExpand(false)
+                                                    dispatch(
+                                                        removeDataBookmarks({ id: result.id })
+                                                    )
+                                                }
                                             }
-                                        }/>
+                                            data-testid="remove_bookmark_button"
+                                        />
                                 }
                             </div>
                         }
@@ -142,9 +150,11 @@ const Thumbnail:React.FC<{
                         <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
                             hover:text-btnhighlight hover:border-btnhighlight">
                             <ChevronDownIcon className="w-[20px] h-[20px]" onClick={() => {
-                                router.push(`/${ result.media_type }/${ result.id}`)
-                                // console.log(`redirect to: /${ result.media_type }/${ result.id}`)
-                            }} />
+                                    router.push(`/${ result.media_type }/${ result.id}`)
+                                    // console.log(`redirect to: /${ result.media_type }/${ result.id}`)
+                                }} 
+                                data-testid="view_detail_button"
+                            />
                         </div>
                     </div>               
                     {
@@ -166,7 +176,9 @@ const Thumbnail:React.FC<{
                     if (timer) clearTimeout(timer)
                     setIsHover(false)
                 })}  
-                className={`flex ${ expand && "scale-[120%]" } flex-col items-center justify-start z-[2000] w-full relative duration-200 transition-all border-0 rounded-md overflow-hidden`}>
+                className={`flex ${ expand && "scale-[120%]" } flex-col items-center justify-start z-[2000] w-full relative duration-200 transition-all border-0 rounded-md overflow-hidden`}
+                data-testid={`collapsed_${result.id}`}
+            >
                 <span className={`${isHover ? "flex" : "hidden"} z-[2000] items-center justify-center absolute top-2 left-2 px-2 text-[10px] bg-black`}>
                     Keep hovering to autoplay
                 </span>

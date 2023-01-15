@@ -7,11 +7,11 @@ const ResultCardLoading: React.FC<{ count: number }> = ({ count }) => {
     const cards = new Array(count).fill(0)
     
     return (
-        <div className="flex flex-wrap items-start justify-start w-full relative mt-4">
+        <div className="flex flex-wrap items-start justify-start w-full relative mt-4" data-testid="loading_container">
             {
                 cards.map((card, i) => {
                     return (
-                        <div key={i} className={ styles.container }>              
+                        <div key={i} className={ styles.container } data-testid="loading_card">              
                             <div className="flex flex-col items-stretch justify-start relative border-0 w-full rounded-[5px] overflow-hidden">
                                 <div className="image-container relative w-full h-full border-0 border-slate-100 bg-gray-600 bg-opacity-90">   
                                     <Image 

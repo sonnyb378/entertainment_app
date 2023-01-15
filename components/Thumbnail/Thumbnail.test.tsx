@@ -1,15 +1,15 @@
 import { fireEvent, render, screen, within, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import PopularCard from './PopularCard'
+import Thumbnail from './Thumbnail'
 
 import { useAppDispatch } from "../../app/hooks"
-import { fake_popular } from '../../model/fake_popular'
 import { useState } from "react";
 import * as React from "react";
 import * as AppContext from '../../context/state';
 import { removeDataBookmarks, setDataBookmarks } from '../../app/store/slices/bookmarks'
 import { useRouter } from "next/router"
-
+import { fake_trending } from '../../model/fake_trending'
+import { fake_person_popular } from '../../model/fake_person_popular';
 
 jest.mock("../../app/store/slices/bookmarks", () => ({
     setDataBookmarks: jest.fn(),
@@ -41,8 +41,7 @@ jest.mock("next/router", () => ({
     useRouter: jest.fn()
 }))
 
-
-describe("<PopularCard />", () => {
+describe("<Thumbnail />", () => {
 
     beforeAll(() => {           
     })
@@ -51,66 +50,79 @@ describe("<PopularCard />", () => {
         jest.clearAllMocks();
     })
 
-    it("must render <PopularCard />", () => {
+    it("must render <Thumbnail />", () => {
         const user = {
             id: "somevalue",
             accessToken: "someToken",
             expiresAt: "someTimestamp"
         }
-        const item:any = fake_popular[0];
-        render(<PopularCard 
-            visibleItems={3}
-            indexCount={0}
+        const item:any = fake_trending[0];
+        const { container } = render(<Thumbnail 
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
         />)
-        const card = screen.getByTestId("popular_card")
-        expect(card).toBeInTheDocument();
+        const thumbnail = within(container).getByTestId("thumbnail")
+        expect(thumbnail).toBeInTheDocument();
     })
 
-    it("must render <PopularCard /> with the <BackdropImage /> component", () => {
-       
+    it("must render <Thumbnail /> with the <BackdropImage /> component", () => {
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementationOnce(() => [false, mockSetState])
+        .mockImplementationOnce(() => [false, mockSetState])
+        .mockImplementationOnce(() => [false, mockSetState])
+
         const user = {
             id: "somevalue",
             accessToken: "someToken",
             expiresAt: "someTimestamp"
         }
-        const item:any = { ...fake_popular[0] };
-        render(<PopularCard 
-            visibleItems={3}
-            indexCount={0}
+        const item:any = { ...fake_trending[0] };
+
+        const { container } = render(<Thumbnail 
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
         />)
-        const popular_card = screen.getByTestId("popular_card")
-        expect(popular_card).toBeInTheDocument();
+        const thumbnail = within(container).getByTestId("thumbnail")
+        expect(thumbnail).toBeInTheDocument();
         
-        const card = screen.getByTestId("backdrop_image_container")
-        expect(card).toBeInTheDocument();
+        const collapsed = within(thumbnail).getByTestId(`collapsed_${item.id}`)
+        expect(collapsed).toBeInTheDocument();
+
+        const backdrop = within(collapsed).getByTestId("backdrop_image_container")
+        expect(backdrop).toBeInTheDocument();
     })
 
-    it("must render <PopularCard /> with the <PosterImage /> component", () => {        
-        
+    it("must render <Thumbnail /> with the <PosterImage /> component", () => {
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementationOnce(() => [false, mockSetState])
+        .mockImplementationOnce(() => [false, mockSetState])
+        .mockImplementationOnce(() => [false, mockSetState])
+
         const user = {
             id: "somevalue",
             accessToken: "someToken",
             expiresAt: "someTimestamp"
         }
-        const item:any = { ...fake_popular[0], backdrop_path: null };
-        render(<PopularCard 
-            visibleItems={3}
-            indexCount={0}
+        const item:any = { ...fake_trending[0] };
+
+        const { debug, container } = render(<Thumbnail 
             user={user}
-            result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
+            result={ item?.media_type ? {...item, backdrop_path: null} : {...item, media_type: "movie", backdrop_path: null } }
             bookmarkData={[]}
         />)
-        const popular_card = screen.getByTestId("popular_card")
-        expect(popular_card).toBeInTheDocument();
+        const thumbnail = within(container).getByTestId("thumbnail")
+        expect(thumbnail).toBeInTheDocument();
         
-        const card = screen.getByTestId("poster_image_container")
-        expect(card).toBeInTheDocument();
+        const collapsed = within(thumbnail).getByTestId(`collapsed_${item.id}`)
+        expect(collapsed).toBeInTheDocument();
+
+        const poster = within(collapsed).getByTestId("poster_image_container")
+        expect(poster).toBeInTheDocument();
+
     })
 
     it("must render <PopularCard /> with the <MediaTypeShow /> component", () => {        
@@ -120,18 +132,69 @@ describe("<PopularCard />", () => {
             accessToken: "someToken",
             expiresAt: "someTimestamp"
         }
-        const item:any = { ...fake_popular[0] };
-        render(<PopularCard 
-            visibleItems={3}
-            indexCount={0}
+        const item:any = { ...fake_trending[0] };
+        const {debug, container} = render(<Thumbnail 
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
         />)
-        const popular_card = screen.getByTestId("popular_card")
-        expect(popular_card).toBeInTheDocument();
+        const thumbnail = within(container).getByTestId("thumbnail")
+        expect(thumbnail).toBeInTheDocument();
+        
+        const collapsed = within(thumbnail).getByTestId(`collapsed_${item.id}`)
+        expect(collapsed).toBeInTheDocument();
 
-        const el = screen.getByTestId("mediatype_show")
+        const el = within(collapsed).getByTestId("mediatype_show")
+        expect(el).toBeInTheDocument();
+    })
+
+    it("must render <PopularCard /> with the <MediaTypePerson /> component", () => {   
+        const user = {
+            id: "somevalue",
+            accessToken: "someToken",
+            expiresAt: "someTimestamp"
+        }
+        const item:any = {
+            "adult": false,
+            "gender": 0,
+            "id": 2875851,
+            "known_for": [
+                {
+                    "adult": false,
+                    "genre_ids": [
+                        35
+                    ],
+                    "id": 769964,
+                    "media_type": "movie",
+                    "original_language": "es",
+                    "original_title": "El sekuestro",
+                    "overview": "",
+                    "poster_path": "/hpF4gKv4SgtnVvxARfYlMzGWtQ8.jpg",
+                    "release_date": "1997-04-24",
+                    "title": "El sekuestro",
+                    "video": false,
+                    "vote_average": 0,
+                    "vote_count": 0
+                }
+            ],
+            "known_for_department": "Acting",
+            "media_type": "person",
+            "name": "Adam Black",
+            "popularity": 0.6,
+            "profile_path": null
+        };
+        const {debug, container} = render(<Thumbnail 
+            user={user}
+            result={ item?.media_type ? {...item} : {...item, media_type: "person" } }
+            bookmarkData={[]}
+        />)
+        const thumbnail = within(container).getByTestId("thumbnail")
+        expect(thumbnail).toBeInTheDocument();
+        
+        const collapsed = within(thumbnail).getByTestId(`collapsed_${item.id}`)
+        expect(collapsed).toBeInTheDocument();
+
+        const el = within(collapsed).getByTestId("mediatype_person")
         expect(el).toBeInTheDocument();
     })
 
@@ -147,16 +210,14 @@ describe("<PopularCard />", () => {
             accessToken: "someToken",
             expiresAt: "someTimestamp"
         }
-        const item:any = { ...fake_popular[0] };
-        const { debug, container } = render(<PopularCard 
-            visibleItems={3}
-            indexCount={0}
+        const item:any = { ...fake_trending[0] };
+        const { debug, container } = render(<Thumbnail 
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
         />)
-        const popular_card = screen.getByTestId("popular_card")
-        expect(popular_card).toBeInTheDocument();       
+        const thumbnail = screen.getByTestId("thumbnail")
+        expect(thumbnail).toBeInTheDocument();       
         
         const collapsed = within(container).getByTestId(`collapsed_${item.id}`)
         expect(collapsed).toBeInTheDocument();
@@ -170,14 +231,11 @@ describe("<PopularCard />", () => {
         const eOpacity = expand.classList.contains("opacity-100")
         expect(eOpacity).toBeTruthy()
 
-        const opacity = collapsed.classList.contains("opacity-0")
-        expect(opacity).toBeTruthy()
-
         const scale = collapsed.classList.contains("scale-[120%]")
         expect(scale).toBeTruthy()
 
-    })    
-
+    })   
+    
     it("must trigger onMouseLeave on collapsed card", () => {
         
         const mockContext = jest.fn().mockReturnValue({
@@ -190,16 +248,14 @@ describe("<PopularCard />", () => {
             accessToken: "someToken",
             expiresAt: "someTimestamp"
         }
-        const item:any = { ...fake_popular[0] };
-        const { debug, container } = render(<PopularCard 
-            visibleItems={3}
-            indexCount={0}
+        const item:any = { ...fake_trending[0] };
+        const { debug, container } = render(<Thumbnail 
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
         />)
-        const popular_card = screen.getByTestId("popular_card")
-        expect(popular_card).toBeInTheDocument();       
+        const thumbnail = screen.getByTestId("thumbnail")
+        expect(thumbnail).toBeInTheDocument();       
         
         const collapsed = within(container).getByTestId(`collapsed_${item.id}`)
         expect(collapsed).toBeInTheDocument();
@@ -207,12 +263,9 @@ describe("<PopularCard />", () => {
         fireEvent.mouseLeave(collapsed)
         expect(mockContext).toHaveBeenCalled()
 
-        const opacity = collapsed.classList.contains("opacity-0")
-        expect(opacity).toBeFalsy()
-
         const scale = collapsed.classList.contains("scale-[120%]")
         expect(scale).toBeFalsy()
-    })   
+    })
 
     it("must trigger onMouseLeave on expanded card", () => {
         
@@ -226,16 +279,14 @@ describe("<PopularCard />", () => {
             accessToken: "someToken",
             expiresAt: "someTimestamp"
         }
-        const item:any = { ...fake_popular[0] };
-        const { debug, container } = render(<PopularCard 
-            visibleItems={3}
-            indexCount={0}
+        const item:any = { ...fake_trending[0] };
+        const { debug, container } = render(<Thumbnail 
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
         />)
-        const popular_card = screen.getByTestId("popular_card")
-        expect(popular_card).toBeInTheDocument();       
+        const thumbnail = screen.getByTestId("thumbnail")
+        expect(thumbnail).toBeInTheDocument();       
         
         const expand = within(container).getByTestId(`expand_${item.id}`)
         expect(expand).toBeInTheDocument();
@@ -249,8 +300,6 @@ describe("<PopularCard />", () => {
         expect(scale).toBeTruthy()
 
         const collapsed = within(container).getByTestId(`collapsed_${item.id}`)
-        const cOpacity = collapsed.classList.contains("opacity-0")
-        expect(cOpacity).toBeFalsy()
         const cScale = collapsed.classList.contains("scale-[120%]")
         expect(cScale).toBeFalsy()
     }) 
@@ -267,18 +316,16 @@ describe("<PopularCard />", () => {
             accessToken: "someToken",
             expiresAt: "someTimestamp"
         }
-        const item:any = { ...fake_popular[0] };
-        const { debug, container } = render(<PopularCard 
-            visibleItems={3}
-            indexCount={0}
+        const item:any = { ...fake_trending[0] };
+        const { debug, container } = render(<Thumbnail
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
         />)
-        const popular_card = screen.getByTestId("popular_card")
-        expect(popular_card).toBeInTheDocument();   
+        const thumbnail = screen.getByTestId("thumbnail")
+        expect(thumbnail).toBeInTheDocument();   
 
-        const play_button = screen.getByTestId("play_button")
+        const play_button = within(container).getByTestId("play_button")
         expect(play_button).toBeInTheDocument();   
 
         fireEvent.click(play_button)
@@ -292,21 +339,19 @@ describe("<PopularCard />", () => {
             accessToken: "someToken",
             expiresAt: "someTimestamp"
         }
-        const item:any = { ...fake_popular[0] };
+        const item:any = { ...fake_trending[0] };
 
-        const { debug, container } = render(<PopularCard 
-            visibleItems={3}
-            indexCount={0}
+        const { debug, container } = render(<Thumbnail
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
         />)
-        const popular_card = screen.getByTestId("popular_card")
-        expect(popular_card).toBeInTheDocument();   
+        const thumbnail = screen.getByTestId("thumbnail")
+        expect(thumbnail).toBeInTheDocument();   
 
         const bookmark = screen.getByTestId("add_bookmark_button")
         expect(bookmark).toBeInTheDocument();  
-    }) 
+    })
 
     it("must render <CheckIcon />", () => {
         
@@ -315,18 +360,16 @@ describe("<PopularCard />", () => {
             accessToken: "someToken",
             expiresAt: "someTimestamp"
         }
-        const item:any = { ...fake_popular[0] };
-        const { debug, container } = render(<PopularCard 
-            visibleItems={3}
-            indexCount={0}
+        const item:any = { ...fake_trending[0] };
+        const { debug, container } = render(<Thumbnail 
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[item]}
         />)
-        const popular_card = screen.getByTestId("popular_card")
-        expect(popular_card).toBeInTheDocument();   
+        const thumbnail = screen.getByTestId("thumbnail")
+        expect(thumbnail).toBeInTheDocument();   
 
-        const remove_bookmark = screen.getByTestId("remove_bookmark_button")
+        const remove_bookmark = within(container).getByTestId("remove_bookmark_button")
         expect(remove_bookmark).toBeInTheDocument(); 
        
     })
@@ -338,7 +381,7 @@ describe("<PopularCard />", () => {
             accessToken: "someToken",
             expiresAt: "someTimestamp"
         }
-        const item:any = { ...fake_popular[0] };
+        const item:any = { ...fake_trending[0] };
 
         const dispatch = useAppDispatch as jest.Mock;
         const mockSetDataBookmarks = setDataBookmarks as unknown as jest.Mock;
@@ -346,17 +389,15 @@ describe("<PopularCard />", () => {
         mockSetDataBookmarks.mockReturnValue(mockBookmark)
         dispatch.mockReturnValue(mockSetDataBookmarks)
 
-        const { debug, container } = render(<PopularCard 
-            visibleItems={3}
-            indexCount={0}
+        const { debug, container } = render(<Thumbnail
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
         />)
-        const popular_card = screen.getByTestId("popular_card")
-        expect(popular_card).toBeInTheDocument();   
+        const thumbnail = screen.getByTestId("thumbnail")
+        expect(thumbnail).toBeInTheDocument();   
 
-        const bookmark = screen.getByTestId("add_bookmark_button")
+        const bookmark = within(container).getByTestId("add_bookmark_button")
         expect(bookmark).toBeInTheDocument();  
 
         fireEvent.click(bookmark)
@@ -371,7 +412,7 @@ describe("<PopularCard />", () => {
             accessToken: "someToken",
             expiresAt: "someTimestamp"
         }
-        const item:any = { ...fake_popular[0] };
+        const item:any = { ...fake_trending[0] };
 
         const dispatch = useAppDispatch as jest.Mock;
         const mockRemoveDataBookmarks = removeDataBookmarks as unknown as jest.Mock;
@@ -379,17 +420,15 @@ describe("<PopularCard />", () => {
         mockRemoveDataBookmarks.mockReturnValue(mockBookmark)
         dispatch.mockReturnValue(mockRemoveDataBookmarks)
 
-        const { debug, container } = render(<PopularCard 
-            visibleItems={3}
-            indexCount={0}
+        const { debug, container } = render(<Thumbnail
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[item]}
         />)
-        const popular_card = screen.getByTestId("popular_card")
-        expect(popular_card).toBeInTheDocument();   
+        const thumbnail = screen.getByTestId("thumbnail")
+        expect(thumbnail).toBeInTheDocument();   
 
-        const bookmark = screen.getByTestId("remove_bookmark_button")
+        const bookmark = within(container).getByTestId("remove_bookmark_button")
         expect(bookmark).toBeInTheDocument();  
 
         fireEvent.click(bookmark)
@@ -410,18 +449,16 @@ describe("<PopularCard />", () => {
             accessToken: "someToken",
             expiresAt: "someTimestamp"
         }
-        const item:any = { ...fake_popular[0] };
-        const { debug, container } = render(<PopularCard 
-            visibleItems={3}
-            indexCount={0}
+        const item:any = { ...fake_trending[0] };
+        const { debug, container } = render(<Thumbnail
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[item]}
         />)
-        const popular_card = screen.getByTestId("popular_card")
-        expect(popular_card).toBeInTheDocument();   
+        const thumbnail = screen.getByTestId("thumbnail")
+        expect(thumbnail).toBeInTheDocument();   
 
-        const view_detail = screen.getByTestId("view_detail_button")
+        const view_detail = within(thumbnail).getByTestId("view_detail_button")
         expect(view_detail).toBeInTheDocument();      
         
         fireEvent.click(view_detail)

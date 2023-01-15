@@ -23,7 +23,7 @@ const BackdropImage: React.FC<{
             {
                 expand && user && user.accessToken && media_type !== "people" &&
                 <div className="flex absolute top-0 right-0 items-center justify-end z-[1000] w-full p-2 space-x-2">
-                    <div><BookmarkIcon className=" w-[18px] h-[18px]" /></div>
+                    <div><BookmarkIcon className=" w-[18px] h-[18px]" data-testid="bookmark_icon" /></div>
                 </div>          
             }
         </div>
