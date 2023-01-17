@@ -77,7 +77,7 @@ const Person: NextPageWithLayout = (props:any) => {
     
     useEffect(() => {
       fadeScreen(videoIsPlayed, () => {
-        router.push("/watch/"+showData.id)
+        router.push(`/watch/${showData.id}?mt=${showData.media_type}`)
       })
     }, [videoIsPlayed])
 

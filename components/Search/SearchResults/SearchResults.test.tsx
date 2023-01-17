@@ -136,7 +136,7 @@ describe("<SearchResults />", () => {
         }
         useSWR_Infinite.mockReturnValue(mockSWRInfinite)
 
-        const search_results = mockSWRInfinite.data
+        // const search_results = mockSWRInfinite.data
 
         const { debug, container } = render(<SearchResults keyword={ encodeURI("some title")} />)
         const search_results_container = screen.getByTestId("search_results_container")

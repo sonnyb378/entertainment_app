@@ -125,7 +125,7 @@ describe("<Thumbnail />", () => {
 
     })
 
-    it("must render <PopularCard /> with the <MediaTypeShow /> component", () => {        
+    it("must render <Thumbnail /> with the <MediaTypeShow /> component", () => {        
         
         const user = {
             id: "somevalue",
@@ -148,7 +148,7 @@ describe("<Thumbnail />", () => {
         expect(el).toBeInTheDocument();
     })
 
-    it("must render <PopularCard /> with the <MediaTypePerson /> component", () => {   
+    it("must render <Thumbnail /> with the <MediaTypePerson /> component", () => {   
         const user = {
             id: "somevalue",
             accessToken: "someToken",

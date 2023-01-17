@@ -32,39 +32,48 @@ import { fadeScreen } from "../../lib/fadeScreen";
 import { IBookmarkData, removeDataBookmarks, selectBookmarkData, setDataBookmarks } from "../../app/store/slices/bookmarks";
 
 const TV: NextPageWithLayout = (props:any) => {
-  const router = useRouter();
   const user = useAppSelector<IAuthState>(selectAuth);
+  const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
+
+  const router = useRouter();
   const { videoIsPlayed, showData } = useAppContext();
 
-  const [isBookmarked, setIsBookmarked] = useState(false)
+  // const [isBookmarked, setIsBookmarked] = useState(false)
   const [isEpisodesLoading, setIsEpisodesLoading] = useState(false)
   const [episodes, setEpisodes] = useState<any>([])
   
-  const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
-  const [dataBookmark, setDataBookmark] = useState<any>([])
+  // const [dataBookmark, setDataBookmark] = useState<any>([])
   
-  const dispatch = useAppDispatch() 
-
   const { tv_detail: data, isLoading, isError } = useTVDetail(props.tv_id); 
+
+  const dispatch = useAppDispatch() 
 
   // const isLoading = false;
   // const isError = undefined;
   // const data = tvData
 
+  let isBookmarked = false;
   let timer: NodeJS.Timer;
 
+  // let episodes:any[] = []
   let recommendationsArr:any[] = [];
   
   if (data) {
     data.recommendations && data.recommendations.results && data.recommendations.results.slice(0,20).map((item:any) => {
       recommendationsArr.push(item)
     })
+
+    if (bookmarks) {
+      isBookmarked = bookmarks.data.findIndex((show:any) => show.id === data.id) !== -1
+    }
+
+    // if (data["season/1"] && data["season/1"].episodes.length > 0) {
+    //   episodes = [...data["season/1"].episodes]
+    // }
   }
 
+  
   useEffect(() => {
-    //
-    // initial episodes
-    //
     if (data && data["season/1"]) {
       if (data["season/1"] && data["season/1"].episodes.length > 0) {
         setEpisodes(data["season/1"].episodes)
@@ -83,7 +92,6 @@ const TV: NextPageWithLayout = (props:any) => {
     setIsEpisodesLoading(false)
     setEpisodes(season_episodes.episodes)
 
-    
   }
 
   useEffect(() => {
@@ -92,16 +100,16 @@ const TV: NextPageWithLayout = (props:any) => {
     })
   }, [videoIsPlayed])
 
-  useEffect(() => {
-    setDataBookmark([...bookmarks.data])
-  },[])
+  // useEffect(() => {
+  //   setDataBookmark([...bookmarks.data])
+  // },[])
 
-  useEffect(() => {
-    if (data) {
-      setIsBookmarked(bookmarks.data.findIndex((show:any) => show.id === data.id) !== -1)
-      setDataBookmark([...bookmarks.data])
-    }
-  }, [bookmarks])
+  // useEffect(() => {
+  //   if (data) {
+  //     setIsBookmarked(bookmarks.data.findIndex((show:any) => show.id === data.id) !== -1)
+  //     setDataBookmark([...bookmarks.data])
+  //   }
+  // }, [bookmarks])
 
   const genres:any = [];
   if (data && data.genres) {
@@ -131,7 +139,7 @@ const TV: NextPageWithLayout = (props:any) => {
     return (
       <div className="flex flex-col items-start justify-center w-full overflow-hidden pb-[100px] -mt-[4px]" data-testid="tv_container">
         {
-            isLoading && <div className="flex items-center justify-start w-full p-6">
+            isLoading && <div className="flex items-center justify-start w-full p-6" data-testid="loading_container">
                 <ArrowPathIcon className="w-[30px] h-[30px] animate-spin mr-2" />
                 <span>Loading</span>
             </div>
@@ -147,6 +155,7 @@ const TV: NextPageWithLayout = (props:any) => {
                 xl:border-purple-500
                 2xl:border-orange-500`
               }
+              data-testid="tv_info_container"
             >
 
               <div className="flex flex-col flex-1 relative items-start justify-start w-full z-[1200] border-0 p-6 pb-[100px]
@@ -251,42 +260,51 @@ const TV: NextPageWithLayout = (props:any) => {
             </section>
 
 
-            <section className="flex flex-col items-start justify-center px-[0px] z-[2000] border-0 w-full relative mb-[20px]">              
+            <section 
+              className="flex flex-col items-start justify-center px-[0px] z-[2000] border-0 w-full relative mb-[20px]" 
+              data-testid="episodes_container"
+            >              
               <div className="flex flex-col py-6 border-0 border-red-500 w-full px-[50px]">
                 <h1 className="text-[20px]">                  
                   <SelectSeason data={data} onClickHandler={fetchSeasonEpisodes} />
                 </h1>
 
                 {
-                  !isEpisodesLoading ? 
-                
-                  <div className="flex flex-col w-full border-0 mt-[10px]" id="episodes_container">
-                      {
-                        episodes && episodes.length > 0 && episodes.map((episode:any, i:any) => {
-                          return (
-                            <EpisodeCard key={i} data={episode}  />
-                          )
-                        })
-                      }
-                  </div>
+                  !isEpisodesLoading ?                 
+                    <div 
+                      className="flex flex-col w-full border-0 mt-[10px]" 
+                      data-testid="episode_list_container"
+                    >
+                        {
+                          episodes && episodes.length > 0 && episodes.map((episode:any, i:any) => {
+                            return (
+                              <EpisodeCard key={i} data={episode}  />
+                            )
+                          })
+                        }
+                    </div>
                   :
-                  <div className="flex items-center justify-start w-full border-0 mt-[10px]" id="episodes_container">
-                    <ArrowPathIcon className="mt-[10px] w-[40px] h-[40px] animate-spin mr-[5px]" /> 
-                    <span>Loading Episodes</span>
-                  </div>
+                    <div 
+                      className="flex items-center justify-start w-full border-0 mt-[10px]" 
+                      id="loading_episodes_container"
+                      data-testid="loading_episodes_container"
+                    >
+                      <ArrowPathIcon className="mt-[10px] w-[40px] h-[40px] animate-spin mr-[5px]" /> 
+                      <span>Loading Episodes</span>
+                    </div>
                 }
 
               </div>
             </section>
 
-            <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative">
+            <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative" data-testid="recommended_tvshows">
               <h1 className="ml-[50px] text-[20px]">Recommended TV Shows</h1>
 
               <Carousel 
                 data={recommendationsArr} 
                 user={user} 
                 maxItems={ recommendationsArr.length } 
-                bookmarkData={dataBookmark}
+                bookmarkData={[...bookmarks.data]}
                 baseWidth={290}
                 target="r"
               />
@@ -294,23 +312,21 @@ const TV: NextPageWithLayout = (props:any) => {
             </section>
             {
               user && user.accessToken &&
-                <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]">
+                <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]" data-testid="bookmark_container">
                   <h1 className="ml-[50px] text-[20px]">My List</h1>
                   
                   {
-                    dataBookmark && dataBookmark.length > 0 ?
+                    [...bookmarks.data] && [...bookmarks.data].length > 0 ?
                         <Carousel 
-                          data={ dataBookmark }
+                          data={ [...bookmarks.data] }
                           user={user} 
-                          maxItems={ dataBookmark.length } 
-                          bookmarkData={dataBookmark}
+                          maxItems={ [...bookmarks.data].length } 
+                          bookmarkData={[...bookmarks.data]}
                           baseWidth={290}
                           target="m"
                         />
                       :
                         <div className="flex items-center justify-start ml-[50px] mt-6 p-2">No bookmarks found</div>
-                        
-
                   }
                   
                 </section>

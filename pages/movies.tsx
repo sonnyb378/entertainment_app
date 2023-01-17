@@ -33,16 +33,14 @@ import { IBookmarkData, removeDataBookmarks, selectBookmarkData, setDataBookmark
 
 const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
     const user = useAppSelector<IAuthState>(selectAuth);    
+    const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
     
-    const [isBookmarked, setIsBookmarked] = useState(false)
     const { videoIsPlayed, setVideoIsPlayed,  showData } = useAppContext();
 
-    const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
-    const [dataBookmark, setDataBookmark] = useState<any>([])
-    
     const router = useRouter();
     const dispatch = useAppDispatch();
 
+    let isBookmarked = false;
     const { trending, popular } = data;  
     // const featured = fake_featured;
     
@@ -56,7 +54,6 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
       featured.recommendations && featured.recommendations.results && featured.recommendations.results.slice(0,20).map((item:any) => {
         recommendationsArr.push(item)
       })
-
       
       if (featured.hasOwnProperty('genres')) {
         featured.genres.map((genre:any) => {
@@ -73,20 +70,15 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
       }))
     }, [])
 
-
     useEffect(() => {
       fadeScreen(videoIsPlayed, () => {
         router.push(`/watch/${showData.id}?mt=${showData.media_type}`)
       })
     }, [videoIsPlayed])
-  
-    useEffect(() => {
-      if (!featuredIsLoading) {
-        setIsBookmarked(bookmarks.data.findIndex((show:any) => show.id === featured.id) !== -1)
-      }
-      setDataBookmark([...bookmarks.data])
-    }, [bookmarks])  
 
+    if (!featuredIsLoading) {
+      isBookmarked = bookmarks.data.findIndex((show:any) => show.id === featured.id) !== -1;
+    }
 
     const saveBookmark = (data:any) => {
       dispatch(setDataBookmarks({
@@ -104,7 +96,12 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
         removeDataBookmarks({ id: showID })
       )
     }
-   
+
+    // useEffect(() => {
+      // console.log("user: ", user)
+      // console.log("bookmarks: ", bookmarks)
+    // },[])
+
     return (
       <div className="flex flex-col items-start justify-center w-full overflow-hidden pb-[100px] -mt-[4px]" data-testid="movies_container">
         <section className="flex flex-col items-start justify-center w-full p-0">
@@ -120,7 +117,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
               {
                 featured &&
                 <>
-                  <div className="image-container relative w-full border-0 border-purple-500 h-[4/6]">       
+                  <div className="image-container relative w-full border-0 border-purple-500 h-[4/6]" data-testid="featured_backdrop">       
                     <Image 
                         src={ `${process.env.NEXT_PUBLIC_TMDB_IMAGE_PATH_ORIGINAL}${featured.backdrop_path}` } 
                         layout="responsive"
@@ -167,7 +164,11 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                         <div className="flex flex-col w-full items-center justify-start border-0 p-0 mt-4 space-y-2
                         sm:space-y-0 sm:space-x-2 sm:flex-row
                         lg:space-x-2">
-                          <CustomBtn title="Play" Icon={PlayCircleIcon} onClickHandler={() => setVideoIsPlayed(true, {...featured, media_type: "movie" })   } />
+                          <CustomBtn 
+                            title="Play" 
+                            Icon={PlayCircleIcon} 
+                            onClickHandler={() => setVideoIsPlayed(true, {...featured, media_type: "movie" })} 
+                          />
                           {
                             !isBookmarked ? 
                               user && user.accessToken && <CustomBtn title="Add to List" Icon={PlusCircleIcon} onClickHandler={() => 
@@ -179,7 +180,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                               } />
                           }
                           <CustomBtn title="More Info" Icon={QuestionMarkCircleIcon} onClickHandler={() => {
-                            router.push(`/movie/${ featured.id}`)
+                            router.push(`/movie/${featured.id}`)
                           }} />
                         </div>
 
@@ -192,28 +193,28 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
 
             </section>
 
-            <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]">
+            <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]" data-testid="trending_movies">
               <h1 className="ml-[50px] text-[20px]">Trending Movies</h1>
 
               <Carousel 
                 data={trending} 
                 user={user} 
                 maxItems={trending.length} 
-                bookmarkData={dataBookmark}
+                bookmarkData={[...bookmarks.data]}
                 baseWidth={290}
                 target="t"
               />
 
             </section>
 
-            <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]">
+            <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]" data-testid="popular_movies">
               <h1 className="ml-[50px] text-[20px]">Popular Movies</h1>
 
               <Carousel 
                 data={popular.slice(0,10)} 
                 user={user} 
                 maxItems={10} 
-                bookmarkData={dataBookmark}
+                bookmarkData={[...bookmarks.data]}
                 baseWidth={290}
                 target="p"
                 isThumbnail={false}
@@ -223,14 +224,14 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
             </section>
 
 
-            <section className="flex flex-col px-[0px] z-[1000] border-0 w-full relative mt-[50px]">
+            <section className="flex flex-col px-[0px] z-[1000] border-0 w-full relative mt-[50px]" data-testid="recommended_movies">
               <h1 className="ml-[50px] text-[20px]">Recommended Movies</h1>
 
               <Carousel 
                 data={recommendationsArr} 
                 user={user} 
                 maxItems={recommendationsArr.length} 
-                bookmarkData={dataBookmark}
+                bookmarkData={[...bookmarks.data]}
                 baseWidth={290}
                 target="r"
               />
@@ -239,17 +240,17 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
             
             {
               user && user.accessToken &&
-                <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]">
+                <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]" data-testid="mylist_container">
                   <h1 className="ml-[50px] text-[20px]">My List</h1>
                   
                   {
                     
-                      dataBookmark && dataBookmark.length > 0 ?
+                    [...bookmarks.data] && [...bookmarks.data].length > 0 ?
                         <Carousel 
-                          data={ dataBookmark }
+                          data={ [...bookmarks.data] }
                           user={user} 
-                          maxItems={ dataBookmark.length } 
-                          bookmarkData={dataBookmark}
+                          maxItems={ [...bookmarks.data].length } 
+                          bookmarkData={[...bookmarks.data]}
                           baseWidth={290}
                           target="m"
                         />

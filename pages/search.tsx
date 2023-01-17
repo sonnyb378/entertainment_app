@@ -26,6 +26,7 @@ const Search: NextPageWithLayout = () => {
       return <></>
     } else {
       const query = router.asPath.split("?")
+
       kw = query[1].split("=")[1]
       if (kw) {
         cont = true;
@@ -38,12 +39,11 @@ const Search: NextPageWithLayout = () => {
       }
     },[router.asPath])
 
-
     if (!cont) return null
 
 
     return (
-      <div className="flex flex-col items-start justify-center w-full p-5 relative" data-testid="movies_container">
+      <div className="flex flex-col items-start justify-center w-full p-5 relative" data-testid="search_container">
         <h2 className="text-[2rem]">Search Results: </h2>
         <h4 className="text-yellow-600 text-3xl">{ decodeURI(decodeURI(kw)) }</h4> 
 

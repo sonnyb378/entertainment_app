@@ -21,7 +21,7 @@ const MyList: NextPageWithLayout = () => {
     const user = useAppSelector<IAuthState>(selectAuth);  
     const router = useRouter();
     const dispatch = useAppDispatch();
-    const { videoIsPlayed, showID } = useAppContext();
+    const { videoIsPlayed, showData } = useAppContext();
     const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
 
 
@@ -34,7 +34,7 @@ const MyList: NextPageWithLayout = () => {
     
     useEffect(() => {
       fadeScreen(videoIsPlayed, () => {
-        router.push("/watch/"+showID)
+        router.push(`/watch/${showData.id}?mt=${showData.media_type}`)
       })
     }, [videoIsPlayed])
 

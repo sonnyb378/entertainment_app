@@ -27,15 +27,19 @@ import { fadeScreen } from "../../lib/fadeScreen";
 import { IBookmarkData, selectBookmarkData, setDataBookmarks, removeDataBookmarks } from "../../app/store/slices/bookmarks";
 
 const Movie: NextPageWithLayout = (props:any) => {
-  const router = useRouter();
   const user = useAppSelector<IAuthState>(selectAuth);
   const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
-  const [dataBookmark, setDataBookmark] = useState<any>([])
-
-  const { setVideoIsPlayed } = useAppContext()
-  const { videoIsPlayed, showData } = useAppContext();
   
-  const [isBookmarked, setIsBookmarked] = useState(false)
+  // console.log("bookmarks: ", bookmarks)
+  const router = useRouter();
+  // const [dataBookmark, setDataBookmark] = useState<any>([])
+  // const [isBookmarked, setIsBookmarked] = useState(false)
+
+  let isBookmarked = false;
+
+  const { setVideoIsPlayed, videoIsPlayed, showData } = useAppContext()
+  // const { videoIsPlayed, showData } = useAppContext();
+  
 
   const dispatch = useAppDispatch() 
 
@@ -54,6 +58,10 @@ const Movie: NextPageWithLayout = (props:any) => {
     data.recommendations && data.recommendations.results && data.recommendations.results.slice(0,20).map((item:any) => {
       recommendationsArr.push(item)
     })
+
+    if (bookmarks) {
+      isBookmarked = bookmarks.data.findIndex((show:any) => show.id === data.id) !== -1
+    }
   }
 
   useEffect(() => {
@@ -62,16 +70,16 @@ const Movie: NextPageWithLayout = (props:any) => {
     })
   }, [videoIsPlayed])
 
-  useEffect(() => {
-    setDataBookmark([...bookmarks.data])
-  },[])
+  // useEffect(() => {
+  //   setDataBookmark([...bookmarks.data])
+  // },[])
 
-  useEffect(() => {
-    if (data) {
-      setIsBookmarked(bookmarks.data.findIndex((show:any) => show.id === data.id) !== -1)
-      setDataBookmark([...bookmarks.data])
-    }
-  }, [bookmarks])
+  // useEffect(() => {
+  //   if (data) {
+  //     setIsBookmarked(bookmarks.data.findIndex((show:any) => show.id === data.id) !== -1)
+  //     setDataBookmark([...bookmarks.data])
+  //   }
+  // }, [bookmarks])
 
   const genres:any = [];
   if (data && data.genres) {
@@ -102,7 +110,7 @@ const Movie: NextPageWithLayout = (props:any) => {
     return (
       <div className="flex flex-col items-start justify-center w-full overflow-hidden pb-[100px] -mt-[4px]" data-testid="movie_container">
         {
-            isLoading && <div className="flex items-center justify-start w-full">
+            isLoading && <div className="flex items-center justify-start w-full" data-testid="loading_container">
                 <ArrowPathIcon className="w-[30px] h-[30px] animate-spin mr-2" />
                 <span>Loading</span>
             </div>
@@ -118,6 +126,7 @@ const Movie: NextPageWithLayout = (props:any) => {
                 xl:border-purple-500
                 2xl:border-orange-500`
               }
+              data-testid="movie_info_container"
             >
 
               <div className="flex flex-col flex-1 relative items-start justify-start w-full z-[1200] border-0 p-6 pb-[100px]
@@ -195,33 +204,34 @@ const Movie: NextPageWithLayout = (props:any) => {
 
             </section>
 
-            <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative">
+            <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative" data-testid="recommended_movies">
               <h1 className="ml-[50px] text-[20px]">Recommended Movies</h1>
 
               <Carousel 
                 data={recommendationsArr} 
                 user={user} 
                 maxItems={recommendationsArr.length} 
-                bookmarkData={bookmarks.data}
+                bookmarkData={[...bookmarks.data]}
                 baseWidth={290}
                 target="r"
               />
 
             </section>
+            
             {
               user && user.accessToken &&
-                <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]">
+                <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]" data-testid="bookmark_container">
                   <h1 className="ml-[50px] text-[20px]">My List</h1>
                   
                   {
-                    dataBookmark && dataBookmark.length > 0 ?
+                    [...bookmarks.data] && [...bookmarks.data].length > 0 ?
                         <Carousel 
-                          data={ dataBookmark }
+                          data={ [...bookmarks.data] }
                           user={user} 
-                          maxItems={ dataBookmark.length } 
-                          bookmarkData={ dataBookmark }
+                          maxItems={ [...bookmarks.data].length } 
+                          bookmarkData={ [...bookmarks.data] }
                           baseWidth={290}
-                          target="m"
+                          target="b"
                         />
                       :
                         <div className="flex items-center justify-start ml-[50px] mt-6 p-2">No bookmarks found</div>

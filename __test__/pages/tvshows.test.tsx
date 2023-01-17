@@ -2,16 +2,15 @@ import { render, screen, fireEvent, within } from '@testing-library/react'
 import '@testing-library/jest-dom'
 
 import { useRouter } from "next/router"
+import { fake_tv_trending, fake_tv_featured } from '../../model/fake_tv_trending'
+import { fake_tv_popular } from '../../model/fake_tv_popular'
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { fake_trending, fake_featured } from '../../model/fake_trending'
-import { fake_popular } from '../../model/fake_popular'
 import { useState } from "react";
 import { setCurrentUrl } from '../../app/store/slices/url'
-import { removeDataBookmarks, setDataBookmarks } from '../../app/store/slices/bookmarks'
-import { useMovieDetail } from '../../lib/hooks/useMovieDetail' 
+import TVShows from '../../pages/tvshows'
+import { useTVDetail } from '../../lib/hooks/useTVDetail'
 import * as AppContext from '../../context/state';
-
-import Movies from "../../pages/movies"
+import { removeDataBookmarks, setDataBookmarks } from '../../app/store/slices/bookmarks'
 
 jest.mock("next/router", () => ({
     __esModule: true,
@@ -24,9 +23,9 @@ jest.mock('../../context/state', () => ({
     __esModule: true,
     ...jest.requireActual('../../context/state')
 }))
-jest.mock("../../lib/hooks/useMovieDetail", () => ({
+jest.mock("../../lib/hooks/useTVDetail", () => ({
     __esModule: true,
-    useMovieDetail: jest.fn()
+    useTVDetail: jest.fn()
 }))
 
 jest.mock("../../app/store/slices/bookmarks", () => ({
@@ -62,7 +61,7 @@ jest.mock("../../app/store/slices/url", () => ({
     setCurrentUrl: jest.fn()
 }))
 
-describe("<Movies />", () => {
+describe("<TVShow s />", () => {
     
     beforeEach(() => {
         const mockUseState = useState as jest.Mock;
@@ -88,13 +87,13 @@ describe("<Movies />", () => {
         mockSetCurrentURL.mockReturnValue(mockCurrentURL)
         dispatch.mockReturnValue(mockSetCurrentURL)        
 
-        const mockUseMovieDetail = useMovieDetail as jest.Mock;
-        const mockUseMovie = { 
-            movie_detail: { ...fake_featured }, 
+        const mockUseTVDetail = useTVDetail as jest.Mock;
+        const mockUseTV = { 
+            tv_detail: { ...fake_tv_featured }, 
             featuredIsLoading: false, 
             featuredHasError: null
         }
-        mockUseMovieDetail.mockReturnValue(mockUseMovie)        
+        mockUseTVDetail.mockReturnValue(mockUseTV)        
 
     })
 
@@ -102,9 +101,9 @@ describe("<Movies />", () => {
         jest.clearAllMocks();
     })
 
-    it("must render the movies page", () => {
-        const trending = fake_trending
-        const popular = fake_popular
+    it("must render the tv shows page", () => {
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
         const data = {
             trending,
             popular
@@ -113,27 +112,27 @@ describe("<Movies />", () => {
         mockAppSelector
         .mockReturnValue({
             data: [{
-                "id": 555604,
-                "name": "Guillermo del Toro's Pinocchio",
-                "backdrop_path": "/tyNqJUWqqb0tjhqXYH4uwRwsp6A.jpg",
-                "poster_path": "/vx1u0uwxdlhV2MUzj4VlcMB0N6m.jpg",
-                "media_type": "movie",
+                "id": 105971,
+                "name": "Star Wars: The Bad Batch",
+                "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
+                "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
+                "media_type": "tv",
                 "genre_ids": [
                     16,
-                    14,
-                    18
+                    10759,
+                    10765
                 ]
             }]
         })
         
-        render(<Movies data={ data } />)
-        const movies_container = screen.getByTestId("movies_container")
-        expect(movies_container).toBeInTheDocument();
+        render(<TVShows data={ data } />)
+        const tv_container = screen.getByTestId("tv_container")
+        expect(tv_container).toBeInTheDocument();
     })
 
-    it("must render featured movie", () => {
-        const trending = fake_trending
-        const popular = fake_popular
+    it("must render featured tv show", () => {
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
         const data = {
             trending,
             popular
@@ -145,33 +144,33 @@ describe("<Movies />", () => {
         })
         .mockReturnValueOnce({
             data: [{
-                "id": 555604,
-                "name": "Guillermo del Toro's Pinocchio",
-                "backdrop_path": "/tyNqJUWqqb0tjhqXYH4uwRwsp6A.jpg",
-                "poster_path": "/vx1u0uwxdlhV2MUzj4VlcMB0N6m.jpg",
-                "media_type": "movie",
+                "id": 105971,
+                "name": "Star Wars: The Bad Batch",
+                "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
+                "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
+                "media_type": "tv",
                 "genre_ids": [
                     16,
-                    14,
-                    18
+                    10759,
+                    10765
                 ]
             }]
         })
 
-        const {debug, container } = render(<Movies data={data} />);
-        const movies_container = within(container).getByTestId("movies_container")
-        expect(movies_container).toBeInTheDocument();
+        const {debug, container } = render(<TVShows data={data} />);
+        const tv_container = within(container).getByTestId("tv_container")
+        expect(tv_container).toBeInTheDocument();
 
-        const backdrop = within(movies_container).getByTestId("featured_backdrop")
+        const backdrop = within(tv_container).getByTestId("featured_backdrop")
         expect(backdrop).toBeInTheDocument();
 
-        const title = within(movies_container).getByText("Guillermo del Toro's Pinocchio")
+        const title = within(tv_container).getByText("Star Wars: The Bad Batch")
         expect(title).toBeInTheDocument();
     })
 
     it("must render 'Add to List' button", () => {
-        const trending = fake_trending
-        const popular = fake_popular
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
         const data = {
             trending,
             popular
@@ -185,19 +184,18 @@ describe("<Movies />", () => {
             data: []
         })
 
-        const {debug, container } = render(<Movies data={data} />);
-        const movies_container = within(container).getByTestId("movies_container")
-        expect(movies_container).toBeInTheDocument();
+        const {debug, container } = render(<TVShows data={data} />);
+        const tv_container = within(container).getByTestId("tv_container")
+        expect(tv_container).toBeInTheDocument();
 
         const add_bookmark = within(container).queryByText("Add to List")
         expect(add_bookmark).toBeInTheDocument();
 
-
     })
 
     it("must not render 'Add to List' button", () => {
-        const trending = fake_trending
-        const popular = fake_popular
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
         const data = {
             trending,
             popular
@@ -211,9 +209,9 @@ describe("<Movies />", () => {
             data: []
         })
 
-        const {debug, container } = render(<Movies data={data} />);
-        const movies_container = within(container).getByTestId("movies_container")
-        expect(movies_container).toBeInTheDocument();
+        const {debug, container } = render(<TVShows data={data} />);
+        const tv_container = within(container).getByTestId("tv_container")
+        expect(tv_container).toBeInTheDocument();
 
         const add_bookmark = within(container).queryByText("Add to List")
         expect(add_bookmark).not.toBeInTheDocument();
@@ -222,8 +220,8 @@ describe("<Movies />", () => {
 
     it("must render 'Remove from List' button", () => {
 
-        const trending = fake_trending
-        const popular = fake_popular
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
         const data = {
             trending,
             popular
@@ -235,67 +233,25 @@ describe("<Movies />", () => {
         })
         .mockReturnValueOnce({
             data: [{
-                "id": 555604,
-                "name": "Guillermo del Toro's Pinocchio",
-                "backdrop_path": "/tyNqJUWqqb0tjhqXYH4uwRwsp6A.jpg",
-                "poster_path": "/vx1u0uwxdlhV2MUzj4VlcMB0N6m.jpg",
-                "media_type": "movie",
+                "id": 105971,
+                "name": "Star Wars: The Bad Batch",
+                "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
+                "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
+                "media_type": "tv",
                 "genre_ids": [
                     16,
-                    14,
-                    18
+                    10759,
+                    10765
                 ]
             }]
         })
 
-        const {debug, container } = render(<Movies data={data} />);
-        const movies_container = within(container).getByTestId("movies_container")
-        expect(movies_container).toBeInTheDocument();
+        const {debug, container } = render(<TVShows data={data} />);
+        const tv_container = within(container).getByTestId("tv_container")
+        expect(tv_container).toBeInTheDocument();
 
         const remove_bookmark = within(container).queryByText("Remove from List")
         expect(remove_bookmark).toBeInTheDocument();
-
-
-    })
-
-    it("must trigger play button", () => {
-        const trending = fake_trending
-        const popular = fake_popular
-        const data = {
-            trending,
-            popular
-        }
-
-        const mockSetState = jest.fn()
-        const mockContext = jest.fn().mockReturnValue({
-            setVideoIsPlayed: mockSetState
-        })
-        jest.spyOn(AppContext, 'useAppContext').mockImplementation(mockContext);
-        const mockAppSelector = useAppSelector as jest.Mock
-        mockAppSelector
-        .mockReturnValueOnce({
-            data: [{
-                "id": 555604,
-                "name": "Guillermo del Toro's Pinocchio",
-                "backdrop_path": "/tyNqJUWqqb0tjhqXYH4uwRwsp6A.jpg",
-                "poster_path": "/vx1u0uwxdlhV2MUzj4VlcMB0N6m.jpg",
-                "media_type": "movie",
-                "genre_ids": [
-                    16,
-                    14,
-                    18
-                ]
-            }]
-        })
-
-        const {debug, container } = render(<Movies data={data} />);
-        const movies_container = within(container).getByTestId("movies_container")
-        expect(movies_container).toBeInTheDocument();
-
-        const play_button = within(movies_container).getByText("Play")
-        expect(play_button).toBeInTheDocument();  
-        fireEvent.click(play_button)
-        expect(mockContext).toHaveBeenCalled()
 
     })
 
@@ -307,23 +263,23 @@ describe("<Movies />", () => {
         })
         .mockReturnValueOnce({ data: [] })
 
-        const trending = fake_trending
-        const popular = fake_popular
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
         const data = {
             trending,
             popular
         }
 
         const bookmarkData = {
-            "id": 555604,
-            "name": "Guillermo del Toro's Pinocchio",
-            "backdrop_path": "/tyNqJUWqqb0tjhqXYH4uwRwsp6A.jpg",
-            "poster_path": "/vx1u0uwxdlhV2MUzj4VlcMB0N6m.jpg",
-            "media_type": "movie",
+            "id": 105971,
+            "name": "Star Wars: The Bad Batch",
+            "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
+            "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
+            "media_type": "tv",
             "genre_ids": [
                 16,
-                14,
-                18
+                10759,
+                10765
             ]
         }
 
@@ -333,9 +289,9 @@ describe("<Movies />", () => {
         mockSetDataBookmarks.mockReturnValue(mockBookmark)
         dispatch.mockImplementation(mockSetDataBookmarks)
 
-        const {debug, container } = render(<Movies data={ data } />);
-        const movies_container = within(container).getByTestId("movies_container")
-        expect(movies_container).toBeInTheDocument();
+        const {debug, container } = render(<TVShows data={ data } />);
+        const tv_container = within(container).getByTestId("tv_container")
+        expect(tv_container).toBeInTheDocument();
 
         const add_bookmark = within(container).getByText("Add to List")
         expect(add_bookmark).toBeInTheDocument();  
@@ -346,15 +302,15 @@ describe("<Movies />", () => {
 
     it("must trigger 'Remove from List' button", () => {
         const bookmarkData = {
-            "id": 555604,
-            "name": "Guillermo del Toro's Pinocchio",
-            "backdrop_path": "/tyNqJUWqqb0tjhqXYH4uwRwsp6A.jpg",
-            "poster_path": "/vx1u0uwxdlhV2MUzj4VlcMB0N6m.jpg",
-            "media_type": "movie",
+            "id": 105971,
+            "name": "Star Wars: The Bad Batch",
+            "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
+            "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
+            "media_type": "tv",
             "genre_ids": [
                 16,
-                14,
-                18
+                10759,
+                10765
             ]
         }
         const mockAppSelector = useAppSelector as jest.Mock
@@ -364,8 +320,8 @@ describe("<Movies />", () => {
         })
         .mockReturnValueOnce({ data: [bookmarkData] })
 
-        const trending = fake_trending
-        const popular = fake_popular
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
         const data = {
             trending,
             popular
@@ -373,13 +329,13 @@ describe("<Movies />", () => {
 
         const dispatch = useAppDispatch as jest.Mock;
         const mockRemoveDataBookmark = removeDataBookmarks as unknown as jest.Mock;
-        const mockBookmark = jest.fn().mockReturnValue({ id: 555604 })
+        const mockBookmark = jest.fn().mockReturnValue({ id: 105971 })
         mockRemoveDataBookmark.mockReturnValue(mockBookmark)
         dispatch.mockImplementation(mockRemoveDataBookmark)
 
-        const {debug, container } = render(<Movies data={ data } />);
-        const movies_container = within(container).getByTestId("movies_container")
-        expect(movies_container).toBeInTheDocument();
+        const {debug, container } = render(<TVShows data={ data } />);
+        const tv_container = within(container).getByTestId("tv_container")
+        expect(tv_container).toBeInTheDocument();
 
         const remove_bookmark = within(container).getByText("Remove from List")
         expect(remove_bookmark).toBeInTheDocument();  
@@ -389,23 +345,23 @@ describe("<Movies />", () => {
     })
 
     it("must trigger 'More Info' button", () => {
-        const trending = fake_trending
-        const popular = fake_popular
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
         const data = {
             trending,
             popular
         }
 
         const bookmarkData = {
-            "id": 555604,
-            "name": "Guillermo del Toro's Pinocchio",
-            "backdrop_path": "/tyNqJUWqqb0tjhqXYH4uwRwsp6A.jpg",
-            "poster_path": "/vx1u0uwxdlhV2MUzj4VlcMB0N6m.jpg",
-            "media_type": "movie",
+            "id": 105971,
+            "name": "Star Wars: The Bad Batch",
+            "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
+            "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
+            "media_type": "tv",
             "genre_ids": [
                 16,
-                14,
-                18
+                10759,
+                10765
             ]
         }
         const mockAppSelector = useAppSelector as jest.Mock
@@ -421,23 +377,21 @@ describe("<Movies />", () => {
         }
         router.mockReturnValue(mockRouter)
 
-        const {debug, container } = render(<Movies data={ data } />);
-        const movies_container = within(container).getByTestId("movies_container")
-        expect(movies_container).toBeInTheDocument();
+        const {debug, container } = render(<TVShows data={ data } />);
+        const tv_container = within(container).getByTestId("tv_container")
+        expect(tv_container).toBeInTheDocument();
 
         const more_info = within(container).getByText("More Info")
         expect(more_info).toBeInTheDocument();  
 
         fireEvent.click(more_info)
-        expect(mockRouter.push).toHaveBeenCalledWith("/movie/555604")
-
-
+        expect(mockRouter.push).toHaveBeenCalledWith("/tv/105971")
 
     })
 
-    it("must render 'Trending Movies' section", () => {
-        const trending = fake_trending
-        const popular = fake_popular
+    it("must render 'Trending TV Shows' section", () => {
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
         const data = {
             trending,
             popular
@@ -446,30 +400,30 @@ describe("<Movies />", () => {
         mockAppSelector
         .mockReturnValue({
             data: [{
-                "id": 555604,
-                "name": "Guillermo del Toro's Pinocchio",
-                "backdrop_path": "/tyNqJUWqqb0tjhqXYH4uwRwsp6A.jpg",
-                "poster_path": "/vx1u0uwxdlhV2MUzj4VlcMB0N6m.jpg",
-                "media_type": "movie",
+                "id": 105971,
+                "name": "Star Wars: The Bad Batch",
+                "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
+                "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
+                "media_type": "tv",
                 "genre_ids": [
                     16,
-                    14,
-                    18
+                    10759,
+                    10765
                 ]
             }]
         })
  
-        const { container } = render(<Movies data={ data } />)
-        const trending_movies = within(container).getByTestId("trending_movies")
-        expect(trending_movies).toBeInTheDocument();
+        const { container } = render(<TVShows data={ data } />)
+        const trending_tvshows = within(container).getByTestId("trending_tvshows")
+        expect(trending_tvshows).toBeInTheDocument();
 
-        const carousel = within(trending_movies).getByTestId("carousel_maincontainer")
+        const carousel = within(trending_tvshows).getByTestId("carousel_maincontainer")
         expect(carousel).toBeInTheDocument();
     })
 
-    it("must render 'Popular Movies' section", () => {
-        const trending = fake_trending
-        const popular = fake_popular
+    it("must render 'Popular TV Shows' section", () => {
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
         const data = {
             trending,
             popular
@@ -478,30 +432,30 @@ describe("<Movies />", () => {
         mockAppSelector
         .mockReturnValue({
             data: [{
-                "id": 555604,
-                "name": "Guillermo del Toro's Pinocchio",
-                "backdrop_path": "/tyNqJUWqqb0tjhqXYH4uwRwsp6A.jpg",
-                "poster_path": "/vx1u0uwxdlhV2MUzj4VlcMB0N6m.jpg",
-                "media_type": "movie",
+                "id": 105971,
+                "name": "Star Wars: The Bad Batch",
+                "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
+                "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
+                "media_type": "tv",
                 "genre_ids": [
                     16,
-                    14,
-                    18
+                    10759,
+                    10765
                 ]
             }]
         })
   
-        const { container } = render(<Movies data={ data } />)
-        const popular_movies = within(container).getByTestId("popular_movies")
-        expect(popular_movies).toBeInTheDocument();
+        const { container } = render(<TVShows data={ data } />)
+        const popular_tvshows = within(container).getByTestId("popular_tvshows")
+        expect(popular_tvshows).toBeInTheDocument();
 
-        const carousel = within(popular_movies).getByTestId("carousel_maincontainer")
+        const carousel = within(popular_tvshows).getByTestId("carousel_maincontainer")
         expect(carousel).toBeInTheDocument();
     })
 
-    it("must render 'Recommended Movies' section", () => {
-        const trending = fake_trending
-        const popular = fake_popular
+    it("must render 'Recommended TV Shows' section", () => {
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
         const data = {
             trending,
             popular
@@ -510,30 +464,30 @@ describe("<Movies />", () => {
         mockAppSelector
         .mockReturnValue({
             data: [{
-                "id": 555604,
-                "name": "Guillermo del Toro's Pinocchio",
-                "backdrop_path": "/tyNqJUWqqb0tjhqXYH4uwRwsp6A.jpg",
-                "poster_path": "/vx1u0uwxdlhV2MUzj4VlcMB0N6m.jpg",
-                "media_type": "movie",
+                "id": 105971,
+                "name": "Star Wars: The Bad Batch",
+                "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
+                "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
+                "media_type": "tv",
                 "genre_ids": [
                     16,
-                    14,
-                    18
+                    10759,
+                    10765
                 ]
             }]
         })
 
-        const { container } = render(<Movies data={ data } />)
-        const recommended_movies = within(container).getByTestId("recommended_movies")
-        expect(recommended_movies).toBeInTheDocument();
+        const { container } = render(<TVShows data={ data } />)
+        const recommended_tvshows = within(container).getByTestId("recommended_tvshows")
+        expect(recommended_tvshows).toBeInTheDocument();
 
-        const carousel = within(recommended_movies).getByTestId("carousel_maincontainer")
+        const carousel = within(recommended_tvshows).getByTestId("carousel_maincontainer")
         expect(carousel).toBeInTheDocument();        
     })
 
     it("must render 'My List' section", () => {
-        const trending = fake_trending
-        const popular = fake_popular
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
         const data = {
             trending,
             popular
@@ -545,20 +499,20 @@ describe("<Movies />", () => {
         })
         .mockReturnValue({
             data: [{
-                "id": 555604,
-                "name": "Guillermo del Toro's Pinocchio",
-                "backdrop_path": "/tyNqJUWqqb0tjhqXYH4uwRwsp6A.jpg",
-                "poster_path": "/vx1u0uwxdlhV2MUzj4VlcMB0N6m.jpg",
-                "media_type": "movie",
+                "id": 105971,
+                "name": "Star Wars: The Bad Batch",
+                "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
+                "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
+                "media_type": "tv",
                 "genre_ids": [
                     16,
-                    14,
-                    18
+                    10759,
+                    10765
                 ]
             }]
         })
 
-        const { container } = render(<Movies data={ data } />)
+        const { container } = render(<TVShows data={ data } />)
         const mylist_container = within(container).getByTestId("mylist_container")
         expect(mylist_container).toBeInTheDocument();
 
@@ -567,8 +521,8 @@ describe("<Movies />", () => {
     })
 
     it("must not render 'My List'", () => {
-        const trending = fake_trending
-        const popular = fake_popular
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
         const data = {
             trending,
             popular
@@ -580,28 +534,28 @@ describe("<Movies />", () => {
         })
         .mockReturnValue({
             data: [{
-                "id": 555604,
-                "name": "Guillermo del Toro's Pinocchio",
-                "backdrop_path": "/tyNqJUWqqb0tjhqXYH4uwRwsp6A.jpg",
-                "poster_path": "/vx1u0uwxdlhV2MUzj4VlcMB0N6m.jpg",
-                "media_type": "movie",
+                "id": 105971,
+                "name": "Star Wars: The Bad Batch",
+                "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
+                "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
+                "media_type": "tv",
                 "genre_ids": [
                     16,
-                    14,
-                    18
+                    10759,
+                    10765
                 ]
             }]
         })
 
-        const { container } = render(<Movies data={ data } />)
+        const { container } = render(<TVShows data={ data } />)
         const mylist_container = within(container).queryByTestId("mylist_container")
         expect(mylist_container).not.toBeInTheDocument();
 
     })
 
     it("must display 'No bookmarks found' if bookmark data is empty", () => {
-        const trending = fake_trending
-        const popular = fake_popular
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
         const data = {
             trending,
             popular
@@ -615,7 +569,7 @@ describe("<Movies />", () => {
             data: []
         })
 
-        const { container } = render(<Movies data={ data } />)
+        const { container } = render(<TVShows data={ data } />)
         const mylist_container = within(container).getByTestId("mylist_container")
         expect(mylist_container).toBeInTheDocument();
 

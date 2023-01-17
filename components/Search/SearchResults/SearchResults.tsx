@@ -30,18 +30,21 @@ export const fetcherInfinite = (baseUrl: string, url: string, page: number, keyw
 
 const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
     const [ pageNumber, setPageNumber ] = useState(1)
-    const user = useAppSelector<IAuthState>(selectAuth);
-    
+    const user = useAppSelector<IAuthState>(selectAuth);    
     const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
     const [dataBookmark, setDataBookmark] = useState<any>([])
+
+    console.log("user: ", user);
+    console.log("bookmarks: ", bookmarks);
 
     let search_results: IResult[];
 
     // const { data } = useBlackAdam(keyword);
 
-    useEffect(() => {
-        setDataBookmark([...bookmarks.data])
-    }, [bookmarks])
+    // useEffect(() => {
+    //     setDataBookmark([...bookmarks.data])
+    // }, [bookmarks])
+
 
     const PAGE_SIZE = 20;
     const { data, error, size, setSize } = useSWRInfinite((index) => [
@@ -97,7 +100,7 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
                                 <SearchResultItem 
                                     key={i} 
                                     result={result}
-                                    bookmarkData={dataBookmark}
+                                    bookmarkData={[...bookmarks.data]}
                                 />
                             )                       
                         })
