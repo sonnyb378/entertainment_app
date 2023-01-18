@@ -35,10 +35,11 @@ export interface IPerson {
 }
 
 const Person: NextPageWithLayout = (props:any) => {
-    const router = useRouter();
     const user = useAppSelector<IAuthState>(selectAuth); 
-    const { videoIsPlayed, showData } = useAppContext(); 
     const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
+  
+    const router = useRouter();
+    const { videoIsPlayed, showData } = useAppContext(); 
 
     const { data } = props;
 
@@ -200,10 +201,10 @@ const Person: NextPageWithLayout = (props:any) => {
 
   };
 
-  export async function getServerSideProps(context:any) {
+  export async function getServerSideProps (context:any) {
 
     const personID = context.params.id
-    
+
     const [reqPerson] = await Promise.all([
       await axios.get(
         `${process.env.NEXT_PUBLIC_TMDB_API_URL}person/${personID}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&append_to_response=combined_credits`,
