@@ -6,6 +6,10 @@ import { useRouter } from 'next/router';
 import Person, { getServerSideProps } from '../../../pages/person/[id]'
 import { fake_person_popular } from '../../../model/fake_person_popular';
 import { GetServerSidePropsContext } from 'next';
+import { ParsedUrlQuery } from 'querystring';
+import axios from "axios"
+
+jest.mock('axios');
 
 jest.mock("../../../app/hooks", () => ({
     __esModule: true,
@@ -34,6 +38,7 @@ jest.mock("next/router", () => ({
     useRouter: jest.fn()
 })) 
 
+
 describe("<Person />", () => {
 
     beforeEach(() => {
@@ -44,26 +49,60 @@ describe("<Person />", () => {
         }))
 
         global.window = window;
-
-        const router = useRouter as jest.Mock;
-        const mockRouter = {
-            push: jest.fn()
-        }
-        router.mockReturnValue(mockRouter)
     })
 
     afterEach(() => {
         jest.clearAllMocks();
     })
 
-    it("must render person page", async () => {
-        
-        // const props = await Person.get
-        // expect(value).toEqual({ props: { data: { id: 11701 } }})
+    it("must return data (getServerSideProps)", async () => {
 
-        // const { container } = render(<Person />)
-        // const person_container = within(container).getByTestId("person_container")
-        // expect(person_container).toBeInTheDocument();
+        axios.get = jest.fn().mockImplementationOnce(
+            () => Promise.resolve({ 
+                data: {...fake_person_popular}
+            })
+        );
+
+        const mockAppSelector = useAppSelector as jest.Mock
+        mockAppSelector
+        .mockReturnValueOnce({
+            accessToken: "123"
+        })
+        .mockReturnValueOnce({
+            data: [{
+                "id": 105971,
+                "name": "Star Wars: The Bad Batch",
+                "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
+                "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
+                "media_type": "tv",
+                "genre_ids": [
+                    16,
+                    10759,
+                    10765
+                ]
+            }]
+        }) 
+
+        const router = useRouter as jest.Mock;
+        const mockRouter = {
+            push: jest.fn()
+        }
+        router.mockReturnValue(mockRouter);
+        
+        const context = {
+            params: { id: "11701" } as ParsedUrlQuery
+        };
+        const props = await getServerSideProps(context as GetServerSidePropsContext);
+
+        expect(props).toEqual({
+            props: {
+                person_id: "11701",
+                data: {...fake_person_popular}
+            }
+        });
+
     })
+
+
 
 })

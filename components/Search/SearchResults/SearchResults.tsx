@@ -34,8 +34,8 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
     const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
     const [dataBookmark, setDataBookmark] = useState<any>([])
 
-    console.log("user: ", user);
-    console.log("bookmarks: ", bookmarks);
+    // console.log("user: ", user);
+    // console.log("bookmarks: ", bookmarks);
 
     let search_results: IResult[];
 

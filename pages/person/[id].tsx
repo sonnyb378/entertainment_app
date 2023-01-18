@@ -41,7 +41,9 @@ const Person: NextPageWithLayout = (props:any) => {
     const router = useRouter();
     const { videoIsPlayed, showData } = useAppContext(); 
 
-    const { data } = props;
+    const { person_id, data } = props;
+
+    console.log("person: ", person_id, data)
 
     let movies: any = []
     let tvshows: any = []
@@ -201,7 +203,7 @@ const Person: NextPageWithLayout = (props:any) => {
 
   };
 
-  export async function getServerSideProps (context:any) {
+  export const getServerSideProps: GetServerSideProps =  async (context:any) => {
 
     const personID = context.params.id
 
