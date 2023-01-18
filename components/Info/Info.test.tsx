@@ -13,9 +13,9 @@ describe("<Info />", () => {
         
         const hr = Math.floor(Number(data.runtime) / 60);
         const mins = (Number(data.runtime) % 60)
-        const displayValue = `${hr > 0 && `${hr}hr`}${hr>1 ? "s.":"."} ${mins}mins.`
+        const displayValue = `${hr > 0 ? hr > 1 ? `${hr}hrs. ` : `${hr}hr. ` : "" }${mins}mins.`
 
-        const info = within(container).getByText(`${displayValue}`)
+        const info = within(container).getByText(displayValue)
         expect(info).toBeInTheDocument();
 
     })
@@ -28,9 +28,9 @@ describe("<Info />", () => {
         
         const hr = Math.floor(Number(data.runtime) / 60);
         const mins = (Number(data.runtime) % 60)
-        const displayValue = `${hr > 0 && `${hr}hr`}${hr>1 ? "s.":"."} ${mins}mins.`
+        const displayValue = `${hr > 0 ? hr > 1 ? `${hr}hrs. ` : `${hr}hr. ` : "" }${mins}mins.`
 
-        const info = within(container).getByText(`${displayValue}`)
+        const info = within(container).getByText(displayValue)
         expect(info).toBeInTheDocument();
 
     })

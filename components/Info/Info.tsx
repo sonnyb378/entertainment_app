@@ -24,8 +24,7 @@ const Info:React.FC<{
     if (valueFor === "runtime") {
         const hr = Math.floor(Number(value) / 60);
         const mins = (Number(value) % 60)
-        // displayValue = `${hr > 0 ? `${hr}hr` : ""}${hr>1 ? "s.":""} ${mins}mins.`
-        displayValue = `${hr > 0 && `${hr}hr`}${hr>1 ? "s.":"."} ${mins}mins.`
+        displayValue = `${hr > 0 ? hr > 1 ? `${hr}hrs. ` : `${hr}hr. ` : "" }${mins}mins.`
     }
 
     return (

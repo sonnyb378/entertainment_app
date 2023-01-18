@@ -35,16 +35,16 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
     const user = useAppSelector<IAuthState>(selectAuth);    
     const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
     
+    const router = useRouter();
     const { videoIsPlayed, setVideoIsPlayed,  showData } = useAppContext();
 
-    const router = useRouter();
     const dispatch = useAppDispatch();
 
     let isBookmarked = false;
-    const { trending, popular } = data;  
+    const { trending, popular, feature_id } = data;  
     // const featured = fake_featured;
     
-    const feature_id = trending && trending[getRandom(trending.length-1)].id;
+    // const feature_id = trending && trending[getRandom(trending.length-1)].id;
     const { movie_detail: featured, isLoading: featuredIsLoading, isError: featuredHasError } = useMovieDetail(`${feature_id}`); 
 
     let recommendationsArr:any[] = [];
@@ -62,6 +62,8 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
       } else {
         genres.push([...feature_id.genre_ids])
       }
+
+      isBookmarked = bookmarks.data.findIndex((show:any) => show.id === featured.id) !== -1;
     }
 
     useEffect(() => {
@@ -76,9 +78,9 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
       })
     }, [videoIsPlayed])
 
-    if (!featuredIsLoading) {
-      isBookmarked = bookmarks.data.findIndex((show:any) => show.id === featured.id) !== -1;
-    }
+    // if (!featuredIsLoading) {
+    //   isBookmarked = bookmarks.data.findIndex((show:any) => show.id === featured.id) !== -1;
+    // }
 
     const saveBookmark = (data:any) => {
       dispatch(setDataBookmarks({
@@ -88,7 +90,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
         poster_path: data.poster_path,
         media_type: "movie",
         genre_ids: genres,
-      }))    
+      }))  
     }
 
     const deleteBookmark = (showID:number) => {
@@ -303,11 +305,13 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
   };
 
   // export const getStaticProps: GetStaticProps = async (context:any) => {
+  //   const featuredID = fake_trending && fake_trending[getRandom(fake_trending.length-1)].id;
   //   return {
   //     props: {
   //       data: {
   //         trending : fake_trending,
   //         popular: fake_popular,
+  //         feature_id: featuredID
   //       }
   //     },
   //     // revalidate: 10,
@@ -334,6 +338,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
         data: {
           trending: resTrending ? [].concat(...resTrending.results) : [],
           popular: resPopular ? [].concat(...resPopular.results) : [],
+          feature_id: resTrending.results && resTrending.results[getRandom(resTrending.results.length-1)].id
         }
       },
       // revalidate: 10,

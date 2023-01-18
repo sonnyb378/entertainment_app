@@ -37,10 +37,10 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
     const dispatch = useAppDispatch();
 
     let isBookmarked = false;
-    const { trending, popular } = data;
+    const { trending, popular, feature_id } = data;
     // const featured = fake_tv_featured;
     
-    const feature_id = trending && trending[getRandom(trending.length-1)].id;
+    // const feature_id = trending && trending[getRandom(trending.length-1)].id;
     const { tv_detail: featured, isLoading: featuredIsLoading, isError:featuredHasError } = useTVDetail(`${feature_id}`); 
 
     let recommendationsArr:any[] = [];  
@@ -325,11 +325,13 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
   };
 
   // export const getStaticProps: GetStaticProps = async (context:any) => {
+  //   const featuredID = fake_tv_trending && fake_tv_trending[getRandom(fake_tv_trending.length-1)].id
   //   return {
   //     props: {
   //       data: {
   //         trending : fake_tv_trending,
   //         popular: fake_tv_popular,
+  //         feature_id: featuredID
   //       }
   //     },
   //     // revalidate: 10,
@@ -357,6 +359,7 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
         data: {
           trending: resTrending ? [].concat(...resTrending.results) : [],
           popular: resPopular ? [].concat(...resPopular.results) : [],
+          feature_id: resTrending.results && resTrending.results[getRandom(resTrending.results.length-1)].id
         }
       },
       // revalidate: 10,
