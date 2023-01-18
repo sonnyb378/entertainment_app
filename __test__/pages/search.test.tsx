@@ -76,7 +76,7 @@ describe("<Search />", () => {
         const search_container = within(container).getByTestId("search_container")
         expect(search_container).toBeInTheDocument();
 
-        debug();
+        // debug();
     })
 
 
