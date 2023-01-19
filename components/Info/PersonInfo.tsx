@@ -26,7 +26,7 @@ const PersonInfo: React.FC<{
             <span className="mr-[5px] font-semibold text-[16px]">{ title }{ separator }</span>
             <div className="text-slate-400 text-[15px]">
                 { 
-                typeof value === "object"  && value.length > 0 ? 
+                typeof value === "object"  && value && value.length > 0 ? 
                     <ul>
                         {
                             value && value.map((item:any, i:any) => {

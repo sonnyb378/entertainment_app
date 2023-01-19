@@ -4,8 +4,7 @@ import '@testing-library/jest-dom';
 import SigninBtn from './SigninBtn';
 
 // import userEvent from "@testing-library/user-event";
-
-import { useRouter } from "next/router"
+// import { useRouter } from "next/router"
 
 global.window = Object.create(window);
 

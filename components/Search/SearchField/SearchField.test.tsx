@@ -1,8 +1,8 @@
-import { fireEvent, render, screen, within, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { useRouter } from "next/router"
-import { useAppSelector } from "../../../app/hooks"
-import { selectCurrentUrl } from "../../../app/store/slices/url";
+// import { useAppSelector } from "../../../app/hooks"
+// import { selectCurrentUrl } from "../../../app/store/slices/url";
 
 import SearchField from "./SearchField"
 

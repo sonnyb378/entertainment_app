@@ -1,15 +1,15 @@
-import { fireEvent, render, screen, within, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import Thumbnail from './Thumbnail'
 
 import { useAppDispatch } from "../../app/hooks"
-import { useState } from "react";
+// import { useState } from "react";
 import * as React from "react";
 import * as AppContext from '../../context/state';
 import { removeDataBookmarks, setDataBookmarks } from '../../app/store/slices/bookmarks'
 import { useRouter } from "next/router"
 import { fake_trending } from '../../model/fake_trending'
-import { fake_person_popular } from '../../model/fake_person_popular';
+// import { fake_person_popular } from '../../model/fake_person_popular';
 
 jest.mock("../../app/store/slices/bookmarks", () => ({
     setDataBookmarks: jest.fn(),

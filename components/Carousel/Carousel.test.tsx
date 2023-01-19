@@ -1,10 +1,10 @@
 import { render, screen, fireEvent, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { PlayCircleIcon, PlusCircleIcon, MinusCircleIcon } from "@heroicons/react/24/outline";
+// import { PlayCircleIcon, PlusCircleIcon, MinusCircleIcon } from "@heroicons/react/24/outline";
 
+// import { useAuthState } from "react-firebase-hooks/auth";
+// import { IAuthState } from '../../ts/states/auth_state';
 import Carousel from './Carousel';
-import { useAuthState } from "react-firebase-hooks/auth";
-import { IAuthState } from '../../ts/states/auth_state';
 import { useAppDispatch } from "../../app/hooks"
 import { fake_popular } from "../../model/fake_popular"
 import { useState } from "react";

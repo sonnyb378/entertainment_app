@@ -1,9 +1,9 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import {within} from '@testing-library/dom';
 
 import Footer from "./Footer";
-import LanguageSelector from "../../LanguageSelector/LanguageSelector"
+// import LanguageSelector from "../../LanguageSelector/LanguageSelector"
 
 describe("<Footer />", () => {
     afterAll(() => {

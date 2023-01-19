@@ -1,7 +1,7 @@
-import { fireEvent, render, screen, within, waitFor } from '@testing-library/react'
+import { render, within } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import MediaTypePerson from './Person'
-import { fake_trending } from '../../../model/fake_trending'
+// import { fake_trending } from '../../../model/fake_trending'
 
 describe("<MediaTypePerson />", () => {
 

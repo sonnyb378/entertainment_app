@@ -1,6 +1,6 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import {within} from '@testing-library/dom';
+
 import Main from "./Main"
 
 import { useRouter } from "next/router"

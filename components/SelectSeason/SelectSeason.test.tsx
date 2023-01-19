@@ -1,6 +1,6 @@
-import { fireEvent, render, screen, within, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import { useRouter } from "next/router"
+// import { useRouter } from "next/router"
 
 import SelectSeason from './SelectSeason'
 import { tvData } from '../../model/fake_tv_detail'

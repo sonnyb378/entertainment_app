@@ -11,13 +11,14 @@ const PosterImage: React.FC<{
 
 
     return (
-        <div className="image-container relative w-full h-full" data-testid="poster_image_container"> 
+        <div className="flex-1 items-start justify-start relative w-full h-[169px] border-0" data-testid="poster_image_container"> 
             <Image 
                 src={ `${process.env.NEXT_PUBLIC_TMDB_IMAGE_PATH}${src}` } 
                 layout="responsive"
                 width={300}
                 height={169}
                 priority={true}
+                alt=""
                 className={`object-cover cursor-pointer z-[1000]`}
             />
             {

@@ -1,13 +1,13 @@
-import { fireEvent, render, screen, within, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import { useRouter } from "next/router"
+// import { useRouter } from "next/router"
 
 import SearchResultItem from "./SearchResultItem"
-import { IResult } from './SearchResultItem'
+// import { IResult } from './SearchResultItem'
 
 import { useBlackAdam } from '../../../model/fake_search'
 import { useAppSelector } from "../../../app/hooks"
-import { IAuthState } from '../../../ts/states/auth_state'
+// import { IAuthState } from '../../../ts/states/auth_state'
 
 jest.mock("react-firebase-hooks/auth", () => ({
     useAuthState: jest.fn()

@@ -92,6 +92,7 @@ const Thumbnail:React.FC<{
                                         src={ no_result } 
                                         layout="fill"
                                         priority={ true }
+                                        alt=""
                                         className={`object-contain cursor-pointer !relative !h-[unset] z-[1000]`}
                                     />                        
                                 </div>
@@ -176,7 +177,7 @@ const Thumbnail:React.FC<{
                     if (timer) clearTimeout(timer)
                     setIsHover(false)
                 })}  
-                className={`flex ${ expand && "scale-[120%]" } flex-col items-center justify-start z-[2000] w-full relative duration-200 transition-all border-0 rounded-md overflow-hidden`}
+                className={`flex ${ expand && "scale-[120%]" } flex-col items-start justify-start z-[2000] w-full relative duration-200 transition-all border-0  rounded-md overflow-hidden`}
                 data-testid={`collapsed_${result.id}`}
             >
                 <span className={`${isHover ? "flex" : "hidden"} z-[2000] items-center justify-center absolute top-2 left-2 px-2 text-[10px] bg-black`}>

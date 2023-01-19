@@ -1,14 +1,13 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, within } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import {within} from '@testing-library/dom';
 
 import Header from './Header';
 
 import { useRouter } from "next/router";
 
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useAppDispatch } from "../../../app/hooks"
-import { setAuthData } from "../../../app/store/slices/auth";
+// import { useAppDispatch } from "../../../app/hooks"
+// import { setAuthData } from "../../../app/store/slices/auth";
 
 jest.mock('next/router', () => ({
     __esModule: true,

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import '@testing-library/jest-dom'
 
-import { useAuthState } from "react-firebase-hooks/auth";
+// import { useAuthState } from "react-firebase-hooks/auth";
 import {useRouter} from "next/router"; 
 import Navigation from "./Navigation";
 import * as React from "react";

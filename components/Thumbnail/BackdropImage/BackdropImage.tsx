@@ -13,12 +13,15 @@ const BackdropImage: React.FC<{
 
 
     return (
-        <div className="image-container relative w-full" data-testid="backdrop_image_container">   
+        <div className="flex-1 items-start justify-start relative w-full h-[169px] border-0" data-testid="backdrop_image_container">   
             <Image 
                 src={ `${process.env.NEXT_PUBLIC_TMDB_IMAGE_PATH}${src}` } 
-                layout="fill"
+                layout="responsive"
+                width={300}
+                height={169}
                 priority={true}
-                className={`object-contain cursor-pointer !relative !h-[unset] z-[1000]`}
+                alt=""
+                className={`object-contain cursor-pointer z-[1000]`}
             />   
             {
                 expand && user && user.accessToken && media_type !== "people" &&

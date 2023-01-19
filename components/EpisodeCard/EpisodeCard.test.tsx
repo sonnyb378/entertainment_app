@@ -6,9 +6,7 @@ import { fake_tv_episodes } from '../../model/fake_tv_episodes';
 import * as React from "react";
 
 import * as AppContext from '../../context/state';
-import { useContext } from 'react';
-
-
+// import { useContext } from 'react';
 
 jest.mock('../../context/state', () => ({
     __esModule: true,

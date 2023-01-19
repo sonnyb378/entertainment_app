@@ -1,11 +1,11 @@
-import { fireEvent, render, screen, within, waitFor } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import { useRouter } from "next/router"
+// import { useRouter } from "next/router"
 
 import SearchResults from './SearchResults'
-import { useAppSelector, useAppDispatch } from "../../../app/hooks"
-import { removeDataBookmarks, setDataBookmarks, selectBookmarkData } from '../../../app/store/slices/bookmarks'
-import axios from 'axios';
+import { useAppSelector } from "../../../app/hooks"
+// import { removeDataBookmarks, setDataBookmarks, selectBookmarkData } from '../../../app/store/slices/bookmarks'
+// import axios from 'axios';
 
 import { useBlackAdam, useStarTrek } from '../../../model/fake_search'
 
