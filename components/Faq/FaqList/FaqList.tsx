@@ -1,3 +1,4 @@
+import React from "react";
 import FaqItem from "../FaqItem/FaqItem";
 import styles from "./FaqList.module.css";
 import { IFaqItem } from "../FaqItem/FaqItem";

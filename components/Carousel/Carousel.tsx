@@ -1,3 +1,4 @@
+import * as React from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { useEffect, useRef, useState } from "react";
 import { IAuthState } from "../../ts/states/auth_state";

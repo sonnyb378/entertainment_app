@@ -15,6 +15,7 @@ import { selectCurrentUrl } from "../app/store/slices/url";
 import SearchResults from "../components/Search/SearchResults/SearchResults";
 
 const Search: NextPageWithLayout = () => {
+    const user = useAppSelector<IAuthState>(selectAuth);    
     const router = useRouter();
     const new_url = useAppSelector<IUrl>(selectCurrentUrl)
     
@@ -34,7 +35,9 @@ const Search: NextPageWithLayout = () => {
     }
 
     useEffect(() => {
-      if (!cont) {
+      if (!user || !user.accessToken) {
+        router.push("/signin");
+      } else if (!cont) {
        router.push(new_url.currentUrl);
       }
     },[router.asPath])
@@ -65,21 +68,6 @@ const Search: NextPageWithLayout = () => {
       description: "Search Results - Wibix"
     }
 
-    const [pageIsLoading, setPageIsLoading] = useState(true);
-    const user = useAppSelector<IAuthState>(selectAuth);
-    const router = useRouter();
-
-    useEffect(() => {
-        // if (!user || !user.accessToken) {
-        //   router.replace("/signin");
-        // } else {
-        //   setPageIsLoading(false);
-        // }
-        setPageIsLoading(false);
-      },[router.asPath]);
-
-  
-    if (pageIsLoading) return null;
    
     return (
       <Main seo={meta} showHero={false}>

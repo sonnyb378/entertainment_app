@@ -1,4 +1,4 @@
-
+import React from "react";
 import styles from "./InputField.module.css";
 
 export interface IInputField {

@@ -1,6 +1,5 @@
 import { GetServerSideProps } from "next";
-import { useEffect, useState } from "react";
-import Watch from "../../components/Layout/Watch/Watch";
+import React, { useEffect, useState } from "react";
 import { NextPageWithLayout } from "../page";
 import { ArrowLeftIcon, EllipsisHorizontalCircleIcon, PauseIcon, SpeakerWaveIcon } from "@heroicons/react/24/outline";
 import { ArrowTopRightOnSquareIcon, ArrowUturnLeftIcon, ArrowUturnRightIcon } from "@heroicons/react/24/solid";
@@ -9,11 +8,13 @@ import { useRouter } from "next/router";
 import { useAppSelector } from "../../app/hooks";
 import { IAuthState } from "../../ts/states/auth_state";
 import { selectAuth } from "../../app/store/slices/auth";
-import { useMovieDetail } from "../../lib/hooks/useMovieDetail";
-import { useTVDetail } from "../../lib/hooks/useTVDetail";
+// import { useMovieDetail } from "../../lib/hooks/useMovieDetail";
+// import { useTVDetail } from "../../lib/hooks/useTVDetail";
+import Watch from "../../components/Layout/Watch/Watch";
 import axios from "axios";
 
 const WatchShow: NextPageWithLayout<{ data: any }> = ({ data }) => {
+    const user = useAppSelector<IAuthState>(selectAuth); 
     const router = useRouter()
     const [showControl, setShowControls] = useState(true)
     const { setVideoIsPlayed, videoIsPlayed, showData } = useAppContext()
@@ -23,6 +24,12 @@ const WatchShow: NextPageWithLayout<{ data: any }> = ({ data }) => {
     useEffect(() => {
         setVideoIsPlayed(false, {})
     },[])
+
+    useEffect(() => {
+        if (!user || !user.accessToken) {
+            router.push("/signin");
+          }
+    }, [router.asPath])
 
     const videoControlsHandler = (callback: (...args: [any]) => void, delay: number) => {
         let timer: NodeJS.Timeout;
@@ -94,24 +101,10 @@ export default WatchShow;
 
 
 WatchShow.getLayout = (page) => {
-    const meta = {
-      title: "Movies",
-      description: "Movies - Wibix"
-    }
-    const [pageIsLoading, setPageIsLoading] = useState(true);
-    const user = useAppSelector<IAuthState>(selectAuth);
-    const router = useRouter();
-
-    useEffect(() => {
-      if (!user || !user.accessToken) {
-        router.push("/signin");
-      } else {
-        setPageIsLoading(false);
-      }
-    },[router.asPath]);
-
-
-    if (pageIsLoading) return null;
+    // const meta = {
+    //   title: "Movies",
+    //   description: "Movies - Wibix"
+    // }
    
     return (
       <Watch>

@@ -2,8 +2,8 @@
 import Main from "../components/Layout/Main/Main";
 import { NextPageWithLayout } from "./page";
 
-import Router, { useRouter } from "next/router";
-import React, { ReactElement, useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
 
 import { useAppSelector, useAppDispatch } from "../app/hooks";
 import { selectAuth } from "../app/store/slices/auth";
@@ -11,22 +11,22 @@ import { IAuthState } from "../ts/states/auth_state";
 
 import { setCurrentUrl } from "../app/store/slices/url";
 
-import { GetServerSideProps, GetStaticProps } from "next";
-import { IResult } from "../components/Search/SearchResultItem/SearchResultItem";
+import { GetStaticProps } from "next";
+// import { IResult } from "../components/Search/SearchResultItem/SearchResultItem";
 import axios from "axios";
 import { getRandom } from "../lib/getRandom";
 import Carousel from "../components/Carousel/Carousel";
-import { ArrowPathIcon, ChevronLeftIcon } from "@heroicons/react/24/solid";
+// import { ArrowPathIcon, ChevronLeftIcon } from "@heroicons/react/24/solid";
 import { PlayCircleIcon, PlusCircleIcon, MinusCircleIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 
 import Image from "next/image";
 import Info from "../components/Info/Info";
 import CustomBtn from "../components/Button/CustomBtn/CustomBtn";
-import { fake_trending, fake_featured } from "../model/fake_trending";
 import { useMovieDetail } from "../lib/hooks/useMovieDetail";
 import { useAppContext } from "../context/state";
+import { fake_trending, fake_featured } from "../model/fake_trending";
 import { fake_popular } from "../model/fake_popular";
-import type { AppProps } from 'next/app';
+// import type { AppProps } from 'next/app';
 import { fadeScreen } from "../lib/fadeScreen";
 import { IBookmarkData, removeDataBookmarks, selectBookmarkData, setDataBookmarks } from "../app/store/slices/bookmarks";
 
@@ -35,17 +35,26 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
     const user = useAppSelector<IAuthState>(selectAuth);    
     const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
     
+    const [ pageIsLoading, setPageIsLoading] = useState(true)
     const router = useRouter();
-    const { videoIsPlayed, setVideoIsPlayed,  showData } = useAppContext();
-
     const dispatch = useAppDispatch();
+
+    useEffect(() => {
+      if (!user || !user.accessToken) {
+        router.push("/signin");
+      } else {
+        setPageIsLoading(false)
+      }
+    },[router.asPath]);
+
+    const { videoIsPlayed, setVideoIsPlayed,  showData } = useAppContext();
 
     let isBookmarked = false;
     const { trending, popular, feature_id } = data;  
-    // const featured = fake_featured;
-    
-    // const feature_id = trending && trending[getRandom(trending.length-1)].id;
-    const { movie_detail: featured, isLoading: featuredIsLoading, isError: featuredHasError } = useMovieDetail(`${feature_id}`); 
+    const featured = fake_featured as any;
+    const featuredIsLoading = false;    
+  
+    // const { movie_detail: featured, isLoading: featuredIsLoading } = useMovieDetail(`${feature_id}`); 
 
     let recommendationsArr:any[] = [];
     const genres:any = [];
@@ -55,7 +64,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
         recommendationsArr.push(item)
       })
       
-      if (featured.hasOwnProperty('genres')) {
+      if (featured.genres) {
         featured.genres.map((genre:any) => {
           genres.push(genre.id)
         })
@@ -70,13 +79,13 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
       dispatch(setCurrentUrl({
         currentUrl: router.pathname
       }))
-    }, [])
+    }, [router.pathname, dispatch])
 
     useEffect(() => {
       fadeScreen(videoIsPlayed, () => {
         router.push(`/watch/${showData.id}?mt=${showData.media_type}`)
       })
-    }, [videoIsPlayed])
+    }, [videoIsPlayed, showData.id, showData.media_type, router])
 
     // if (!featuredIsLoading) {
     //   isBookmarked = bookmarks.data.findIndex((show:any) => show.id === featured.id) !== -1;
@@ -103,6 +112,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
       // console.log("user: ", user)
       // console.log("bookmarks: ", bookmarks)
     // },[])
+    if (pageIsLoading) return null;
 
     return (
       <div className="flex flex-col items-start justify-center w-full overflow-hidden pb-[100px] -mt-[4px]" data-testid="movies_container">
@@ -166,11 +176,14 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                         <div className="flex flex-col w-full items-center justify-start border-0 p-0 mt-4 space-y-2
                         sm:space-y-0 sm:space-x-2 sm:flex-row
                         lg:space-x-2">
-                          <CustomBtn 
-                            title="Play" 
-                            Icon={PlayCircleIcon} 
-                            onClickHandler={() => setVideoIsPlayed(true, {...featured, media_type: "movie" })} 
-                          />
+                          {
+                            user && user.accessToken &&
+                              <CustomBtn 
+                                title="Play" 
+                                Icon={PlayCircleIcon} 
+                                onClickHandler={() => setVideoIsPlayed(true, {...featured, media_type: "movie" })} 
+                              />
+                          }
                           {
                             !isBookmarked ? 
                               user && user.accessToken && <CustomBtn title="Add to List" Icon={PlusCircleIcon} onClickHandler={() => 
@@ -281,67 +294,53 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
       title: "Movies",
       description: "Movies - Wibix"
     }
-    const [pageIsLoading, setPageIsLoading] = useState(true);
-    const user = useAppSelector<IAuthState>(selectAuth);
-    const router = useRouter();
     
-
-    useEffect(() => {
-      if (!user || !user.accessToken) {
-        router.push("/signin");
-      } else {
-        setPageIsLoading(false);
-      }
-    },[router.asPath]);
-
-    if (pageIsLoading) return null;
-   
     return (
-      <Main seo={meta} showHero={false} >
+      <Main seo={meta} showHero={false}>
         {page}   
       </Main>
     );
 
   };
 
-  // export const getStaticProps: GetStaticProps = async (context:any) => {
-  //   const featuredID = fake_trending && fake_trending[getRandom(fake_trending.length-1)].id;
-  //   return {
-  //     props: {
-  //       data: {
-  //         trending : fake_trending,
-  //         popular: fake_popular,
-  //         feature_id: featuredID
-  //       }
-  //     },
-  //     // revalidate: 10,
-  //   }  
-  // }
-
   export const getStaticProps: GetStaticProps = async (context:any) => {
-    
-    const [reqTrending, reqPopular] = await Promise.all([
-      await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}trending/movie/day?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}`,{
-        headers: { "Accept-Encoding": "gzip,deflate,compress" } 
-      }).then(res => res.data),
-      await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}movie/popular?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&region=US&page=1`, {
-        headers: { "Accept-Encoding": "gzip,deflate,compress" } 
-      }).then(res => res.data)   
-    ])
-
-    const [resTrending, resPopular] = await Promise.all([
-      reqTrending, reqPopular
-    ])
-
+    const featuredID = fake_trending && fake_trending[getRandom(fake_trending.length-1)].id;
     return {
       props: {
         data: {
-          trending: resTrending ? [].concat(...resTrending.results) : [],
-          popular: resPopular ? [].concat(...resPopular.results) : [],
-          feature_id: resTrending.results && resTrending.results[getRandom(resTrending.results.length-1)].id
+          trending : fake_trending,
+          popular: fake_popular,
+          feature_id: featuredID
         }
       },
       // revalidate: 10,
-    }
-
+    }  
   }
+
+  // export const getStaticProps: GetStaticProps = async (context:any) => {
+    
+  //   const [reqTrending, reqPopular] = await Promise.all([
+  //     await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}trending/movie/day?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}`,{
+  //       headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+  //     }).then(res => res.data),
+  //     await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}movie/popular?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&region=US&page=1`, {
+  //       headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+  //     }).then(res => res.data)   
+  //   ])
+
+  //   const [resTrending, resPopular] = await Promise.all([
+  //     reqTrending, reqPopular
+  //   ])
+
+  //   return {
+  //     props: {
+  //       data: {
+  //         trending: resTrending ? [].concat(...resTrending.results) : [],
+  //         popular: resPopular ? [].concat(...resPopular.results) : [],
+  //         feature_id: resTrending.results && resTrending.results[getRandom(resTrending.results.length-1)].id
+  //       }
+  //     },
+  //     // revalidate: 10,
+  //   }
+
+  // }

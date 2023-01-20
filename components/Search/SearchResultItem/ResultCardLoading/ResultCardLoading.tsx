@@ -1,7 +1,9 @@
+import React from "react";
 import Image from "next/image";
 import styles from "./ResultCardLoading.module.css"
 
 import no_result from "../../../../assets/no_result.png"
+// const no_result = require("../../../../assets/no_result.png")
 
 const ResultCardLoading: React.FC<{ count: number }> = ({ count }) => {
     const cards = new Array(count).fill(0)

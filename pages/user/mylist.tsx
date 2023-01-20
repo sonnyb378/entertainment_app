@@ -20,23 +20,30 @@ import { IBookmarkData, selectBookmarkData } from "../../app/store/slices/bookma
 const MyList: NextPageWithLayout = () => {
     const user = useAppSelector<IAuthState>(selectAuth);  
     const router = useRouter();
-    const dispatch = useAppDispatch();
+    
     const { videoIsPlayed, showData } = useAppContext();
     const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
-
-
+    
+    const dispatch = useAppDispatch();
+    
     useEffect(() => {
       dispatch(setCurrentUrl({
         currentUrl: router.pathname
       }))
     },[])
 
+    useEffect(() => {
+      if (!user || !user.accessToken) {
+        router.replace("/signin");
+      }
+    },[router.asPath])
+
     
     useEffect(() => {
       fadeScreen(videoIsPlayed, () => {
         router.push(`/watch/${showData.id}?mt=${showData.media_type}`)
       })
-    }, [videoIsPlayed])
+    }, [videoIsPlayed, showData.id, showData.media_type])
 
     return (
       <div className="flex flex-col items-start justify-center w-[90%] p-5 relative" data-testid="mylist_container">
@@ -85,19 +92,7 @@ const MyList: NextPageWithLayout = () => {
       title: "Bookmarked Movies, TV Shows",
       description: "Movies - Wibix"
     }
-    const [pageIsLoading, setPageIsLoading] = useState(true);
-    const user = useAppSelector<IAuthState>(selectAuth);
-    const router = useRouter();
 
-    useEffect(() => {
-      if (!user || !user.accessToken) {
-        router.replace("/signin");
-      } else {
-        setPageIsLoading(false);
-      }
-    },[router.asPath]);
-
-    if (pageIsLoading) return null;
    
     return (
       <Main seo={meta} showHero={false}>

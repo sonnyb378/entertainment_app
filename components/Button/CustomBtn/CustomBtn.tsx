@@ -1,3 +1,4 @@
+import React from "react";
 import { useAppContext } from "../../../context/state";
 import styles from "./CustomBtn.module.css";
 

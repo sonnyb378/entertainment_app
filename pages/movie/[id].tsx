@@ -38,16 +38,15 @@ const Movie: NextPageWithLayout = (props:any) => {
   let isBookmarked = false;
 
   const { setVideoIsPlayed, videoIsPlayed, showData } = useAppContext()
-  // const { videoIsPlayed, showData } = useAppContext();
   
 
   const dispatch = useAppDispatch() 
 
-  const { movie_detail: data, isLoading, isError } = useMovieDetail(props.movie_id); 
+  // const { movie_detail: data, isLoading, isError } = useMovieDetail(props.movie_id); 
 
-  // const isLoading = false;
-  // const isError = undefined;
-  // const data = movieData
+  const isLoading = false;
+  const isError = undefined;
+  const data = movieData
   // console.log("dataBookmark: ", dataBookmark)
 
   let timer: NodeJS.Timer;
@@ -166,7 +165,10 @@ const Movie: NextPageWithLayout = (props:any) => {
                   <div className="flex flex-col w-full items-center justify-start space-x-2 border-0 p-4 mt-4 space-y-2
                   sm:space-y-0 sm:space-x-2 sm:flex-row
                   lg:space-x-2">
-                    <CustomBtn title="Play" Icon={PlayCircleIcon} onClickHandler={() => setVideoIsPlayed(true, {...data, media_type: "movie"})} />
+                    {
+                      user && user.accessToken &&
+                        <CustomBtn title="Play" Icon={PlayCircleIcon} onClickHandler={() => setVideoIsPlayed(true, {...data, media_type: "movie"})} />
+                    }
                     {
 
                       !isBookmarked ? 
@@ -258,17 +260,6 @@ const Movie: NextPageWithLayout = (props:any) => {
       title: "Movie detail page",
       description: "Movie details page - Wibix"
     }
-
-    const [pageIsLoading, setPageIsLoading] = useState(true);
-    const user = useAppSelector<IAuthState>(selectAuth);
-    const router = useRouter();
-
-    useEffect(() => {
-        setPageIsLoading(false);
-      },[router.asPath]);
-
-  
-    if (pageIsLoading) return null;
    
     return (
       <Main seo={meta} showHero={false}>

@@ -44,13 +44,13 @@ const TV: NextPageWithLayout = (props:any) => {
   
   // const [dataBookmark, setDataBookmark] = useState<any>([])
   
-  const { tv_detail: data, isLoading, isError } = useTVDetail(props.tv_id); 
+  // const { tv_detail: data, isLoading, isError } = useTVDetail(props.tv_id); 
 
   const dispatch = useAppDispatch() 
 
-  // const isLoading = false;
-  // const isError = undefined;
-  // const data = tvData
+  const isLoading = false;
+  const isError = undefined;
+  const data = tvData
 
   let isBookmarked = false;
   let timer: NodeJS.Timer;
@@ -348,17 +348,6 @@ const TV: NextPageWithLayout = (props:any) => {
       title: "TV detail page",
       description: "TV details page - Wibix"
     }
-
-    const [pageIsLoading, setPageIsLoading] = useState(true);
-    const user = useAppSelector<IAuthState>(selectAuth);
-    const router = useRouter();
-
-    useEffect(() => {
-        setPageIsLoading(false);
-      },[router.asPath]);
-
-  
-    if (pageIsLoading) return null;
    
     return (
       <Main seo={meta} showHero={false}>

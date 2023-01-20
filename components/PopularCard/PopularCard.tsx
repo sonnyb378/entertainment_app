@@ -1,8 +1,8 @@
+import React from "react";
 import styles from "./PopularCard.module.css"
 import { IAuthState } from "../../ts/states/auth_state";
 import { IResult } from "../Search/SearchResultItem/SearchResultItem";
 import Image from "next/image"
-import no_result from "../../assets/no_result.png"
 
 import { PlusIcon, PlayIcon, MinusIcon, CheckIcon } from "@heroicons/react/24/solid";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
@@ -17,6 +17,7 @@ import MediaTypeShow from "../Thumbnail/MediaType/Show";
 import MediaTypePerson from "../Thumbnail/MediaType/Person";
 
 
+import no_result from "../../assets/no_result.png"
 import num_1 from "../../assets/num_1.png"
 import num_2 from "../../assets/num_2.png"
 import num_3 from "../../assets/num_3.png"
@@ -27,6 +28,19 @@ import num_7 from "../../assets/num_7.png"
 import num_8 from "../../assets/num_8.png"
 import num_9 from "../../assets/num_9.png"
 import num_10 from "../../assets/num_10.png"
+
+// const no_result = require("../../assets/no_result.png")
+// const num_1 = require("../../assets/num_1.png")
+// const num_2 = require("../../assets/num_2.png")
+// const num_3 = require("../../assets/num_3.png")
+// const num_4 = require("../../assets/num_4.png")
+// const num_5 = require("../../assets/num_5.png")
+// const num_6 = require("../../assets/num_6.png")
+// const num_7 = require("../../assets/num_7.png")
+// const num_8 = require("../../assets/num_8.png")
+// const num_9 = require("../../assets/num_9.png")
+// const num_10 = require("../../assets/num_10.png")
+
 import { removeDataBookmarks, setDataBookmarks } from "../../app/store/slices/bookmarks";
 import { useAppDispatch } from "../../app/hooks";
 
@@ -145,10 +159,14 @@ const PopularCard:React.FC<{
                             bg-gradient-to-t from-[#0a0f19] via-[#0a0f19] border-0"></div>
                         <div className="flex pt-2 pb-1 z-[1100] relative w-full items-center justify-start bg-gray-900 bg-opacity-70 space-x-2 px-[13px]">
                             
-                            <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
-                                hover:text-white hover:bg-btnhighlight hover:border-btnhighlight">
-                                <PlayIcon className="w-[20px] h-[20px]" onClick={ () => setVideoIsPlayed(true, result) } data-testid="play_button" />
-                            </div>
+                            {
+                                user && user.accessToken &&
+                                    <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
+                                        hover:text-white hover:bg-btnhighlight hover:border-btnhighlight">
+                                        <PlayIcon className="w-[20px] h-[20px]" onClick={ () => setVideoIsPlayed(true, result) } data-testid="play_button" />
+                                    </div>
+                            }
+
                             <div className="flex-1"></div>
                             {
                                 user && user.accessToken && 

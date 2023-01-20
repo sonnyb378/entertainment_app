@@ -1,8 +1,10 @@
+import React from "react";
 import { useEffect, useState } from "react";
 import styles from "./Hero.module.css";
 import Image from "next/image";
 
 import hero_image from "../../assets/hero_image.png";
+// const hero_image = require("../../assets/hero_image.png");
 
 export interface IHero {
     children?: React.ReactNode;

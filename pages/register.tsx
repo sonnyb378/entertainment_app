@@ -12,14 +12,15 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 
 import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { selectAuth, setAuthData } from "../app/store/slices/auth";
+import { selectAuth } from "../app/store/slices/auth";
 import { IAuthState } from "../ts/states/auth_state";
-import Link from "next/link";
+// import Link from "next/link";
 
 interface IError {
     error: string;
 }
 const Register: NextPageWithLayout = () => {
+    const user = useAppSelector<IAuthState>(selectAuth);
     const dispatch = useAppDispatch();
     const router = useRouter();
     
@@ -30,6 +31,12 @@ const Register: NextPageWithLayout = () => {
     const [confirmPassword, setConfirmPassword] = useState("")
     const [registerErrors, setRegisterErrors] = useState<IError[]>([]);
 
+    useEffect(() => {
+        if (user && user.accessToken) {
+          router.replace("./movies");
+        }
+    }, [])
+    
     const signupHandler = async () => {
         let registerOk = true;
         setIsSubmitted(true);
@@ -238,19 +245,19 @@ const Register: NextPageWithLayout = () => {
       description: "Sign Up - Wibix"
     }
 
-    const [pageIsLoading, setPageIsLoading] = useState(true);
-    const user = useAppSelector<IAuthState>(selectAuth);
-    const router = useRouter();
+    // const [pageIsLoading, setPageIsLoading] = useState(true);
+    // const user = useAppSelector<IAuthState>(selectAuth);
+    // const router = useRouter();
 
-    useEffect(() => {
-      if (user && user.accessToken) {
-        router.replace("./movies");
-      } else {
-        setPageIsLoading(false);
-      }
-    },[router.asPath]);
+    // useEffect(() => {
+    //   if (user && user.accessToken) {
+    //     router.replace("./movies");
+    //   } else {
+    //     setPageIsLoading(false);
+    //   }
+    // },[router.asPath, router, user]);
 
-    if (pageIsLoading) return null;
+    // if (pageIsLoading) return null;
 
     
     return (

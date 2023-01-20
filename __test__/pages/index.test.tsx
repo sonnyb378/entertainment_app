@@ -6,7 +6,7 @@ import {within} from '@testing-library/dom';
 import Home from "../../pages/index"
 
 import { useRouter } from "next/router"
-import { selectAuth } from "../../app/store/slices/auth";
+// import { selectAuth } from "../../app/store/slices/auth";
 import { useAppSelector } from "../../app/hooks";
 
 jest.mock("next/router", () => ({

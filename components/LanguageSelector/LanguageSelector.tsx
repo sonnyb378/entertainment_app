@@ -1,3 +1,4 @@
+import React from "react";
 import styles from "./LanguageSelector.module.css";
 
 import { GlobeAltIcon } from "@heroicons/react/24/outline";

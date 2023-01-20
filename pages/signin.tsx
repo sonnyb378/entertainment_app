@@ -9,6 +9,8 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
 import googleLogo from "../assets/google_logo.svg";
+// const googleLogo = require("../assets/google_logo.svg");
+
 import Image from "next/image";
 
 import { auth, googleProvider } from "../firebase";
@@ -25,6 +27,7 @@ interface SignInErrors {
 }
 
 const Signin: NextPageWithLayout = () => {
+    const user = useAppSelector<IAuthState>(selectAuth);
     const router = useRouter();
     const dispatch = useAppDispatch();
 
@@ -34,6 +37,12 @@ const Signin: NextPageWithLayout = () => {
     const [signInErrors, setSignInErrors] = useState<SignInErrors[]>([]);
 
     const [rememberme, setRememberMe] = useState(false);
+
+    useEffect(() => {
+      if (user && user.accessToken) {
+            router.replace("/movies");
+          }
+    },[router.asPath])
 
     const signinHandler = () => {
       let signInOk = true; 
@@ -230,20 +239,20 @@ const Signin: NextPageWithLayout = () => {
       description: "Sign In - Wibix"
     }
 
-    const [pageIsLoading, setPageIsLoading] = useState(true);
-    const user = useAppSelector<IAuthState>(selectAuth);
-    const router = useRouter();
+    // const [pageIsLoading, setPageIsLoading] = useState(true);
+    // const user = useAppSelector<IAuthState>(selectAuth);
+    // const router = useRouter();
 
 
-    useEffect(() => {
-      if (user && user.accessToken) {
-        router.replace("/movies");
-      } else {
-        setPageIsLoading(false);
-      }
-    },[router.asPath]);
+    // useEffect(() => {
+    //   if (user && user.accessToken) {
+    //     router.replace("/movies");
+    //   } else {
+    //     setPageIsLoading(false);
+    //   }
+    // },[router.asPath, router, user]);
 
-    if (pageIsLoading) return null;
+    // if (pageIsLoading) return null;
 
     return (
         <Main seo={meta} showHero={true}>

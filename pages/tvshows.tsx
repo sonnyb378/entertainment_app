@@ -16,8 +16,8 @@ import { useTVDetail } from "../lib/hooks/useTVDetail";
 import Image from "next/image";
 import Info from "../components/Info/Info";
 import CustomBtn from "../components/Button/CustomBtn/CustomBtn";
-import { ArrowPathIcon, ChevronLeftIcon } from "@heroicons/react/24/solid";
-import { PlayCircleIcon, PlusCircleIcon, MinusCircleIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
+// import { ArrowPathIcon, ChevronLeftIcon } from "@heroicons/react/24/solid";
+import { PlusCircleIcon, MinusCircleIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 import Carousel from "../components/Carousel/Carousel";
 import axios from "axios";
 import { GetStaticProps } from "next";
@@ -30,18 +30,27 @@ import { IBookmarkData, removeDataBookmarks, selectBookmarkData, setDataBookmark
 const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
     const user = useAppSelector<IAuthState>(selectAuth);    
     const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
-
-    const { videoIsPlayed, showData } = useAppContext();
-
+    
     const router = useRouter();
     const dispatch = useAppDispatch();
 
+
+    useEffect(() => {
+      if (!user || !user.accessToken) {
+        router.replace("/signin");
+      } 
+    },[router.asPath]);
+
+
+    const { videoIsPlayed, showData } = useAppContext();
+
+
     let isBookmarked = false;
     const { trending, popular, feature_id } = data;
-    // const featured = fake_tv_featured;
+    const featured = fake_tv_featured as any;
+    const featuredIsLoading = false;
     
-    // const feature_id = trending && trending[getRandom(trending.length-1)].id;
-    const { tv_detail: featured, isLoading: featuredIsLoading, isError:featuredHasError } = useTVDetail(`${feature_id}`); 
+    // const { tv_detail: featured, isLoading: featuredIsLoading } = useTVDetail(`${feature_id}`); 
 
     let recommendationsArr:any[] = [];  
     const genres:any = [];
@@ -68,13 +77,13 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
       dispatch(setCurrentUrl({
         currentUrl: router.pathname
       }))
-    },[])
+    }, [router.pathname, dispatch])
 
     useEffect(() => {
       fadeScreen(videoIsPlayed, () => {
         router.push(`/watch/${showData.id}?mt=${showData.media_type}`)
       })
-    }, [videoIsPlayed])
+    }, [videoIsPlayed, showData.id, showData.media_type, router])
 
     // if (!featuredIsLoading) {
     //   isBookmarked = bookmarks.data.findIndex((show:any) => show.id === featured.id) !== -1
@@ -96,6 +105,8 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
         removeDataBookmarks({ id: showID })
       )
     }
+
+
 
     return (
       <div className="flex flex-col items-start justify-center w-full overflow-hidden pb-[100px] -mt-[4px]" data-testid="tv_container">
@@ -119,6 +130,7 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
                         priority={true}  
                         width={300}
                         height={169}     
+                        alt={featured.title || featured.name || featured.original_title || featured.original_name}
                         className={`object-cover z-[1000] opacity-40 border-2 border-red-500 object-center-top
                         sm:opacity-50`}
                     />
@@ -196,6 +208,7 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
                                       priority={true}  
                                       width={300}
                                       height={169}  
+                                      alt={ network.name }
                                       className="object-contain !position !h-[unset]"
                                     />
                                   </div>                            
@@ -302,19 +315,6 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
       title: "TVShows",
       description: "TVShows - Wibix"
     }
-    const [pageIsLoading, setPageIsLoading] = useState(true);
-    const user = useAppSelector<IAuthState>(selectAuth);
-    const router = useRouter();
-
-    useEffect(() => {
-      if (!user || !user.accessToken) {
-        router.replace("/signin");
-      } else {
-        setPageIsLoading(false);
-      }
-    },[router.asPath]);
-
-    if (pageIsLoading) return null;
    
     return (
       <Main seo={meta} showHero={false} >
@@ -324,48 +324,48 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
 
   };
 
-  // export const getStaticProps: GetStaticProps = async (context:any) => {
-  //   const featuredID = fake_tv_trending && fake_tv_trending[getRandom(fake_tv_trending.length-1)].id
-  //   return {
-  //     props: {
-  //       data: {
-  //         trending : fake_tv_trending,
-  //         popular: fake_tv_popular,
-  //         feature_id: featuredID
-  //       }
-  //     },
-  //     // revalidate: 10,
-  //   }  
-  // }
-
-
   export const getStaticProps: GetStaticProps = async (context:any) => {
-    
-    const [reqTrending, reqPopular] = await Promise.all([
-      await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}trending/tv/day?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}`, {
-        headers: { "Accept-Encoding": "gzip,deflate,compress" } 
-      }).then(res => res.data),
-      await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}tv/popular?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&region=US&page=1`, {
-        headers: { "Accept-Encoding": "gzip,deflate,compress" } 
-      }).then(res => res.data)   
-    ])
-
-    const [resTrending, resPopular] = await Promise.all([
-      reqTrending, reqPopular
-    ])
-
+    const featuredID = fake_tv_trending && fake_tv_trending[getRandom(fake_tv_trending.length-1)].id
     return {
       props: {
         data: {
-          trending: resTrending ? [].concat(...resTrending.results) : [],
-          popular: resPopular ? [].concat(...resPopular.results) : [],
-          feature_id: resTrending.results && resTrending.results[getRandom(resTrending.results.length-1)].id
+          trending : fake_tv_trending,
+          popular: fake_tv_popular,
+          feature_id: featuredID
         }
       },
       // revalidate: 10,
-    }
-
+    }  
   }
+
+
+  // export const getStaticProps: GetStaticProps = async () => {
+    
+  //   const [reqTrending, reqPopular] = await Promise.all([
+  //     await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}trending/tv/day?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}`, {
+  //       headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+  //     }).then(res => res.data),
+  //     await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}tv/popular?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&region=US&page=1`, {
+  //       headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+  //     }).then(res => res.data)   
+  //   ])
+
+  //   const [resTrending, resPopular] = await Promise.all([
+  //     reqTrending, reqPopular
+  //   ])
+
+  //   return {
+  //     props: {
+  //       data: {
+  //         trending: resTrending ? [].concat(...resTrending.results) : [],
+  //         popular: resPopular ? [].concat(...resPopular.results) : [],
+  //         feature_id: resTrending.results && resTrending.results[getRandom(resTrending.results.length-1)].id
+  //       }
+  //     },
+  //     // revalidate: 10,
+  //   }
+
+  // }
 
 
   

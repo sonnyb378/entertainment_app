@@ -1,9 +1,9 @@
+import React from "react";
 import { IAuthState } from "../../ts/states/auth_state";
 import { IResult } from "../Search/SearchResultItem/SearchResultItem";
 import BackdropImage from "./BackdropImage/BackdropImage";
 import PosterImage from "./PosterImage/PosterImage";
 import Image from "next/image"
-import no_result from "../../assets/no_result.png"
 import MediaTypeShow from "./MediaType/Show";
 import MediaTypePerson from "./MediaType/Person";
 
@@ -18,6 +18,9 @@ import { fadeScreen } from "../../lib/fadeScreen";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { IBookmarkData, removeDataBookmarks, selectBookmarkData, setDataBookmarks } from "../../app/store/slices/bookmarks";
 
+import no_result from "../../assets/no_result.png"
+
+// const no_result = require("../../assets/no_result.png")
 
 const Thumbnail:React.FC<{ 
     user: IAuthState, 
@@ -105,7 +108,7 @@ const Thumbnail:React.FC<{
                     <div className="flex pt-2 pb-1 z-[1100] relative w-full items-center justify-start bg-gray-900 bg-opacity-70 space-x-2 px-[13px]">
                         
                         {
-                            result.media_type !== "person" &&
+                            result.media_type !== "person" && user && user.accessToken &&
                             <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
                                 hover:text-white hover:bg-btnhighlight hover:border-btnhighlight">
                                 <PlayIcon className="w-[20px] h-[20px]" onClick={ () => setVideoIsPlayed(true, result) } data-testid="play_button" />

@@ -1,3 +1,4 @@
+import React from "react";
 import styles from "./Show.module.css"
 import { FilmIcon, TvIcon } from "@heroicons/react/24/solid";
 

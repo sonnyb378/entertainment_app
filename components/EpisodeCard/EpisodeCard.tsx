@@ -1,9 +1,12 @@
+import React from "react";
 import styles from "./EpisodeCard.module.css"
 import Image from "next/image"
 import { PlayCircleIcon } from "@heroicons/react/24/solid"
 import Info from "../Info/Info"
-import no_result from "../../assets/no_result.png"
 import { useAppContext } from "../../context/state"
+
+import no_result from "../../assets/no_result.png"
+// const no_result = require("../../assets/no_result.png");
 
 export interface IEpisodeCard {
     data:any

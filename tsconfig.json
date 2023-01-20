@@ -15,6 +15,6 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.js", "**/*.jsx", "firebase.js", "jest.setup.js", "**/*.ts", "**/*.tsx", "__mocks__/styleMock.js", "__mocks__/fileMock.js"],
+  "include": ["next-env.d.ts", "**/*.js", "**/*.jsx", "firebase.js", "jest.setup.js", "**/*.ts", "**/*.tsx"], //, "**/*.ts", "**/*.tsx", "__mocks__/styleMock.js", "__mocks__/fileMock.js"
   "exclude": ["node_modules"]
 }
