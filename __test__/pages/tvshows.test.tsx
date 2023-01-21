@@ -9,7 +9,7 @@ import { useState } from "react";
 import { setCurrentUrl } from '../../app/store/slices/url'
 import TVShows from '../../pages/tvshows'
 import { useTVDetail } from '../../lib/hooks/useTVDetail'
-import * as AppContext from '../../context/state';
+// import * as AppContext from '../../context/state';
 import { removeDataBookmarks, setDataBookmarks } from '../../app/store/slices/bookmarks'
 
 jest.mock("next/router", () => ({
@@ -77,6 +77,7 @@ describe("<TVShow s />", () => {
 
         const router = useRouter as jest.Mock;
         const mockRouter = {
+            replace: jest.fn(),
             pathname: jest.fn()
         }
         router.mockReturnValue(mockRouter)

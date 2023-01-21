@@ -1,13 +1,12 @@
 import { useState } from "react";
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor, within, act } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import {within} from '@testing-library/dom';
 
 import Signin from "../../pages/signin"
 
 import { useAuthState } from "react-firebase-hooks/auth"
 import { useRouter } from 'next/router';
-import { useAppDispatch } from "../../app/hooks"
+import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { setAuthData } from "../../app/store/slices/auth";
 
 import * as React from "react";
@@ -26,7 +25,8 @@ jest.mock("../../firebase", () => ({
     }  
 }))
 jest.mock("../../app/hooks", () => ({
-    useAppDispatch: jest.fn()
+    useAppDispatch: jest.fn(),
+    useAppSelector: jest.fn()
 }))
 jest.mock("../../app/store/slices/auth", () => ({
     setAuthData: jest.fn()
@@ -62,6 +62,18 @@ describe("test sign in page", () => {
 
         const mockUserAuthState = useAuthState as jest.Mock;
         mockUserAuthState.mockReturnValue([true, false])    
+
+        const mockAppSelector = useAppSelector as jest.Mock
+        mockAppSelector
+        .mockReturnValue({
+            accessToken: "sometoken"
+        })
+
+        const router = useRouter as jest.Mock;
+        const mockRouter = {
+            replace: jest.fn()
+        }
+        router.mockReturnValue(mockRouter)
     })
 
     afterAll(() => {
