@@ -1,20 +1,16 @@
+import React, { useEffect, useState } from "react";
 import SigninBtn from "../components/Button/SignIn/SigninBtn";
 import InputField from "../components/Form/InputField/InputField";
 import Main from "../components/Layout/Main/Main";
+
 import { NextPageWithLayout } from "./page";
-
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-
 import { ArrowPathIcon } from "@heroicons/react/24/solid";
-
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
-
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { selectAuth } from "../app/store/slices/auth";
 import { IAuthState } from "../ts/states/auth_state";
-// import Link from "next/link";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
 
 interface IError {
     error: string;
@@ -35,8 +31,8 @@ const Register: NextPageWithLayout = () => {
         if (user && user.accessToken) {
           router.replace("./movies");
         }
-    }, [])
-    
+    }, [router, user])
+
     const signupHandler = async () => {
         let registerOk = true;
         setIsSubmitted(true);
@@ -71,6 +67,7 @@ const Register: NextPageWithLayout = () => {
                 error: "Registration disabled"
             }])
 
+            // delay registration
             setTimeout(() => {
                 setIsSubmitted(false);
                 setRegisterErrors([]);

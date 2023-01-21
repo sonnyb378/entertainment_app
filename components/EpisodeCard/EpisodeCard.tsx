@@ -1,12 +1,11 @@
 import React from "react";
-import styles from "./EpisodeCard.module.css"
 import Image from "next/image"
-import { PlayCircleIcon } from "@heroicons/react/24/solid"
 import Info from "../Info/Info"
+
 import { useAppContext } from "../../context/state"
+import { PlayCircleIcon } from "@heroicons/react/24/solid"
 
 import no_result from "../../assets/no_result.png"
-// const no_result = require("../../assets/no_result.png");
 
 export interface IEpisodeCard {
     data:any
@@ -44,6 +43,7 @@ const EpisodeCard:React.FC<IEpisodeCard> = ({ data }) => {
                         priority={true}  
                         width={300}
                         height={169}  
+                        alt=""
                         className="object-cover !position !h-[unset]"
                     />  
                 }                

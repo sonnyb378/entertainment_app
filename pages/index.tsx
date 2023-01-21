@@ -1,10 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { NextPageWithLayout } from './page';
+import React, { useEffect } from "react";
 import Main from '../components/Layout/Main/Main';
 import InputField from '../components/Form/InputField/InputField';
 import SigninBtn from '../components/Button/SignIn/SigninBtn';
-import { ChevronDoubleRightIcon, ChevronDownIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
+import FaqList from '../components/Faq/FaqList/FaqList';
+
+import { NextPageWithLayout } from './page';
+import { ChevronDoubleRightIcon } from "@heroicons/react/24/solid";
+import { faq_list } from '../model/faq';
+import { useRouter } from "next/router"
+import { useAppSelector } from "../app/hooks";
+import { selectAuth } from "../app/store/slices/auth";
+import { IAuthState } from "../ts/states/auth_state";
 
 import tvframe from "../assets/tvframe.png";
 import download from "../assets/download.png";
@@ -20,34 +27,24 @@ import imac_gloss from "../assets/imac_gloss.png";
 // const imac  = require("../assets/IMac_vector.png"); 
 // const imac_gloss = require("../assets/imac_gloss.png"); 
 
-import { faq_list } from '../model/faq';
-import FaqList from '../components/Faq/FaqList/FaqList';
-
-import { useRouter } from "next/router"
-import { useAppSelector } from "../app/hooks";
-import { selectAuth } from "../app/store/slices/auth";
-
-import { IAuthState } from "../ts/states/auth_state";
 
 const Home: NextPageWithLayout = () => {
 
-  const [pageIsLoading, setPageIsLoading] = useState(true);
+  // const [pageIsLoading, setPageIsLoading] = useState(true);
   const user = useAppSelector<IAuthState>(selectAuth);
   const router = useRouter();
 
   useEffect(() => {   
     if (user && user.accessToken) {
       router.replace("/movies");
-    } else {
-      setPageIsLoading(false);
-    }
-  },[router.asPath]);
+    } 
+  },[router, user]);
   
   const getStartedHandler = () => {
     router.replace("/register");
   }
 
-  if (pageIsLoading) return null
+  // if (pageIsLoading) return null
 
   return (
       <div className="flex flex-col items-center justify-start w-full" data-testid="homepage_container">      

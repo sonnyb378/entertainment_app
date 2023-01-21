@@ -1,28 +1,24 @@
 
+import React, { useEffect } from "react";
 import Main from "../../components/Layout/Main/Main";
+import Thumbnail from "../../components/Thumbnail/Thumbnail";
+
 import { NextPageWithLayout } from "../page";
-
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { selectAuth } from "../../app/store/slices/auth";
 import { IAuthState } from "../../ts/states/auth_state";
-
 import { setCurrentUrl } from "../../app/store/slices/url";
-import Thumbnail from "../../components/Thumbnail/Thumbnail";
 import { useAppContext } from "../../context/state";
-import { ArrowPathIcon } from "@heroicons/react/24/solid";
-import SearchResultItem from "../../components/Search/SearchResultItem/SearchResultItem";
 import { fadeScreen } from "../../lib/fadeScreen";
 import { IBookmarkData, selectBookmarkData } from "../../app/store/slices/bookmarks";
 
 const MyList: NextPageWithLayout = () => {
     const user = useAppSelector<IAuthState>(selectAuth);  
     const router = useRouter();
+    const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
     
     const { videoIsPlayed, showData } = useAppContext();
-    const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
     
     const dispatch = useAppDispatch();
     
@@ -30,13 +26,13 @@ const MyList: NextPageWithLayout = () => {
       dispatch(setCurrentUrl({
         currentUrl: router.pathname
       }))
-    },[])
+    },[router.pathname, dispatch])
 
     useEffect(() => {
       if (!user || !user.accessToken) {
         router.replace("/signin");
       }
-    },[router.asPath])
+    },[router, user])
 
     
     useEffect(() => {

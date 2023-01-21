@@ -3,7 +3,6 @@ import Image from "next/image";
 import styles from "./ResultCardLoading.module.css"
 
 import no_result from "../../../../assets/no_result.png"
-// const no_result = require("../../../../assets/no_result.png")
 
 const ResultCardLoading: React.FC<{ count: number }> = ({ count }) => {
     const cards = new Array(count).fill(0)
@@ -22,6 +21,7 @@ const ResultCardLoading: React.FC<{ count: number }> = ({ count }) => {
                                         priority={true}
                                         width={300}
                                         height={169}
+                                        alt=""
                                         className={`object-cover cursor-pointer z-[1000] opacity-0`}
                                     />
                                 </div>

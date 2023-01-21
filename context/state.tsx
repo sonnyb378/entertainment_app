@@ -1,13 +1,13 @@
 
-import React, { createContext, useContext, useState, useCallback, useMemo, useEffect } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, db } from "../firebase";
-
+import React, { createContext, useContext, useState, useCallback } from "react";
 import { useAppSelector } from "../app/hooks";
 import { IAuthState } from "../ts/states/auth_state";
 import { selectAuth } from "../app/store/slices/auth";
-import { collection, addDoc, setDoc, doc, documentId, deleteDoc, FieldValue, arrayUnion, Unsubscribe, serverTimestamp } from "firebase/firestore"; 
-import { IResult } from "../components/Search/SearchResultItem/SearchResultItem";
+
+// import { useAuthState } from "react-firebase-hooks/auth";
+// import { auth, db } from "../firebase";
+// import { collection, addDoc, setDoc, doc, documentId, deleteDoc, FieldValue, arrayUnion, Unsubscribe, serverTimestamp } from "firebase/firestore"; 
+// import { IResult } from "../components/Search/SearchResultItem/SearchResultItem";
 
 export interface ContextState {
   setIsFullscreen: () => void,
@@ -33,11 +33,11 @@ export const AppContext = createContext<ContextState>(initialState);
 
 export const AppContextWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [contextState, setContextState] = useState<ContextState>(initialState);
-  const user = useAppSelector<IAuthState>(selectAuth);
+  // const user = useAppSelector<IAuthState>(selectAuth);
   
   let timer: NodeJS.Timer;
 
-  const setVideoIsPlayed = (isPlay:boolean, showData:any) => {
+  const setVideoIsPlayed = useCallback((isPlay:boolean, showData:any) => {
     setContextState((prev) => {
       return {
         ...prev,
@@ -51,7 +51,7 @@ export const AppContextWrapper: React.FC<{ children: React.ReactNode }> = ({ chi
         }
       }
     })
-  }
+  },[])
 
   const setIsFullscreen = () => {
     setContextState((prev) => {

@@ -1,61 +1,48 @@
 
 import React, { useEffect, useState } from "react";
 import Main from "../../components/Layout/Main/Main";
+import Image from "next/image";
+import Info from "../../components/Info/Info";
+import CustomBtn from "../../components/Button/CustomBtn/CustomBtn";
+import Carousel from "../../components/Carousel/Carousel";
+import axios from "axios";
+import EpisodeCard from "../../components/EpisodeCard/EpisodeCard";
+import SelectSeason from "../../components/SelectSeason/SelectSeason";
+
 import { NextPageWithLayout } from "../page";
 import { useRouter } from "next/router";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { IAuthState } from "../../ts/states/auth_state";
 import { selectAuth } from "../../app/store/slices/auth";
 import { useTVDetail } from "../../lib/hooks/useTVDetail";
-import { ArrowPathIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
-import Image from "next/image";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
-import Info from "../../components/Info/Info";
-
-import CustomBtn from "../../components/Button/CustomBtn/CustomBtn";
 import { useAppContext } from "../../context/state";
-import { PlayCircleIcon, PlusCircleIcon, MinusCircleIcon } from "@heroicons/react/24/outline";
-import Thumbnail from "../../components/Thumbnail/Thumbnail";
-
-import { tvData } from "../../model/fake_tv_detail";
-import { collection, DocumentData, onSnapshot, QuerySnapshot, Unsubscribe } from "firebase/firestore";
-import { db } from "../../firebase";
-import Carousel from "../../components/Carousel/Carousel";
-import PreviousMap from "postcss/lib/previous-map";
-
-import { GetServerSideProps, GetStaticProps } from "next";
-import axios from "axios";
-import { fake_tv_episodes } from "../../model/fake_tv_episodes";
-import EpisodeCard from "../../components/EpisodeCard/EpisodeCard";
-import SelectSeason from "../../components/SelectSeason/SelectSeason";
+import { ArrowPathIcon, PlusCircleIcon, MinusCircleIcon } from "@heroicons/react/24/outline";
+import { GetServerSideProps } from "next";
 import { fadeScreen } from "../../lib/fadeScreen";
 import { IBookmarkData, removeDataBookmarks, selectBookmarkData, setDataBookmarks } from "../../app/store/slices/bookmarks";
+
+// import { tvData } from "../../model/fake_tv_detail";
+// import { fake_tv_episodes } from "../../model/fake_tv_episodes";
 
 const TV: NextPageWithLayout = (props:any) => {
   const user = useAppSelector<IAuthState>(selectAuth);
   const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
 
   const router = useRouter();
+  const { tv_detail: data, isLoading, isError } = useTVDetail(props.tv_id); 
+  
   const { videoIsPlayed, showData } = useAppContext();
-
-  // const [isBookmarked, setIsBookmarked] = useState(false)
   const [isEpisodesLoading, setIsEpisodesLoading] = useState(false)
   const [episodes, setEpisodes] = useState<any>([])
   
-  // const [dataBookmark, setDataBookmark] = useState<any>([])
-  
-  // const { tv_detail: data, isLoading, isError } = useTVDetail(props.tv_id); 
-
   const dispatch = useAppDispatch() 
 
-  const isLoading = false;
-  const isError = undefined;
-  const data = tvData
+  // const isLoading = false;
+  // const isError = undefined;
+  // const data = tvData
 
   let isBookmarked = false;
-  let timer: NodeJS.Timer;
 
-  // let episodes:any[] = []
   let recommendationsArr:any[] = [];
   
   if (data) {
@@ -67,9 +54,6 @@ const TV: NextPageWithLayout = (props:any) => {
       isBookmarked = bookmarks.data.findIndex((show:any) => show.id === data.id) !== -1
     }
 
-    // if (data["season/1"] && data["season/1"].episodes.length > 0) {
-    //   episodes = [...data["season/1"].episodes]
-    // }
   }
 
   
@@ -98,18 +82,7 @@ const TV: NextPageWithLayout = (props:any) => {
     fadeScreen(videoIsPlayed, () => {
       router.push(`/watch/${showData.id}?mt=${showData.media_type}${ showData.media_type === "tv" && data.id && "&t="+data.id }${ showData.media_type ==="tv" && showData.season_number && "&s="+showData.season_number }${ showData.media_type ==="tv" && showData.episode_number && "&e="+showData.episode_number }`)
     })
-  }, [videoIsPlayed])
-
-  // useEffect(() => {
-  //   setDataBookmark([...bookmarks.data])
-  // },[])
-
-  // useEffect(() => {
-  //   if (data) {
-  //     setIsBookmarked(bookmarks.data.findIndex((show:any) => show.id === data.id) !== -1)
-  //     setDataBookmark([...bookmarks.data])
-  //   }
-  // }, [bookmarks])
+  }, [videoIsPlayed, router, showData.id, showData.media_type, showData.season_number, showData.episode_number])
 
   const genres:any = [];
   if (data && data.genres) {

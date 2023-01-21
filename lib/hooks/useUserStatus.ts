@@ -12,7 +12,7 @@ const useUserStatus = () => {
         if (user && user.accessToken) {
             setIsOnline(true)
         }        
-    }, [])
+    }, [user])
 
     return {
         isOnline,

@@ -1,20 +1,21 @@
 import React from "react";
 import styles from "./PopularCard.module.css"
-import { IAuthState } from "../../ts/states/auth_state";
-import { IResult } from "../Search/SearchResultItem/SearchResultItem";
 import Image from "next/image"
-
-import { PlusIcon, PlayIcon, MinusIcon, CheckIcon } from "@heroicons/react/24/solid";
-import { ChevronDownIcon } from "@heroicons/react/24/outline";
-import { useEffect, useState } from "react";
-
-import { useAppContext } from "../../context/state";
-import { useRouter } from "next/router";
 import Video from "../Thumbnail/Video/Video";
 import BackdropImage from "../Thumbnail/BackdropImage/BackdropImage";
 import PosterImage from "../Thumbnail/PosterImage/PosterImage";
 import MediaTypeShow from "../Thumbnail/MediaType/Show";
 import MediaTypePerson from "../Thumbnail/MediaType/Person";
+
+import { IAuthState } from "../../ts/states/auth_state";
+import { IResult } from "../Search/SearchResultItem/SearchResultItem";
+import { PlusIcon, PlayIcon, CheckIcon } from "@heroicons/react/24/solid";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { useEffect, useState } from "react";
+import { useAppContext } from "../../context/state";
+import { useRouter } from "next/router";
+import { removeDataBookmarks, setDataBookmarks } from "../../app/store/slices/bookmarks";
+import { useAppDispatch } from "../../app/hooks";
 
 
 import no_result from "../../assets/no_result.png"
@@ -29,20 +30,6 @@ import num_8 from "../../assets/num_8.png"
 import num_9 from "../../assets/num_9.png"
 import num_10 from "../../assets/num_10.png"
 
-// const no_result = require("../../assets/no_result.png")
-// const num_1 = require("../../assets/num_1.png")
-// const num_2 = require("../../assets/num_2.png")
-// const num_3 = require("../../assets/num_3.png")
-// const num_4 = require("../../assets/num_4.png")
-// const num_5 = require("../../assets/num_5.png")
-// const num_6 = require("../../assets/num_6.png")
-// const num_7 = require("../../assets/num_7.png")
-// const num_8 = require("../../assets/num_8.png")
-// const num_9 = require("../../assets/num_9.png")
-// const num_10 = require("../../assets/num_10.png")
-
-import { removeDataBookmarks, setDataBookmarks } from "../../app/store/slices/bookmarks";
-import { useAppDispatch } from "../../app/hooks";
 
 const PopularCard:React.FC<{ 
     visibleItems: number,
@@ -66,19 +53,18 @@ const PopularCard:React.FC<{
         } = useAppContext();
 
         const [expand, setExpand] = useState(false);
-        const [isHover, setIsHover] = useState(false);
         const [isBookmarked, setIsBookmarked] = useState(false);
 
         const router = useRouter();
-
-
         const dispatch = useAppDispatch();
+        
+        let number_image;
 
         useEffect(() => {
             setIsBookmarked(bookmarkData?.findIndex((b) => `${b.id}` === `${result.id}`) !== -1)
-        }, [bookmarkData])
+        }, [bookmarkData, result.id])
 
-        let number_image;
+        
 
         switch(indexCount + 1) {
             case 1: number_image = num_1; break;
@@ -148,6 +134,7 @@ const PopularCard:React.FC<{
                                             src={ no_result } 
                                             layout="fill"
                                             priority={ true }
+                                            alt="No Image"
                                             className={`object-contain cursor-pointer !relative !h-[unset] z-[1000]`}
                                         />                        
                                     </div>
@@ -261,6 +248,7 @@ const PopularCard:React.FC<{
                                             src={number_image}
                                             layout="fill"
                                             priority={true}
+                                            alt=""
                                             className={`z-[1001] !relative !h-[unset] object-cover`}
                                         />
                                         
@@ -283,6 +271,7 @@ const PopularCard:React.FC<{
                                     <Image 
                                         src={`${process.env.NEXT_PUBLIC_TMDB_IMAGE_PATH}${result.poster_path}`}
                                         layout="fill"
+                                        alt={`${result.title}`}
                                         className={`object-contain cursor-pointer !relative !h-[unset]`}
                                     />
                                 </div>
@@ -294,6 +283,7 @@ const PopularCard:React.FC<{
                                     src={ no_result } 
                                     layout="fill"
                                     priority={true}
+                                    alt="No Result"
                                     className={`object-contain cursor-pointer !relative !h-[unset] z-[1000]`}
                                 />                    
                             </div>                                                  

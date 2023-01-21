@@ -1,22 +1,20 @@
 import React from "react";
-import { IAuthState } from "../../ts/states/auth_state";
-import { IResult } from "../Search/SearchResultItem/SearchResultItem";
 import BackdropImage from "./BackdropImage/BackdropImage";
 import PosterImage from "./PosterImage/PosterImage";
 import Image from "next/image"
 import MediaTypeShow from "./MediaType/Show";
 import MediaTypePerson from "./MediaType/Person";
+import Video from "./Video/Video";
 
-import { PlusIcon, PlayIcon, MinusIcon, CheckIcon } from "@heroicons/react/24/solid";
+import { IAuthState } from "../../ts/states/auth_state";
+import { IResult } from "../Search/SearchResultItem/SearchResultItem";
+import { PlusIcon, PlayIcon, CheckIcon } from "@heroicons/react/24/solid";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
-
 import { useAppContext } from "../../context/state";
 import { useRouter } from "next/router";
-import Video from "./Video/Video";
-import { fadeScreen } from "../../lib/fadeScreen";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { IBookmarkData, removeDataBookmarks, selectBookmarkData, setDataBookmarks } from "../../app/store/slices/bookmarks";
+import { useAppDispatch } from "../../app/hooks";
+import { removeDataBookmarks, setDataBookmarks } from "../../app/store/slices/bookmarks";
 
 import no_result from "../../assets/no_result.png"
 
@@ -34,7 +32,6 @@ const Thumbnail:React.FC<{
         
         const { 
             setVideoIsPlayed,
-            videoIsPlayed,
             ctxOnEnterHandler: onEnterHandler,
             ctxOnLeaveHandler: onLeaveHandler
         } = useAppContext();
@@ -50,7 +47,7 @@ const Thumbnail:React.FC<{
 
         useEffect(() => {
             setIsBookmarked(bookmarkData?.findIndex((b) => `${b.id}` === `${result.id}`) !== -1)
-        }, [bookmarkData])
+        }, [bookmarkData, result.id])
 
         // console.log("thumbnail: ", result)
         
@@ -194,6 +191,7 @@ const Thumbnail:React.FC<{
                             src={ no_result } 
                             layout="fill"
                             priority={true}
+                            alt="No Result"
                             className={`object-contain cursor-pointer !relative !h-[unset] z-[1000]`}
                         />                    
                     </div>                                                  

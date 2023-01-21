@@ -1,26 +1,19 @@
+import React, { useEffect, useState } from "react";
 import SigninBtn from "../components/Button/SignIn/SigninBtn";
 import InputField from "../components/Form/InputField/InputField";
 import Main from "../components/Layout/Main/Main";
+import Image from "next/image";
 
 import { ArrowPathIcon } from "@heroicons/react/24/solid";
 import { NextPageWithLayout } from "./page";
-
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-
-import googleLogo from "../assets/google_logo.svg";
-// const googleLogo = require("../assets/google_logo.svg");
-
-import Image from "next/image";
-
 import { auth, googleProvider } from "../firebase";
-
-import {signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-
-
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { selectAuth, setAuthData } from "../app/store/slices/auth";
 import { IAuthState } from "../ts/states/auth_state";
+
+import googleLogo from "../assets/google_logo.svg";
 
 interface SignInErrors {
   error: string;
@@ -36,13 +29,13 @@ const Signin: NextPageWithLayout = () => {
     const [password, setPassword] = useState("demodemo");
     const [signInErrors, setSignInErrors] = useState<SignInErrors[]>([]);
 
-    const [rememberme, setRememberMe] = useState(false);
+    // const [rememberme, setRememberMe] = useState(false);
 
     useEffect(() => {
       if (user && user.accessToken) {
             router.replace("/movies");
           }
-    },[router.asPath])
+    },[router, user])
 
     const signinHandler = () => {
       let signInOk = true; 
@@ -68,14 +61,12 @@ const Signin: NextPageWithLayout = () => {
            
 
       if (signInOk) {
-        // console.log(signInOk, email, password);
         signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           // Signed in 
           const user = userCredential.user;
           user.getIdTokenResult()
           .then((result) => {
-              // console.log("signin result: ", result);
               setIsSubmitted(false);
               dispatch(setAuthData({
                 id: result.claims.user_id,
@@ -88,7 +79,6 @@ const Signin: NextPageWithLayout = () => {
         })
         .catch((error) => {
             setIsSubmitted(false);
-            // console.log(error.code);
             if (error.code === "auth/user-not-found") {
               setSignInErrors([{error: "User does not exist! Please try again" }]);
               return;
@@ -107,16 +97,8 @@ const Signin: NextPageWithLayout = () => {
     const passwordHandler = (e:React.ChangeEvent<HTMLInputElement>) => {
         setPassword(e.target.value);
     }
-    const rememberHandler = (e:React.ChangeEvent<HTMLInputElement>) => {
-        setRememberMe(e.target.checked);
-    }
-
     const createAccountHandler = () => {
         router.push("./register");
-    }
-
-    const forgotPasswordHandler = () => {
-        router.push("./forgot_password");
     }
 
     const signInWithGoogleHandler = async () => {
@@ -132,7 +114,7 @@ const Signin: NextPageWithLayout = () => {
           return userData.user.getIdTokenResult();        
         }).then((user:any) => {          
           return user;
-        }).catch((error) => {
+        }).catch(() => {
 
         })
 
@@ -216,7 +198,7 @@ const Signin: NextPageWithLayout = () => {
                         <span className="tracking-wider">New to Wibix?</span>
                         <span className="text-btnhighlight ml-0 md:ml-2 hover:text-yellow-200 cursor-pointer" onClick={createAccountHandler} >Create an Account</span>
                     </div>                   
-                    {/* <span className="hover:text-yellow-200 cursor-pointer mt-4 md:mt-0" onClick={forgotPasswordHandler} >Forgot Password</span> */}
+                    
                 </div>
 
 
@@ -238,22 +220,6 @@ const Signin: NextPageWithLayout = () => {
       title: "SignIn",
       description: "Sign In - Wibix"
     }
-
-    // const [pageIsLoading, setPageIsLoading] = useState(true);
-    // const user = useAppSelector<IAuthState>(selectAuth);
-    // const router = useRouter();
-
-
-    // useEffect(() => {
-    //   if (user && user.accessToken) {
-    //     router.replace("/movies");
-    //   } else {
-    //     setPageIsLoading(false);
-    //   }
-    // },[router.asPath, router, user]);
-
-    // if (pageIsLoading) return null;
-
     return (
         <Main seo={meta} showHero={true}>
           {page}   

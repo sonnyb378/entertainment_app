@@ -1,63 +1,56 @@
 
 import Main from "../components/Layout/Main/Main";
-import { NextPageWithLayout } from "./page";
-
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-
-import { useAppSelector, useAppDispatch } from "../app/hooks";
-import { selectAuth } from "../app/store/slices/auth";
-import { IAuthState } from "../ts/states/auth_state";
-
-import { setCurrentUrl } from "../app/store/slices/url";
-
-import { GetStaticProps } from "next";
-// import { IResult } from "../components/Search/SearchResultItem/SearchResultItem";
-import axios from "axios";
-import { getRandom } from "../lib/getRandom";
-import Carousel from "../components/Carousel/Carousel";
-// import { ArrowPathIcon, ChevronLeftIcon } from "@heroicons/react/24/solid";
-import { PlayCircleIcon, PlusCircleIcon, MinusCircleIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
-
+import React, { useEffect } from "react";
 import Image from "next/image";
 import Info from "../components/Info/Info";
 import CustomBtn from "../components/Button/CustomBtn/CustomBtn";
+import Carousel from "../components/Carousel/Carousel";
+import axios from "axios";
+
+import { NextPageWithLayout } from "./page";
+import { useRouter } from "next/router";
+import { useAppSelector, useAppDispatch } from "../app/hooks";
+import { selectAuth } from "../app/store/slices/auth";
+import { IAuthState } from "../ts/states/auth_state";
+import { setCurrentUrl } from "../app/store/slices/url";
+import { GetStaticProps } from "next";
+import { getRandom } from "../lib/getRandom";
+import { PlayCircleIcon, PlusCircleIcon, MinusCircleIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 import { useMovieDetail } from "../lib/hooks/useMovieDetail";
 import { useAppContext } from "../context/state";
-import { fake_trending, fake_featured } from "../model/fake_trending";
-import { fake_popular } from "../model/fake_popular";
-// import type { AppProps } from 'next/app';
 import { fadeScreen } from "../lib/fadeScreen";
 import { IBookmarkData, removeDataBookmarks, selectBookmarkData, setDataBookmarks } from "../app/store/slices/bookmarks";
 
+// import { fake_trending, fake_featured } from "../model/fake_trending";
+// import { fake_popular } from "../model/fake_popular";
 
 const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
-    const user = useAppSelector<IAuthState>(selectAuth);    
-    const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
-    
-    const [ pageIsLoading, setPageIsLoading] = useState(true)
     const router = useRouter();
     const dispatch = useAppDispatch();
 
-    useEffect(() => {
-      if (!user || !user.accessToken) {
-        router.push("/signin");
-      } else {
-        setPageIsLoading(false)
-      }
-    },[router.asPath]);
-
+    const user = useAppSelector<IAuthState>(selectAuth);    
+    const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
+    
     const { videoIsPlayed, setVideoIsPlayed,  showData } = useAppContext();
-
-    let isBookmarked = false;
-    const { trending, popular, feature_id } = data;  
-    const featured = fake_featured as any;
-    const featuredIsLoading = false;    
-  
-    // const { movie_detail: featured, isLoading: featuredIsLoading } = useMovieDetail(`${feature_id}`); 
 
     let recommendationsArr:any[] = [];
     const genres:any = [];
+    
+    useEffect(() => {
+      if (!user || !user.accessToken) {
+        router.push("/signin");
+      } 
+    },[router, user]);
+
+
+    let isBookmarked = false;
+    const { trending, popular, feature_id } = data;  
+    // const featured = fake_featured as any;
+    // const featuredIsLoading = false;    
+  
+    const { movie_detail: featured, isLoading: featuredIsLoading } = useMovieDetail(`${feature_id}`); 
+
+
 
     if (!featuredIsLoading) {
       featured.recommendations && featured.recommendations.results && featured.recommendations.results.slice(0,20).map((item:any) => {
@@ -87,10 +80,6 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
       })
     }, [videoIsPlayed, showData.id, showData.media_type, router])
 
-    // if (!featuredIsLoading) {
-    //   isBookmarked = bookmarks.data.findIndex((show:any) => show.id === featured.id) !== -1;
-    // }
-
     const saveBookmark = (data:any) => {
       dispatch(setDataBookmarks({
         id: data.id,
@@ -108,11 +97,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
       )
     }
 
-    // useEffect(() => {
-      // console.log("user: ", user)
-      // console.log("bookmarks: ", bookmarks)
-    // },[])
-    if (pageIsLoading) return null;
+    // if (pageIsLoading) return null;
 
     return (
       <div className="flex flex-col items-start justify-center w-full overflow-hidden pb-[100px] -mt-[4px]" data-testid="movies_container">
@@ -135,7 +120,8 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                         layout="responsive"
                         priority={true}  
                         width={300}
-                        height={169}     
+                        height={169}    
+                        alt={`${featured.title}`} 
                         className={`object-cover z-[1000] opacity-40 border-2 border-red-500 object-center-top
                         sm:opacity-50`}
                     />
@@ -303,44 +289,44 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
 
   };
 
-  export const getStaticProps: GetStaticProps = async (context:any) => {
-    const featuredID = fake_trending && fake_trending[getRandom(fake_trending.length-1)].id;
-    return {
-      props: {
-        data: {
-          trending : fake_trending,
-          popular: fake_popular,
-          feature_id: featuredID
-        }
-      },
-      // revalidate: 10,
-    }  
-  }
-
   // export const getStaticProps: GetStaticProps = async (context:any) => {
-    
-  //   const [reqTrending, reqPopular] = await Promise.all([
-  //     await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}trending/movie/day?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}`,{
-  //       headers: { "Accept-Encoding": "gzip,deflate,compress" } 
-  //     }).then(res => res.data),
-  //     await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}movie/popular?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&region=US&page=1`, {
-  //       headers: { "Accept-Encoding": "gzip,deflate,compress" } 
-  //     }).then(res => res.data)   
-  //   ])
-
-  //   const [resTrending, resPopular] = await Promise.all([
-  //     reqTrending, reqPopular
-  //   ])
-
+  //   const featuredID = fake_trending && fake_trending[getRandom(fake_trending.length-1)].id;
   //   return {
   //     props: {
   //       data: {
-  //         trending: resTrending ? [].concat(...resTrending.results) : [],
-  //         popular: resPopular ? [].concat(...resPopular.results) : [],
-  //         feature_id: resTrending.results && resTrending.results[getRandom(resTrending.results.length-1)].id
+  //         trending : fake_trending,
+  //         popular: fake_popular,
+  //         feature_id: featuredID
   //       }
   //     },
   //     // revalidate: 10,
-  //   }
-
+  //   }  
   // }
+
+  export const getStaticProps: GetStaticProps = async (context:any) => {
+    
+    const [reqTrending, reqPopular] = await Promise.all([
+      await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}trending/movie/day?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}`,{
+        headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+      }).then(res => res.data),
+      await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}movie/popular?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&region=US&page=1`, {
+        headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+      }).then(res => res.data)   
+    ])
+
+    const [resTrending, resPopular] = await Promise.all([
+      reqTrending, reqPopular
+    ])
+
+    return {
+      props: {
+        data: {
+          trending: resTrending ? [].concat(...resTrending.results) : [],
+          popular: resPopular ? [].concat(...resPopular.results) : [],
+          feature_id: resTrending.results && resTrending.results[getRandom(resTrending.results.length-1)].id
+        }
+      },
+      // revalidate: 10,
+    }
+
+  }

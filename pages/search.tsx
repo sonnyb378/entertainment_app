@@ -1,30 +1,28 @@
 
 import Main from "../components/Layout/Main/Main";
+import React, { useEffect } from "react";
+import SearchResults from "../components/Search/SearchResults/SearchResults";
+
 import { NextPageWithLayout } from "./page";
-
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-
 import { useAppSelector } from "../app/hooks";
 import { selectAuth } from "../app/store/slices/auth";
-
 import { IAuthState } from "../ts/states/auth_state";
 import { IUrl } from "../app/store/slices/url";
 import { selectCurrentUrl } from "../app/store/slices/url";
 
-import SearchResults from "../components/Search/SearchResults/SearchResults";
 
 const Search: NextPageWithLayout = () => {
     const user = useAppSelector<IAuthState>(selectAuth);    
-    const router = useRouter();
     const new_url = useAppSelector<IUrl>(selectCurrentUrl)
+    const router = useRouter();
     
     let cont: boolean = false;
     let kw: string = "";
 
     if (!router.asPath.includes("/search?q=")) {
       router.push(new_url.currentUrl)
-      return <></>
+      // return <></>
     } else {
       const query = router.asPath.split("?")
 
@@ -35,12 +33,18 @@ const Search: NextPageWithLayout = () => {
     }
 
     useEffect(() => {
-      if (!user || !user.accessToken) {
-        router.push("/signin");
-      } else if (!cont) {
+      if (!cont) {
        router.push(new_url.currentUrl);
       }
-    },[router.asPath])
+    }, [router, new_url.currentUrl, cont])
+
+    useEffect(() => {
+      if (!user || !user.accessToken) {
+        router.push("/signin");
+      }
+    }, [router, user])
+
+
 
     if (!cont) return null
 

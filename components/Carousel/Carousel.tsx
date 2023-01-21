@@ -1,10 +1,11 @@
 import * as React from "react";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
-import { useEffect, useRef, useState } from "react";
-import { IAuthState } from "../../ts/states/auth_state";
 import PopularCard from "../PopularCard/PopularCard";
 import Thumbnail from "../Thumbnail/Thumbnail";
 import styles from "./Carousel.module.css"
+
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
+import { useEffect, useRef, useState } from "react";
+import { IAuthState } from "../../ts/states/auth_state";
 
 
 const Carousel: React.FC<{ 
@@ -50,7 +51,7 @@ const Carousel: React.FC<{
         
         const track = document.getElementById(`${target}_track`)
         const carousel_ul = document.getElementById(`${target}_carousel_ul`)
-        const li_thumbnail = document.querySelectorAll(`.${target}_carousel_li`) as NodeListOf<HTMLDivElement>
+        const li_thumbnail = document.querySelectorAll(`.${target}_carousel_li`)
 
         const visibleThumbnail = Math.floor((width / THUMBNAIL_BASEWIDTH));
         let singleItemWidth = Math.floor(width / visibleThumbnail);
@@ -61,7 +62,7 @@ const Carousel: React.FC<{
         } 
         
         li_thumbnail.forEach((item) => {
-            item.style.width = `${Math.floor(newTrackWidth / visibleThumbnail)}px`
+            (item as HTMLDivElement).style.width = `${Math.floor(newTrackWidth / visibleThumbnail)}px`
         })
 
         if (carousel_ul) {
@@ -110,7 +111,7 @@ const Carousel: React.FC<{
     useEffect(() => {
         if (typeof window !== 'undefined' && typeof document !== "undefined") {
             const carousel = document.getElementById(`${target}_carousel`) as Element;
-            const li_thumbnail = document.querySelectorAll(`.${target}_carousel_li`) as NodeListOf<HTMLDivElement>
+            const li_thumbnail = document.querySelectorAll(`.${target}_carousel_li`)
             const track = document.getElementById(`${target}_track`)
 
             const visibleThumbnail = Math.floor((carousel?.clientWidth / THUMBNAIL_BASEWIDTH));
@@ -122,14 +123,14 @@ const Carousel: React.FC<{
             }
 
             li_thumbnail.forEach((item) => {
-                item.style.width = `${(newTrackWidth / visibleThumbnail) }px`
+                (item as HTMLDivElement).style.width = `${(newTrackWidth / visibleThumbnail) }px`
             })
 
             setVisibleItem(visibleThumbnail);
             setTranslateWidth(newTrackWidth)
             setMaxIndex(Math.ceil(MAX_ITEMS / visibleThumbnail))
         }    
-    },[])
+    }, [MAX_ITEMS, target, THUMBNAIL_BASEWIDTH ])
 
     const prevHandler = () => {
         if (currentIndex <= 0) return     
@@ -157,7 +158,9 @@ const Carousel: React.FC<{
                 current index: {currentIndex}, 
                 singleItemWidth: { Math.floor(translateWidth / visibleItem) } , 
                 visible items: {visibleItem}, 
-                MAX_ITEMS: { MAX_ITEMS }
+                MAX_ITEMS: { MAX_ITEMS },
+                THUMBNAIL_BASEWIDTH: {THUMBNAIL_BASEWIDTH},
+                target: {target}
             </div>
               <div 
                 id={`${target}_carousel`} 

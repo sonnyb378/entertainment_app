@@ -1,21 +1,22 @@
 
+import React, { useEffect } from "react";
 import Main from "../../components/Layout/Main/Main";
-import { NextPageWithLayout } from "../page";
-
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { useAppSelector } from "../../app/hooks";
-import { IAuthState } from "../../ts/states/auth_state";
-import { selectAuth } from "../../app/store/slices/auth";
 import axios from "axios";
-import { GetServerSideProps } from "next";
-import { fake_person_popular, fake_person_popular2 } from "../../model/fake_person_popular";
 import Image from "next/image"
 import PersonInfo from "../../components/Info/PersonInfo";
 import Carousel from "../../components/Carousel/Carousel";
+
+import { NextPageWithLayout } from "../page";
+import { useRouter } from "next/router";
+import { useAppSelector } from "../../app/hooks";
+import { IAuthState } from "../../ts/states/auth_state";
+import { selectAuth } from "../../app/store/slices/auth";
+import { GetServerSideProps } from "next";
 import { useAppContext } from "../../context/state";
 import { fadeScreen } from "../../lib/fadeScreen";
 import { IBookmarkData, selectBookmarkData } from "../../app/store/slices/bookmarks";
+
+// import { fake_person_popular, fake_person_popular2 } from "../../model/fake_person_popular";
 
 export interface IPerson {
 	"adult": boolean,
@@ -41,9 +42,7 @@ const Person: NextPageWithLayout = (props:any) => {
     const router = useRouter();
     const { videoIsPlayed, showData } = useAppContext(); 
 
-    const { person_id, data } = props;
-
-    // console.log("person: ", person_id, data)
+    const { data } = props;
 
     let movies: any = []
     let tvshows: any = []
@@ -82,7 +81,7 @@ const Person: NextPageWithLayout = (props:any) => {
       fadeScreen(videoIsPlayed, () => {
         router.push(`/watch/${showData.id}?mt=${showData.media_type}`)
       })
-    }, [videoIsPlayed])
+    }, [videoIsPlayed, router, showData.id, showData.media_type])
 
 
     
@@ -203,23 +202,23 @@ const Person: NextPageWithLayout = (props:any) => {
 
     const personID = context.params.id
 
-    // const [reqPerson] = await Promise.all([
-    //   await axios.get(
-    //     `${process.env.NEXT_PUBLIC_TMDB_API_URL}person/${personID}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&append_to_response=combined_credits`,
-    //     {
-    //       headers: { "Accept-Encoding": "gzip,deflate,compress" } 
-    //     }
-    //     ).then(res => res.data),
-    // ])
+    const [reqPerson] = await Promise.all([
+      await axios.get(
+        `${process.env.NEXT_PUBLIC_TMDB_API_URL}person/${personID}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&append_to_response=combined_credits`,
+        {
+          headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+        }
+        ).then(res => res.data),
+    ])
 
-    // const [resPerson] = await Promise.all([
-    //   reqPerson
-    // ])
+    const [resPerson] = await Promise.all([
+      reqPerson
+    ])
 
     return {
         props: {
             person_id: personID,
-            data: fake_person_popular //resPerson //fake_person_popular
+            data: resPerson //resPerson //fake_person_popular
         }
     }
   }

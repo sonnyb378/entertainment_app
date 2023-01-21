@@ -1,30 +1,27 @@
 
+import React, { useEffect } from "react";
 import Main from "../components/Layout/Main/Main";
+import Image from "next/image";
+import Info from "../components/Info/Info";
+import CustomBtn from "../components/Button/CustomBtn/CustomBtn";
+import Carousel from "../components/Carousel/Carousel";
+import axios from "axios";
+
 import { NextPageWithLayout } from "./page";
-
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-
 import { useAppSelector, useAppDispatch } from "../app/hooks";
 import { selectAuth } from "../app/store/slices/auth";
 import { IAuthState } from "../ts/states/auth_state";
-
 import { setCurrentUrl } from "../app/store/slices/url";
 import { useAppContext } from "../context/state";
 import { getRandom } from "../lib/getRandom";
 import { useTVDetail } from "../lib/hooks/useTVDetail";
-import Image from "next/image";
-import Info from "../components/Info/Info";
-import CustomBtn from "../components/Button/CustomBtn/CustomBtn";
-// import { ArrowPathIcon, ChevronLeftIcon } from "@heroicons/react/24/solid";
 import { PlusCircleIcon, MinusCircleIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
-import Carousel from "../components/Carousel/Carousel";
-import axios from "axios";
 import { GetStaticProps } from "next";
-import { fake_tv_featured, fake_tv_trending } from "../model/fake_tv_trending";
-import { fake_tv_popular } from "../model/fake_tv_popular";
 import { fadeScreen } from "../lib/fadeScreen";
 import { IBookmarkData, removeDataBookmarks, selectBookmarkData, setDataBookmarks } from "../app/store/slices/bookmarks";
+// import { fake_tv_featured, fake_tv_trending } from "../model/fake_tv_trending";
+// import { fake_tv_popular } from "../model/fake_tv_popular";
 
 
 const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
@@ -34,26 +31,25 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
     const router = useRouter();
     const dispatch = useAppDispatch();
 
+    let isBookmarked = false;
+    let recommendationsArr:any[] = [];  
+    const genres:any = [];
 
     useEffect(() => {
       if (!user || !user.accessToken) {
         router.replace("/signin");
       } 
-    },[router.asPath]);
+    },[router, user]);
 
 
     const { videoIsPlayed, showData } = useAppContext();
 
-
-    let isBookmarked = false;
-    const { trending, popular, feature_id } = data;
-    const featured = fake_tv_featured as any;
-    const featuredIsLoading = false;
     
-    // const { tv_detail: featured, isLoading: featuredIsLoading } = useTVDetail(`${feature_id}`); 
-
-    let recommendationsArr:any[] = [];  
-    const genres:any = [];
+    const { trending, popular, feature_id } = data;
+    // const featured = fake_tv_featured as any;
+    // const featuredIsLoading = false;
+    
+    const { tv_detail: featured, isLoading: featuredIsLoading } = useTVDetail(`${feature_id}`); 
 
     if (!featuredIsLoading) {
       featured.recommendations && featured.recommendations.results && featured.recommendations.results.slice(0,20).map((item:any) => {
@@ -84,10 +80,6 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
         router.push(`/watch/${showData.id}?mt=${showData.media_type}`)
       })
     }, [videoIsPlayed, showData.id, showData.media_type, router])
-
-    // if (!featuredIsLoading) {
-    //   isBookmarked = bookmarks.data.findIndex((show:any) => show.id === featured.id) !== -1
-    // }
   
     const saveBookmark = (data:any) => {
       dispatch(setDataBookmarks({
@@ -324,48 +316,48 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
 
   };
 
-  export const getStaticProps: GetStaticProps = async (context:any) => {
-    const featuredID = fake_tv_trending && fake_tv_trending[getRandom(fake_tv_trending.length-1)].id
-    return {
-      props: {
-        data: {
-          trending : fake_tv_trending,
-          popular: fake_tv_popular,
-          feature_id: featuredID
-        }
-      },
-      // revalidate: 10,
-    }  
-  }
-
-
-  // export const getStaticProps: GetStaticProps = async () => {
-    
-  //   const [reqTrending, reqPopular] = await Promise.all([
-  //     await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}trending/tv/day?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}`, {
-  //       headers: { "Accept-Encoding": "gzip,deflate,compress" } 
-  //     }).then(res => res.data),
-  //     await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}tv/popular?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&region=US&page=1`, {
-  //       headers: { "Accept-Encoding": "gzip,deflate,compress" } 
-  //     }).then(res => res.data)   
-  //   ])
-
-  //   const [resTrending, resPopular] = await Promise.all([
-  //     reqTrending, reqPopular
-  //   ])
-
+  // export const getStaticProps: GetStaticProps = async (context:any) => {
+  //   const featuredID = fake_tv_trending && fake_tv_trending[getRandom(fake_tv_trending.length-1)].id
   //   return {
   //     props: {
   //       data: {
-  //         trending: resTrending ? [].concat(...resTrending.results) : [],
-  //         popular: resPopular ? [].concat(...resPopular.results) : [],
-  //         feature_id: resTrending.results && resTrending.results[getRandom(resTrending.results.length-1)].id
+  //         trending : fake_tv_trending,
+  //         popular: fake_tv_popular,
+  //         feature_id: featuredID
   //       }
   //     },
   //     // revalidate: 10,
-  //   }
-
+  //   }  
   // }
+
+
+  export const getStaticProps: GetStaticProps = async () => {
+    
+    const [reqTrending, reqPopular] = await Promise.all([
+      await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}trending/tv/day?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}`, {
+        headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+      }).then(res => res.data),
+      await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}tv/popular?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&region=US&page=1`, {
+        headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+      }).then(res => res.data)   
+    ])
+
+    const [resTrending, resPopular] = await Promise.all([
+      reqTrending, reqPopular
+    ])
+
+    return {
+      props: {
+        data: {
+          trending: resTrending ? [].concat(...resTrending.results) : [],
+          popular: resPopular ? [].concat(...resPopular.results) : [],
+          feature_id: resTrending.results && resTrending.results[getRandom(resTrending.results.length-1)].id
+        }
+      },
+      // revalidate: 10,
+    }
+
+  }
 
 
   

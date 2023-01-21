@@ -1,14 +1,10 @@
-import React, { useRef, useCallback, useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import styles from "./SearchField.module.css";
 
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { ChevronRightIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { XCircleIcon } from "@heroicons/react/24/solid";
-
 import { debounce } from "../../../lib/debounce";
-
 import { useRouter } from "next/router";
-
 import { useAppSelector } from "../../../app/hooks";
 import { selectCurrentUrl } from "../../../app/store/slices/url";
 import { IUrl } from "../../../app/store/slices/url";
@@ -51,7 +47,8 @@ const Search: React.FC = () => {
             righticon?.classList.replace("hidden", "flex")
         }
     } else {
-        if (search_input && router.query.hasOwnProperty("q")) {
+        // if (search_input && router.query.hasOwnProperty("q")) {
+        if (Object.prototype.hasOwnProperty.call(router.query, "q") && search_input) {
             const { q } = router.query;
             search_input.value = decodeURI(String(q))
             righticon?.classList.replace("flex", "hidden")            
