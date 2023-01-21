@@ -30,8 +30,8 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
 
     const user = useAppSelector<IAuthState>(selectAuth);    
     const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
-    
-    const { videoIsPlayed, setVideoIsPlayed,  showData } = useAppContext();
+   
+    const { videoIsPlayed, setVideoIsPlayed, showData } = useAppContext();
 
     let recommendationsArr:any[] = [];
     const genres:any = [];
@@ -303,7 +303,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
   //   }  
   // }
 
-  export const getStaticProps: GetStaticProps = async (context:any) => {
+  export const getStaticProps: GetStaticProps = async () => {
     
     const [reqTrending, reqPopular] = await Promise.all([
       await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}trending/movie/day?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}`,{

@@ -3,6 +3,7 @@ import styles from "./Footer.module.css";
 
 import Image from "next/image";
 import FooterNav from "./FooterNav/FooterNav";
+import LanguageSelector from "../../LanguageSelector/LanguageSelector";
 
 import { aboutusNav, browseNav, legalNav, helpNav } from "../../../model/footer_links";
 
@@ -11,12 +12,6 @@ import twitter from "../../../assets/twitter.svg";
 import instagram from "../../../assets/instagram.svg";
 import facebook from "../../../assets/facebook.svg";
 
-// const youtube = require("../../../assets/youtube.svg");
-// const twitter = require("../../../assets/twitter.svg");
-// const instagram  = require("../../../assets/instagram.svg");
-// const facebook  = require("../../../assets/facebook.svg");
-
-import LanguageSelector from "../../LanguageSelector/LanguageSelector";
 
 export interface IFooter {
     children?: React.ReactNode;

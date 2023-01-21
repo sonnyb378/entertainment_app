@@ -3,27 +3,24 @@ import styles from "./Header.module.css";
 import Logo from "../../Logo/Logo";
 import SigninBtn from "../../Button/SignIn/SigninBtn";
 import Navigation from "../../Navigation/Navigation";
+import Avatar from "../../Avatar/Avatar"
+import SearchField from "../../Search/SearchField/SearchField"
 
 import { useRouter } from "next/router";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../../firebase";
+// import { useAppDispatch } from "../../../app/hooks";
 
-import { setAuthData } from "../../../app/store/slices/auth";
-import { useAppDispatch } from "../../../app/hooks";
-import { signOut } from "firebase/auth";
-
-import Avatar from "../../Avatar/Avatar"
-import SearchField from "../../Search/SearchField/SearchField"
 
 export interface IHeader {
     children?: React.ReactNode;
 }
 
 const Header: React.FC<IHeader> = ({ children }) => {
-    const [user, loading, error] = useAuthState(auth);
+    const [user, loading] = useAuthState(auth);
     const [yValue, setYValue] = useState(0);
     const router = useRouter();
-    const dispatch = useAppDispatch();
+    // const dispatch = useAppDispatch();
 
     useEffect(() => {
         window.addEventListener("scroll", () => {

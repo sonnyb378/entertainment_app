@@ -15,6 +15,7 @@ import { selectCurrentUrl } from "../app/store/slices/url";
 const Search: NextPageWithLayout = () => {
     const user = useAppSelector<IAuthState>(selectAuth);    
     const new_url = useAppSelector<IUrl>(selectCurrentUrl)
+
     const router = useRouter();
     
     let cont: boolean = false;
@@ -33,16 +34,18 @@ const Search: NextPageWithLayout = () => {
     }
 
     useEffect(() => {
-      if (!cont) {
-       router.push(new_url.currentUrl);
-      }
-    }, [router, new_url.currentUrl, cont])
-
-    useEffect(() => {
       if (!user || !user.accessToken) {
         router.push("/signin");
+      } else if (!cont) {
+        router.push(new_url.currentUrl);
       }
-    }, [router, user])
+    }, [router, new_url.currentUrl, cont, user])
+
+    // useEffect(() => {
+    //   if (!user || !user.accessToken) {
+    //     router.push("/signin");
+    //   }
+    // }, [router, user])
 
 
 

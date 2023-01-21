@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./Person.module.css"
-import { UserCircleIcon } from "@heroicons/react/24/solid";
 
+import { UserCircleIcon } from "@heroicons/react/24/solid";
 import { tv_genres } from "../../../model/tv_genres";
 import { movie_genres } from "../../../model/movie_genres";
 import { IResult } from "../../Search/SearchResultItem/SearchResultItem";

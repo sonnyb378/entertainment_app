@@ -1,7 +1,7 @@
 import React from "react";
 import { ChevronDownIcon } from "@heroicons/react/24/solid"
 import { useState } from "react"
-import getStoredState from "redux-persist/es/getStoredState"
+// import getStoredState from "redux-persist/es/getStoredState"
 
 
 export interface ISelectSeason {

@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, within } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import '@testing-library/jest-dom'
 
 import MyList from "../../../pages/user/mylist"
@@ -99,7 +99,9 @@ describe("<Movies />", () => {
 
         const router = useRouter as jest.Mock;
         const mockRouter = {
-            pathname: "/mylist"
+            pathname: "/mylist",
+            replace: jest.fn(),
+            push: jest.fn()
         }
         router.mockReturnValueOnce(mockRouter);
 
@@ -123,7 +125,9 @@ describe("<Movies />", () => {
 
         const router = useRouter as jest.Mock;
         const mockRouter = {
-            pathname: "/mylist"
+            pathname: "/mylist",
+            replace: jest.fn(),
+            push: jest.fn()
         }
         router.mockReturnValueOnce(mockRouter);
 

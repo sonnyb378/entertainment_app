@@ -1,7 +1,5 @@
 import React from "react";
 
-import styles from "./SearchResultItem.module.css"
-
 import { IAuthState } from "../../../ts/states/auth_state";
 import { useAppSelector } from "../../../app/hooks";
 import { selectAuth } from "../../../app/store/slices/auth";

@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Main from "../../components/Layout/Main/Main";
 import Image from "next/image";
 import Info from "../../components/Info/Info";

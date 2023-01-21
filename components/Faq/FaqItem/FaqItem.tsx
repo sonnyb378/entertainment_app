@@ -1,7 +1,7 @@
 import React from "react"
 import styles from "./FaqItem.module.css";
-import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
+// import { ChevronDownIcon } from "@heroicons/react/24/solid";
 
 export interface IFaqItem {
     id: number;

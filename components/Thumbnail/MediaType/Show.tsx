@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./Show.module.css"
-import { FilmIcon, TvIcon } from "@heroicons/react/24/solid";
 
+import { FilmIcon, TvIcon } from "@heroicons/react/24/solid";
 import { tv_genres } from "../../../model/tv_genres";
 import { movie_genres } from "../../../model/movie_genres";
 import { IResult } from "../../Search/SearchResultItem/SearchResultItem";

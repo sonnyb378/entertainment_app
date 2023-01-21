@@ -1,10 +1,9 @@
 import * as React from "react";
 import Image from 'next/image';
 
-import logo from "../../assets/logo.svg"
-// const logo = require("../../assets/logo.svg");
-
 import { useRouter } from "next/router";
+import logo from "../../assets/logo.svg"
+
 
 const Logo: React.FC = () => {
     const router = useRouter();

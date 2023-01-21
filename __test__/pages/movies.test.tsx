@@ -78,7 +78,9 @@ describe("<Movies />", () => {
 
         const router = useRouter as jest.Mock;
         const mockRouter = {
-            pathname: jest.fn()
+            pathname: jest.fn(),
+            push: jest.fn(),
+            replace: jest.fn()
         }
         router.mockReturnValue(mockRouter)
 
@@ -109,6 +111,13 @@ describe("<Movies />", () => {
             trending,
             popular
         }
+
+        const router = useRouter as jest.Mock;
+        const mockRouter = {
+            push: jest.fn()
+        }
+        router.mockReturnValue(mockRouter);
+
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
         .mockReturnValue({
@@ -138,6 +147,13 @@ describe("<Movies />", () => {
             trending,
             popular
         }
+
+        const router = useRouter as jest.Mock;
+        const mockRouter = {
+            push: jest.fn()
+        }
+        router.mockReturnValue(mockRouter);
+
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
         .mockReturnValueOnce({
@@ -191,7 +207,6 @@ describe("<Movies />", () => {
 
         const add_bookmark = within(container).queryByText("Add to List")
         expect(add_bookmark).toBeInTheDocument();
-
 
     })
 
@@ -268,11 +283,15 @@ describe("<Movies />", () => {
 
         const mockSetState = jest.fn()
         const mockContext = jest.fn().mockReturnValue({
-            setVideoIsPlayed: mockSetState
+            setVideoIsPlayed: mockSetState,
+            showData: jest.fn()
         })
         jest.spyOn(AppContext, 'useAppContext').mockImplementation(mockContext);
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
+        .mockReturnValueOnce({
+            accessToken: "sometoken"
+        })
         .mockReturnValueOnce({
             data: [{
                 "id": 555604,
@@ -431,8 +450,6 @@ describe("<Movies />", () => {
         fireEvent.click(more_info)
         expect(mockRouter.push).toHaveBeenCalledWith("/movie/555604")
 
-
-
     })
 
     it("must render 'Trending Movies' section", () => {
@@ -444,6 +461,9 @@ describe("<Movies />", () => {
         }
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
+        .mockReturnValue({
+            accessToken: "sometoken"
+        })
         .mockReturnValue({
             data: [{
                 "id": 555604,
@@ -477,6 +497,9 @@ describe("<Movies />", () => {
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
         .mockReturnValue({
+            accessToken: "sometoken"
+        })
+        .mockReturnValue({
             data: [{
                 "id": 555604,
                 "name": "Guillermo del Toro's Pinocchio",
@@ -508,6 +531,9 @@ describe("<Movies />", () => {
         }
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
+        .mockReturnValue({
+            accessToken: "sometoken"
+        })
         .mockReturnValue({
             data: [{
                 "id": 555604,

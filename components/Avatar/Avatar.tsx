@@ -1,17 +1,13 @@
 import React, { useState, useEffect } from "react";
+import styles from "./Avatar.module.css";
 
 import { BookmarkIcon } from "@heroicons/react/24/solid";
 import { ArrowRightOnRectangleIcon } from "@heroicons/react/24/solid";
-
-import styles from "./Avatar.module.css";
-
 import { auth } from "../../firebase";
 import { signOut } from "firebase/auth";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppDispatch } from "../../app/hooks";
 import { setAuthData } from "../../app/store/slices/auth";
 import { setCurrentUrl } from "../../app/store/slices/url";
-
-
 import { useRouter } from "next/router"
 
 export interface IAvatar {

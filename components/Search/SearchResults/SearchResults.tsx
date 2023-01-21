@@ -1,11 +1,11 @@
 import React from "react"
-import axios from "axios";
 import ResultCardLoading from "../SearchResultItem/ResultCardLoading/ResultCardLoading";
 import useSWRInfinite from 'swr/infinite'
 import SearchResultItem, { IResult } from "../SearchResultItem/SearchResultItem";
 
 import { useAppSelector } from "../../../app/hooks";
 import { IBookmarkData, selectBookmarkData } from "../../../app/store/slices/bookmarks";
+import { fetcherInfinite } from "../../../lib/hooks/fetcher";
 
 // import { IFakeResponse, useBlackAdam, useLimitless, useLOTR, useStarTrek, useZeroResult } from "../../../model/fake_search";
 
@@ -13,13 +13,13 @@ interface ISearchResultProps {
     keyword: string;
 }
 
-export const fetcherInfinite = (baseUrl: string, url: string, page: number, keyword: string) => axios.get(
-    `${baseUrl}${url}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&include_adult=false`+
-    `&query=${keyword}`+
-    `&page=${page}`)
-.then((res) => {
-    return res.data.results
-})
+// export const fetcherInfinite = (baseUrl: string, url: string, page: number, keyword: string) => axios.get(
+//     `${baseUrl}${url}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&include_adult=false`+
+//     `&query=${keyword}`+
+//     `&page=${page}`)
+// .then((res) => {
+//     return res.data.results
+// })
 
 const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
     const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);

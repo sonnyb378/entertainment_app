@@ -9,15 +9,15 @@ import { ArrowPathIcon } from "@heroicons/react/24/solid";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { selectAuth } from "../app/store/slices/auth";
 import { IAuthState } from "../ts/states/auth_state";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
+// import { createUserWithEmailAndPassword } from "firebase/auth";
+// import { auth } from "../firebase";
 
 interface IError {
     error: string;
 }
 const Register: NextPageWithLayout = () => {
     const user = useAppSelector<IAuthState>(selectAuth);
-    const dispatch = useAppDispatch();
+    // const dispatch = useAppDispatch();
     const router = useRouter();
     
     const [isSubmitted, setIsSubmitted] = useState(false);
