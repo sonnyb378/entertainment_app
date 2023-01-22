@@ -25,7 +25,7 @@ describe('<Logo />', () => {
         expect(img).toBeInTheDocument();
     })
 
-    it("must redirect to homepage when user clicks", () => {
+    it("must redirect to homepage when user clicks logo", () => {
         
         const router = useRouter as jest.Mock;
         const mockRouter =  {
