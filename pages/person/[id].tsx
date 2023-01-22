@@ -95,85 +95,88 @@ const Person: NextPageWithLayout = (props:any) => {
       " data-testid="person_container">
         
         {
-          data.profile_path && data.biography ?
-        
-            <div className="flex flex-1 items-start justify-start w-full space-x-[20px] h-[100%] p-4">
+          data ? 
+            data.profile_path && data.biography ?
+          
+              <div className="flex flex-1 items-start justify-start w-full space-x-[20px] h-[100%] p-4">
 
-              <div className="flex flex-col items-start justify-start min-w-[300px] h-[100%] border-0 border-red-500">
+                <div className="flex flex-col items-start justify-start min-w-[300px] h-[100%] border-0 border-red-500">
 
-                <div className="image-container relative border-0 rounded-md overflow-hidden w-full">
-                  <Image 
-                    src={ `${process.env.NEXT_PUBLIC_TMDB_IMAGE_PATH}${data.profile_path}` }
-                    layout="fill"
-                    alt={`${data.name}`}
-                    className="object-cover !relative !h-[unset] object-top-left"
-                  />
+                  <div className="image-container relative border-0 rounded-md overflow-hidden w-full">
+                    <Image 
+                      src={ `${process.env.NEXT_PUBLIC_TMDB_IMAGE_PATH}${data.profile_path}` }
+                      layout="fill"
+                      alt={`${data.name}`}
+                      className="object-cover !relative !h-[unset] object-top-left"
+                    />
+                  </div>
+
+                  <div className="w-full mt-[20px]">
+                    <h1 className="font-bold text-[20px]">Personal Info</h1>
+                    
+                    <PersonInfo title="Known For" separator=":" value={data.known_for_department} />
+                    <PersonInfo title="Gender" separator=":" value={data.gender} />
+                    <PersonInfo title="Birthday" separator=":" value={data.birthday} />
+                    <PersonInfo title="Place of Birth" separator=":" value={data.place_of_birth} />
+                    <PersonInfo title="Also Known As" separator=":" value={data.also_known_as} />
+
+                  </div>
                 </div>
 
-                <div className="w-full mt-[20px]">
-                  <h1 className="font-bold text-[20px]">Personal Info</h1>
+                <div className="flex flex-1 flex-col items-start justify-start border-0 overflow-hidden w-full border-blue-500">
+                  <h1 className="text-[40px] text-white">{ data.name }</h1>
                   
-                  <PersonInfo title="Known For" separator=":" value={data.known_for_department} />
-                  <PersonInfo title="Gender" separator=":" value={data.gender} />
-                  <PersonInfo title="Birthday" separator=":" value={data.birthday} />
-                  <PersonInfo title="Place of Birth" separator=":" value={data.place_of_birth} />
-                  <PersonInfo title="Also Known As" separator=":" value={data.also_known_as} />
+                  <div className="mt-[30px] mb-[50px]">
+                    <span className={`text-[20px] font-bold`}>Biography</span>
+                    <p className="mt-[15px]">{ data.biography }</p>
+                  </div>
+                  
+                  {
+                    movieResult && movieResult.length > 0 &&
+                      <div className="flex flex-col items-start justify-center w-full">
+                          <span className={`text-[20px] font-bold`}>Movies</span>
+                          <div className="flex flex-col px-[0px] z-[2000] border-0 w-full relative pb-[50px]">
+                            <Carousel 
+                              data={movieResult} 
+                              user={user} 
+                              maxItems={movieResult.length} 
+                              bookmarkData={bookmarks.data}
+                              baseWidth={290}
+                              target="movie"
+                            />
+                          </div>
+                      </div>
+                  }
+                  
+
+                  {
+                    tvResult && tvResult.length > 0 &&
+                      <div className="flex flex-col items-start justify-center w-full border-0 pb-[50px] ">
+                          <span className={`text-[20px] font-bold`}>TV Shows</span>
+                          <div className="flex flex-col px-[0px] z-[2000] border-0 w-full relative">
+                            <Carousel 
+                              data={tvResult} 
+                              user={user} 
+                              maxItems={tvResult.length} 
+                              bookmarkData={bookmarks.data}
+                              baseWidth={290}
+                              target="tv"
+                            />
+                          </div>
+                      </div>        
+                  }
+                  
+
 
                 </div>
-              </div>
-
-              <div className="flex flex-1 flex-col items-start justify-start border-0 overflow-hidden w-full border-blue-500">
-                <h1 className="text-[40px] text-white">{ data.name }</h1>
-                
-                <div className="mt-[30px] mb-[50px]">
-                  <span className={`text-[20px] font-bold`}>Biography</span>
-                  <p className="mt-[15px]">{ data.biography }</p>
-                </div>
-                
-                {
-                  movieResult && movieResult.length > 0 &&
-                    <div className="flex flex-col items-start justify-center w-full">
-                        <span className={`text-[20px] font-bold`}>Movies</span>
-                        <div className="flex flex-col px-[0px] z-[2000] border-0 w-full relative pb-[50px]">
-                          <Carousel 
-                            data={movieResult} 
-                            user={user} 
-                            maxItems={movieResult.length} 
-                            bookmarkData={bookmarks.data}
-                            baseWidth={290}
-                            target="movie"
-                          />
-                        </div>
-                    </div>
-                }
-                
-
-                {
-                  tvResult && tvResult.length > 0 &&
-                    <div className="flex flex-col items-start justify-center w-full border-0 pb-[50px] ">
-                        <span className={`text-[20px] font-bold`}>TV Shows</span>
-                        <div className="flex flex-col px-[0px] z-[2000] border-0 w-full relative">
-                          <Carousel 
-                            data={tvResult} 
-                            user={user} 
-                            maxItems={tvResult.length} 
-                            bookmarkData={bookmarks.data}
-                            baseWidth={290}
-                            target="tv"
-                          />
-                        </div>
-                    </div>        
-                }
-                
-
 
               </div>
-
-            </div>
+            :
+              <div className="flex flex-1 items-start justify-start w-full space-x-[20px] h-[100%] p-4">
+                Not enough information for { data.name }
+              </div>
           :
-            <div className="flex flex-1 items-start justify-start w-full space-x-[20px] h-[100%] p-4">
-              Not enough information for { data.name }
-            </div>
+            <div>No data found</div>
         }
 
       </div> 
