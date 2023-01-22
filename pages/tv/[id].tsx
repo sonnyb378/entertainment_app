@@ -1,13 +1,22 @@
 
 import React, { useEffect, useState } from "react";
 import Main from "../../components/Layout/Main/Main";
+import axios from "axios";
 import Image from "next/image";
 import Info from "../../components/Info/Info";
 import CustomBtn from "../../components/Button/CustomBtn/CustomBtn";
-import Carousel from "../../components/Carousel/Carousel";
-import axios from "axios";
-import EpisodeCard from "../../components/EpisodeCard/EpisodeCard";
+import dynamic from "next/dynamic";
+import Spinner from "../../components/Spinner/Spinner";
 import SelectSeason from "../../components/SelectSeason/SelectSeason";
+// import EpisodeCard from "../../components/EpisodeCard/EpisodeCard";
+// import Carousel from "../../components/Carousel/Carousel";
+
+const Carousel = dynamic(() => import("../../components/Carousel/Carousel"), {
+  loading: () => <Spinner />
+})
+const EpisodeCard = dynamic(() => import("../../components/EpisodeCard/EpisodeCard"), {
+  loading: () => <Spinner />
+})
 
 import { NextPageWithLayout } from "../page";
 import { useRouter } from "next/router";

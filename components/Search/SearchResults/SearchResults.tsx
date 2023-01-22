@@ -1,7 +1,13 @@
 import React from "react"
-import ResultCardLoading from "../SearchResultItem/ResultCardLoading/ResultCardLoading";
 import useSWRInfinite from 'swr/infinite'
 import SearchResultItem, { IResult } from "../SearchResultItem/SearchResultItem";
+import dynamic from "next/dynamic";
+import Spinner from "../../Spinner/Spinner";
+// import ResultCardLoading from "../SearchResultItem/ResultCardLoading/ResultCardLoading";
+
+const ResultCardLoading = dynamic(() => import("../SearchResultItem/ResultCardLoading/ResultCardLoading"), {
+    loading: () => <Spinner />
+  })
 
 import { useAppSelector } from "../../../app/hooks";
 import { IBookmarkData, selectBookmarkData } from "../../../app/store/slices/bookmarks";

@@ -1,7 +1,13 @@
 
-import Main from "../components/Layout/Main/Main";
 import React, { useEffect } from "react";
-import SearchResults from "../components/Search/SearchResults/SearchResults";
+import Main from "../components/Layout/Main/Main";
+import dynamic from "next/dynamic";
+import Spinner from "../components/Spinner/Spinner";
+// import SearchResults from "../components/Search/SearchResults/SearchResults";
+
+const SearchResults = dynamic(() => import("../components/Search/SearchResults/SearchResults"), {
+  loading: () => <Spinner />
+})
 
 import { NextPageWithLayout } from "./page";
 import { useRouter } from "next/router";

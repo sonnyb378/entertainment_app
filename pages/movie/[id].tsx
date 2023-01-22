@@ -1,10 +1,16 @@
 
 import React, { useEffect } from "react";
 import Main from "../../components/Layout/Main/Main";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Info from "../../components/Info/Info";
+import Spinner from "../../components/Spinner/Spinner";
 import CustomBtn from "../../components/Button/CustomBtn/CustomBtn";
-import Carousel from "../../components/Carousel/Carousel";
+// import Carousel from "../../components/Carousel/Carousel";
+
+const Carousel = dynamic(() => import("../../components/Carousel/Carousel"), {
+  loading: () => <Spinner />
+})
 
 import { NextPageWithLayout } from "../page";
 import { useRouter } from "next/router";
