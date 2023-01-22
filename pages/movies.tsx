@@ -1,11 +1,11 @@
 
 import Main from "../components/Layout/Main/Main";
 import React, { useEffect } from "react";
+import axios from "axios";
 import Image from "next/image";
 import Info from "../components/Info/Info";
 import CustomBtn from "../components/Button/CustomBtn/CustomBtn";
 import Carousel from "../components/Carousel/Carousel";
-import axios from "axios";
 
 import { NextPageWithLayout } from "./page";
 import { useRouter } from "next/router";

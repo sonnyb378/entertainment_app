@@ -1,9 +1,27 @@
 // import Head from "next/head";
 import React from "react";
-import Footer from "../Footer/Footer";
-import Header from "../Header/Header";
-import Hero from "../../Hero/Hero";
+import dynamic from "next/dynamic";
+
+// import Footer from "../Footer/Footer";
+// import Header from "../Header/Header";
+// import Hero from "../../Hero/Hero";
 import styles from "./Main.module.css";
+
+import Spinner from "../../Spinner/Spinner";
+
+const Header = dynamic(() => import("../Header/Header"), {
+    loading: () => <Spinner />
+})
+
+const Footer = dynamic(() => import("../Footer/Footer"), {
+    loading: () => <Spinner />
+})
+
+const Hero = dynamic(() => import("../../Hero/Hero"), {
+    loading: () => <Spinner />
+})
+
+
 
 import Seo from "../../SEO/Seo"
 // import { useAppContext } from "../../../context/state";
