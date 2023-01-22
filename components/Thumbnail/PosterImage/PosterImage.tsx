@@ -18,7 +18,7 @@ const PosterImage: React.FC<{
                 layout="responsive"
                 width={300}
                 height={169}
-                priority={true}
+                // priority={true}
                 alt=""
                 className={`object-cover cursor-pointer z-[1000]`}
             />

@@ -40,7 +40,6 @@ const EpisodeCard:React.FC<IEpisodeCard> = ({ data }) => {
                     <Image 
                         src={ data && data.still_path ?  `${ process.env.NEXT_PUBLIC_TMDB_IMAGE_PATH }${data.still_path}` : no_result}
                         layout="responsive"
-                        priority={true}  
                         width={300}
                         height={169}  
                         alt=""
