@@ -13,7 +13,7 @@ import { IAuthState } from "../../ts/states/auth_state";
 import { selectAuth } from "../../app/store/slices/auth";
 import { useMovieDetail } from "../../lib/hooks/useMovieDetail";
 import { useAppContext } from "../../context/state";
-import { ArrowPathIcon, PlayCircleIcon, PlusCircleIcon, MinusCircleIcon } from "@heroicons/react/24/outline";
+import { ArrowPathIcon, PlayCircleIcon, PlusCircleIcon, MinusCircleIcon, ChevronLeftIcon } from "@heroicons/react/24/outline";
 import { fadeScreen } from "../../lib/fadeScreen";
 import { IBookmarkData, selectBookmarkData, setDataBookmarks, removeDataBookmarks } from "../../app/store/slices/bookmarks";
 
@@ -79,6 +79,7 @@ const Movie: NextPageWithLayout = (props:any) => {
     )
   }
 
+
     if (isError) return <div>Error occured while fetching movie details. Please try again.</div>
 
     return (
@@ -108,12 +109,12 @@ const Movie: NextPageWithLayout = (props:any) => {
                   lg:top-0 lg:left-0
                   xl:w-[70%] ">
                   
-                  {/* <div className="flex items-center justify-start w-full py-4">
+                  <div className="flex items-center justify-start w-full py-4">
                       <ChevronLeftIcon className="w-[30px] h-[30px] mr-[10px] border border-btnprimary bg-btnprimary rounded-full p-1 
                       hover:cursor-pointer hover:border-white" 
                       onClick={ () => router.back() } />
                       <span>Back</span>
-                  </div> */}
+                  </div>
 
                   <div className="flex flex-col border-0 h-[100%] w-full
                     xl:w-[70%] xl:ml-[100px] xl:mr-[100px]">
@@ -182,20 +183,22 @@ const Movie: NextPageWithLayout = (props:any) => {
 
               </section>
 
-              <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative" data-testid="recommended_movies">
-                <h1 className="ml-[50px] text-[20px]">Recommended Movies</h1>
+              {
+                recommendationsArr && recommendationsArr.length > 0 &&              
+                  <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative" data-testid="recommended_movies">
+                    <h1 className="ml-[50px] text-[20px]">Recommended Movies</h1>
 
-                <Carousel 
-                  data={recommendationsArr} 
-                  user={user} 
-                  maxItems={recommendationsArr.length} 
-                  bookmarkData={[...bookmarks.data]}
-                  baseWidth={290}
-                  target="r"
-                />
+                    <Carousel 
+                      data={recommendationsArr} 
+                      user={user} 
+                      maxItems={recommendationsArr.length} 
+                      bookmarkData={[...bookmarks.data]}
+                      baseWidth={290}
+                      target="r"
+                    />
 
-              </section>
-              
+                  </section>
+              }
               {
                 user && user.accessToken &&
                   <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]" data-testid="bookmark_container">

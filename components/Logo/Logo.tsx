@@ -17,7 +17,7 @@ const Logo: React.FC = () => {
         lg:scale-[100%]
         xl:scale-[100%]
         " onClick={ redirectHandler } data-testid="logo_container">
-            <Image src={logo} alt="logo" priority={true} />
+            <Image src={logo} alt="logo" />
         </div>
     )
 }

@@ -50,8 +50,6 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
   
     const { movie_detail: featured, isLoading: featuredIsLoading } = useMovieDetail(`${feature_id}`); 
 
-
-
     if (!featuredIsLoading) {
       featured.recommendations && featured.recommendations.results && featured.recommendations.results.slice(0,20).map((item:any) => {
         recommendationsArr.push(item)
@@ -225,19 +223,23 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
             </section>
 
 
-            <section className="flex flex-col px-[0px] z-[1000] border-0 w-full relative mt-[50px]" data-testid="recommended_movies">
-              <h1 className="ml-[50px] text-[20px]">Recommended Movies</h1>
+            {
+              recommendationsArr && recommendationsArr.length > 0 &&
+            
+                <section className="flex flex-col px-[0px] z-[1000] border-0 w-full relative mt-[50px]" data-testid="recommended_movies">
+                  <h1 className="ml-[50px] text-[20px]">Recommended Movies</h1>
 
-              <Carousel 
-                data={recommendationsArr} 
-                user={user} 
-                maxItems={recommendationsArr.length} 
-                bookmarkData={[...bookmarks.data]}
-                baseWidth={290}
-                target="r"
-              />
+                  <Carousel 
+                    data={recommendationsArr} 
+                    user={user} 
+                    maxItems={recommendationsArr.length} 
+                    bookmarkData={[...bookmarks.data]}
+                    baseWidth={290}
+                    target="r"
+                  />
 
-            </section>
+                </section>
+            }
             
             {
               user && user.accessToken &&
@@ -323,7 +325,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
         data: {
           trending: resTrending ? [].concat(...resTrending.results) : [],
           popular: resPopular ? [].concat(...resPopular.results) : [],
-          feature_id: resTrending.results && resTrending.results[getRandom(resTrending.results.length-1)].id
+          feature_id: resTrending.results && resTrending.results[getRandom(2)].id //getRandom(resTrending.results.length-1)
         }
       },
       // revalidate: 10,

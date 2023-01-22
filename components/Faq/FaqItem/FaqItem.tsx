@@ -18,7 +18,7 @@ const FaqItem:React.FC<IFaqItem> = ({ id, title, description }) => {
 
     return (
         <li key={id} className={`mb-[.5rem] ${styles.faqli}`} data-testid="faq_item">
-            <div className={`${styles.container}`} onClick={(e) => onClickHandler(!show) } data-testid="clickable_item">
+            <div className={`${styles.container}`} onClick={() => onClickHandler(!show) } data-testid="clickable_item">
                 <span className="flex-1 text-[1rem]">{title}</span>
                 <div className={!show ? styles.icon_container_close : styles.icon_container_open}>
                     {/* <ChevronDownIcon className="w-6 h-6"/> */}

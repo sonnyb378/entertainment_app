@@ -16,7 +16,7 @@ import { IAuthState } from "../../ts/states/auth_state";
 import { selectAuth } from "../../app/store/slices/auth";
 import { useTVDetail } from "../../lib/hooks/useTVDetail";
 import { useAppContext } from "../../context/state";
-import { ArrowPathIcon, PlusCircleIcon, MinusCircleIcon } from "@heroicons/react/24/outline";
+import { ArrowPathIcon, PlusCircleIcon, MinusCircleIcon, ChevronLeftIcon } from "@heroicons/react/24/outline";
 import { GetServerSideProps } from "next";
 import { fadeScreen } from "../../lib/fadeScreen";
 import { IBookmarkData, removeDataBookmarks, selectBookmarkData, setDataBookmarks } from "../../app/store/slices/bookmarks";
@@ -29,6 +29,7 @@ const TV: NextPageWithLayout = (props:any) => {
   const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
 
   const router = useRouter();
+
   const { tv_detail: data, isLoading, isError } = useTVDetail(props.tv_id); 
   
   const { videoIsPlayed, showData } = useAppContext();
@@ -53,10 +54,8 @@ const TV: NextPageWithLayout = (props:any) => {
     if (bookmarks) {
       isBookmarked = bookmarks.data.findIndex((show:any) => show.id === data.id) !== -1
     }
-
   }
 
-  
   useEffect(() => {
     if (data && data["season/1"]) {
       if (data["season/1"] && data["season/1"].episodes.length > 0) {
@@ -75,7 +74,6 @@ const TV: NextPageWithLayout = (props:any) => {
     
     setIsEpisodesLoading(false)
     setEpisodes(season_episodes.episodes)
-
   }
 
   useEffect(() => {
@@ -136,12 +134,12 @@ const TV: NextPageWithLayout = (props:any) => {
                 lg:top-0 lg:left-0
                 xl:w-[70%] ">
                 
-                {/* <div className="flex items-center justify-start w-full py-4">
+                <div className="flex items-center justify-start w-full py-4">
                     <ChevronLeftIcon className="w-[30px] h-[30px] mr-[10px] border border-btnprimary bg-btnprimary rounded-full p-1 
                     hover:cursor-pointer hover:border-white" 
                     onClick={ () => router.back() } />
                     <span>Back</span>
-                </div> */}
+                </div>
 
                 <div className="flex flex-col border-0 h-[100%] w-full
                   xl:w-[70%] xl:ml-[100px] xl:mr-[100px]">
@@ -270,19 +268,21 @@ const TV: NextPageWithLayout = (props:any) => {
               </div>
             </section>
 
-            <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative" data-testid="recommended_tvshows">
-              <h1 className="ml-[50px] text-[20px]">Recommended TV Shows</h1>
+            {
+              recommendationsArr && recommendationsArr.length > 0 &&            
+                <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative" data-testid="recommended_tvshows">
+                  <h1 className="ml-[50px] text-[20px]">Recommended TV Shows</h1>
 
-              <Carousel 
-                data={recommendationsArr} 
-                user={user} 
-                maxItems={ recommendationsArr.length } 
-                bookmarkData={[...bookmarks.data]}
-                baseWidth={290}
-                target="r"
-              />
-
-            </section>
+                  <Carousel 
+                    data={recommendationsArr} 
+                    user={user} 
+                    maxItems={ recommendationsArr.length } 
+                    bookmarkData={[...bookmarks.data]}
+                    baseWidth={290}
+                    target="r"
+                  />
+                </section>
+            }
             {
               user && user.accessToken &&
                 <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]" data-testid="bookmark_container">
