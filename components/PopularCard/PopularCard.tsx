@@ -29,12 +29,13 @@ import num_7 from "../../assets/num_7.png"
 import num_8 from "../../assets/num_8.png"
 import num_9 from "../../assets/num_9.png"
 import num_10 from "../../assets/num_10.png"
+import { User } from "firebase/auth";
 
 
 const PopularCard:React.FC<{ 
     visibleItems: number,
     indexCount: number,
-    user: IAuthState, 
+    user: User | null | undefined, 
     result:IResult,
     bookmarkData?:any[]|null
 }> = ({ 
@@ -147,7 +148,7 @@ const PopularCard:React.FC<{
                         <div className="flex pt-2 pb-1 z-[1100] relative w-full items-center justify-start bg-gray-900 bg-opacity-70 space-x-2 px-[13px]">
                             
                             {
-                                user && user.accessToken &&
+                                user &&
                                     <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
                                         hover:text-white hover:bg-btnhighlight hover:border-btnhighlight">
                                         <PlayIcon className="w-[20px] h-[20px]" onClick={ () => setVideoIsPlayed(true, result) } data-testid="play_button" />
@@ -156,7 +157,7 @@ const PopularCard:React.FC<{
 
                             <div className="flex-1"></div>
                             {
-                                user && user.accessToken && 
+                                user && 
                                 <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
                                     hover:text-btnhighlight hover:border-btnhighlight">
                                     {

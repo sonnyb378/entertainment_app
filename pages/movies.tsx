@@ -1,5 +1,5 @@
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import axios from "axios";
 import Image from "next/image";
@@ -7,51 +7,58 @@ import Info from "../components/Info/Info";
 import Main from "../components/Layout/Main/Main";
 import Spinner from "../components/Spinner/Spinner";
 import CustomBtn from "../components/Button/CustomBtn/CustomBtn";
-// import Carousel from "../components/Carousel/Carousel";
+
+import { useRouter } from "next/router";
+import { GetServerSideProps } from "next";
+import { useAuthState } from "react-firebase-hooks/auth";
+import nookies, { parseCookies } from "nookies"
+import { PlayCircleIcon, PlusCircleIcon, MinusCircleIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
+import { NextPageWithLayout } from "./page";
+import { useAppSelector, useAppDispatch } from "../app/hooks";
+import { setCurrentUrl } from "../app/store/slices/url";
+import { getRandom } from "../lib/getRandom";
+import { useAppContext } from "../context/state";
+import { fadeScreen } from "../lib/fadeScreen";
+import { IBookmarkData, removeDataBookmarks, selectBookmarkData, setDataBookmarks } from "../app/store/slices/bookmarks";
+import { auth } from "../firebase";
+import { useMovieDetail } from "../lib/hooks/useMovieDetail";
+// import { getAuth, onAuthStateChanged, User } from "firebase/auth";
+// import { fake_trending, fake_featured } from "../model/fake_trending";
+// import { fake_popular } from "../model/fake_popular";
 
 const Carousel = dynamic(() => import("../components/Carousel/Carousel"), {
   loading: () => <Spinner />
 })
 
 
-import { NextPageWithLayout } from "./page";
-import { useRouter } from "next/router";
-import { useAppSelector, useAppDispatch } from "../app/hooks";
-import { selectAuth } from "../app/store/slices/auth";
-import { IAuthState } from "../ts/states/auth_state";
-import { setCurrentUrl } from "../app/store/slices/url";
-import { GetStaticProps } from "next";
-import { getRandom } from "../lib/getRandom";
-import { PlayCircleIcon, PlusCircleIcon, MinusCircleIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
-import { useMovieDetail } from "../lib/hooks/useMovieDetail";
-import { useAppContext } from "../context/state";
-import { fadeScreen } from "../lib/fadeScreen";
-import { IBookmarkData, removeDataBookmarks, selectBookmarkData, setDataBookmarks } from "../app/store/slices/bookmarks";
-
-// import { fake_trending, fake_featured } from "../model/fake_trending";
-// import { fake_popular } from "../model/fake_popular";
-
 const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
     const router = useRouter();
     const dispatch = useAppDispatch();
-
-    const user = useAppSelector<IAuthState>(selectAuth);    
+    const [user, loading] = useAuthState(auth);
     const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
-   
     const { videoIsPlayed, setVideoIsPlayed, showData } = useAppContext();
+    const cookies = parseCookies()
+
+    const [ isRedirecting, setIsRedirecting] = useState(false);
+
 
     let recommendationsArr:any[] = [];
     const genres:any = [];
     
-    useEffect(() => {
-      if (!user || !user.accessToken) {
-        router.push("/signin");
-      } 
-    },[router, user]);
 
+    useEffect(() => {
+      if (isRedirecting) {
+        return;
+      }
+      if (!loading && !user && !cookies.token) {
+        router.replace("/signin", undefined, { shallow: true })
+        setIsRedirecting(true)
+      }
+    }, [user])
 
     let isBookmarked = false;
     const { trending, popular, feature_id } = data;  
+
     // const featured = fake_featured as any;
     // const featuredIsLoading = false;    
   
@@ -102,10 +109,8 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
       )
     }
 
-    // if (pageIsLoading) return null;
-
     return (
-      <div className="flex flex-col items-start justify-center w-full overflow-hidden pb-[100px] -mt-[4px]" data-testid="movies_container">
+      <div className={`flex flex-col items-start justify-center w-full overflow-hidden pb-[100px] -mt-[4px]`} data-testid="movies_container">
         <section className="flex flex-col items-start justify-center w-full p-0">
             
             <section className={`flex flex-col items-start transition-all duraiton-200 ease-in-out justify-center w-full border-0 relative h-[100%] -mt-[0px]
@@ -168,7 +173,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                         sm:space-y-0 sm:space-x-2 sm:flex-row
                         lg:space-x-2">
                           {
-                            user && user.accessToken &&
+                            user &&
                               <CustomBtn 
                                 title="Play" 
                                 Icon={PlayCircleIcon} 
@@ -177,11 +182,11 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                           }
                           {
                             !isBookmarked ? 
-                              user && user.accessToken && <CustomBtn title="Add to List" Icon={PlusCircleIcon} onClickHandler={() => 
+                              user && <CustomBtn title="Add to List" Icon={PlusCircleIcon} onClickHandler={() => 
                                 saveBookmark(featured)
                               } />
                             :
-                              user && user.accessToken &&  <CustomBtn title="Remove from List" Icon={MinusCircleIcon} onClickHandler={() => 
+                              user &&  <CustomBtn title="Remove from List" Icon={MinusCircleIcon} onClickHandler={() => 
                                 deleteBookmark(featured.id)
                               } />
                           }
@@ -249,7 +254,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
             }
             
             {
-              user && user.accessToken &&
+              user &&
                 <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]" data-testid="mylist_container">
                   <h1 className="ml-[50px] text-[20px]">My List</h1>
                   
@@ -295,47 +300,72 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
         {page}   
       </Main>
     );
-
   };
 
-  // export const getStaticProps: GetStaticProps = async (context:any) => {
-  //   const featuredID = fake_trending && fake_trending[getRandom(fake_trending.length-1)].id;
-  //   return {
-  //     props: {
-  //       data: {
-  //         trending : fake_trending,
-  //         popular: fake_popular,
-  //         feature_id: featuredID
-  //       }
-  //     },
-  //     // revalidate: 10,
-  //   }  
+  // export const getServerSideProps: GetServerSideProps = async (context:any) => {
+
+  //   const cookies = nookies.get(context)
+
+  //   if (!cookies.token) {
+  //     return {
+  //       redirect: {
+  //         destination: '/signin',
+  //         permanent: false,
+  //       },
+  //     }
+  //   } else {
+  //     const featuredID = fake_trending && fake_trending[getRandom(fake_trending.length-1)].id;
+  //     return {
+  //       props: {
+  //         data: {
+  //           trending : fake_trending,
+  //           popular: fake_popular,
+  //           feature_id: featuredID
+  //         }
+  //       },
+  //       // revalidate: 10,
+  //     }  
+  //   }
+
   // }
 
-  export const getStaticProps: GetStaticProps = async () => {
-    
-    const [reqTrending, reqPopular] = await Promise.all([
-      await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}trending/movie/day?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}`,{
-        headers: { "Accept-Encoding": "gzip,deflate,compress" } 
-      }).then(res => res.data),
-      await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}movie/popular?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&region=US&page=1`, {
-        headers: { "Accept-Encoding": "gzip,deflate,compress" } 
-      }).then(res => res.data)   
-    ])
 
-    const [resTrending, resPopular] = await Promise.all([
-      reqTrending, reqPopular
-    ])
+  export const getServerSideProps: GetServerSideProps = async (context:any) => {
 
-    return {
-      props: {
-        data: {
-          trending: resTrending ? [].concat(...resTrending.results) : [],
-          popular: resPopular ? [].concat(...resPopular.results) : [],
-          feature_id: resTrending.results && resTrending.results[getRandom(2)].id //getRandom(resTrending.results.length-1)
-        }
-      },
-      // revalidate: 10,
+    const cookies = nookies.get(context)
+
+    if (!cookies.token) {
+      return {
+        redirect: {
+          destination: '/signin',
+          permanent: false,
+        },
+      }
+    } else {
+      const [reqTrending, reqPopular] = await Promise.all([
+        await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}trending/movie/day?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}`,{
+          headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+        }).then(res => res.data),
+        await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}movie/popular?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&region=US&page=1`, {
+          headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+        }).then(res => res.data)   
+      ])
+  
+      const [resTrending, resPopular] = await Promise.all([
+        reqTrending, reqPopular
+      ])
+  
+      return {
+        props: {
+          data: {
+            trending: resTrending ? [].concat(...resTrending.results) : [],
+            popular: resPopular ? [].concat(...resPopular.results) : [],
+            feature_id: resTrending.results && resTrending.results[getRandom(2)].id //getRandom(resTrending.results.length-1)
+          }
+        },
+        // revalidate: 10,
+      }
     }
+    
 
   }

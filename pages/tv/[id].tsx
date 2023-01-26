@@ -21,35 +21,53 @@ const EpisodeCard = dynamic(() => import("../../components/EpisodeCard/EpisodeCa
 import { NextPageWithLayout } from "../page";
 import { useRouter } from "next/router";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { IAuthState } from "../../ts/states/auth_state";
-import { selectAuth } from "../../app/store/slices/auth";
 import { useTVDetail } from "../../lib/hooks/useTVDetail";
 import { useAppContext } from "../../context/state";
 import { ArrowPathIcon, PlusCircleIcon, MinusCircleIcon, ChevronLeftIcon } from "@heroicons/react/24/outline";
 import { GetServerSideProps } from "next";
 import { fadeScreen } from "../../lib/fadeScreen";
 import { IBookmarkData, removeDataBookmarks, selectBookmarkData, setDataBookmarks } from "../../app/store/slices/bookmarks";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../../firebase";
+import nookies, { parseCookies } from "nookies"
 
-// import { tvData } from "../../model/fake_tv_detail";
+import { IAuthState } from "../../ts/states/auth_state";
+import { selectAuth } from "../../app/store/slices/auth";
+import { tvData } from "../../model/fake_tv_detail";
 // import { fake_tv_episodes } from "../../model/fake_tv_episodes";
 
 const TV: NextPageWithLayout = (props:any) => {
-  const user = useAppSelector<IAuthState>(selectAuth);
-  const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
-
-  const router = useRouter();
-
-  const { tv_detail: data, isLoading, isError } = useTVDetail(props.tv_id); 
   
+  const router = useRouter();
+  const dispatch = useAppDispatch() 
+  const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
+  const [user, loading] = useAuthState(auth);
   const { videoIsPlayed, showData } = useAppContext();
+  
+  const [isRedirecting, setIsRedirecting] = useState(false)
   const [isEpisodesLoading, setIsEpisodesLoading] = useState(false)
   const [episodes, setEpisodes] = useState<any>([])
   
-  const dispatch = useAppDispatch() 
+  const cookies = parseCookies();
 
+  const { tv_detail: data, isLoading, isError } = useTVDetail(props.tv_id); 
+  
   // const isLoading = false;
   // const isError = undefined;
   // const data = tvData
+
+  useEffect(() => {
+    if (isRedirecting) {
+      return;
+    }
+    if (!loading && !user && !cookies.token) {
+      router.replace("/signin", undefined, { shallow: true })
+      setIsRedirecting(true)
+    }
+  }, [user])
+
+
+
 
   let isBookmarked = false;
 
@@ -97,6 +115,7 @@ const TV: NextPageWithLayout = (props:any) => {
       genres.push(genre.id)
     })
   }
+
   const saveBookmark = (data:any) => {
     dispatch(setDataBookmarks({
       id: data.id,
@@ -188,11 +207,11 @@ const TV: NextPageWithLayout = (props:any) => {
                     {/* <CustomBtn title="Season" Icon={ChevronDownIcon} onClickHandler={() => console.log("Dropdown season: ",data.id)} /> */}
                     {
                       !isBookmarked ? 
-                        user && user.accessToken && <CustomBtn title="Add to List" Icon={PlusCircleIcon} onClickHandler={() => 
+                        user && <CustomBtn title="Add to List" Icon={PlusCircleIcon} onClickHandler={() => 
                           saveBookmark(data)
                         } />
                       :
-                        user && user.accessToken &&  <CustomBtn title="Remove from List" Icon={MinusCircleIcon} onClickHandler={() => 
+                        user &&  <CustomBtn title="Remove from List" Icon={MinusCircleIcon} onClickHandler={() => 
                           deleteBookmark(data.id)  
                         } />
                     }
@@ -293,7 +312,7 @@ const TV: NextPageWithLayout = (props:any) => {
                 </section>
             }
             {
-              user && user.accessToken &&
+              user &&
                 <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]" data-testid="bookmark_container">
                   <h1 className="ml-[50px] text-[20px]">My List</h1>
                   
@@ -342,12 +361,25 @@ const TV: NextPageWithLayout = (props:any) => {
   export const  getServerSideProps: GetServerSideProps = async (context:any) => {
     
     const tvID = context.params.id;
+    const cookies = nookies.get(context)
 
-    return {
+    if (!cookies.token) {
+      return {
+        redirect: {
+          destination: '/signin',
+          permanent: false,
+        },
+      }
+    } else {
+      return {
         props: {
             tv_id: tvID
         }
+     }
     }
+
+
+   
   }
 
 

@@ -9,17 +9,23 @@ import { ArrowPathIcon } from "@heroicons/react/24/solid";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { selectAuth } from "../app/store/slices/auth";
 import { IAuthState } from "../ts/states/auth_state";
-// import { createUserWithEmailAndPassword } from "firebase/auth";
-// import { auth } from "../firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase";
+import { GetServerSideProps } from "next";
+
+
+import nookies, { parseCookies } from "nookies"
 
 interface IError {
     error: string;
 }
 const Register: NextPageWithLayout = () => {
-    const user = useAppSelector<IAuthState>(selectAuth);
-    // const dispatch = useAppDispatch();
+
+    const COOKIES_MAX_AGE = 60 * 60 * 24 * 30;
+    const [user, loading] = useAuthState(auth);
     const router = useRouter();
     
+    const [isRedirecting, setIsRedirecting] = useState(false)
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [email, setEmail] = useState("");
     const [confirmEmail, setConfirmEmail] = useState("");
@@ -27,11 +33,19 @@ const Register: NextPageWithLayout = () => {
     const [confirmPassword, setConfirmPassword] = useState("")
     const [registerErrors, setRegisterErrors] = useState<IError[]>([]);
 
+
+    const cookies = parseCookies()
+
     useEffect(() => {
-        if (user && user.accessToken) {
-          router.replace("./movies");
+        if (isRedirecting) {
+          return;
         }
-    }, [router, user])
+        if (!loading && user && cookies.token) {
+          router.replace("/movies", undefined, { shallow: true } )
+          setIsRedirecting(true)
+        }
+      }, [user])
+
 
     const signupHandler = async () => {
         let registerOk = true;
@@ -103,14 +117,10 @@ const Register: NextPageWithLayout = () => {
             // })
 
             // if (result.token) {
-            //     // setIsSubmitted(false);
-            //     dispatch(setAuthData({
-            //         id: result.claims.user_id,
-            //         accessToken: result.token,
-            //         expiresAt: result.expirationTime
-            //     }));
-            //     router.replace("./movies")
+            //     setIsSubmitted(false);
+            //     nookies.set(undefined, 'token', result.token, { maxAge:COOKIES_MAX_AGE, path: '/' });
             // }
+            
             /*
                 *** END ***
             */
@@ -242,24 +252,31 @@ const Register: NextPageWithLayout = () => {
       description: "Sign Up - Wibix"
     }
 
-    // const [pageIsLoading, setPageIsLoading] = useState(true);
-    // const user = useAppSelector<IAuthState>(selectAuth);
-    // const router = useRouter();
-
-    // useEffect(() => {
-    //   if (user && user.accessToken) {
-    //     router.replace("./movies");
-    //   } else {
-    //     setPageIsLoading(false);
-    //   }
-    // },[router.asPath, router, user]);
-
-    // if (pageIsLoading) return null;
-
-    
     return (
         <Main seo={meta} showHero={true}>
           {page}   
         </Main>
     );
   };
+
+
+  export const getServerSideProps: GetServerSideProps = async (context:any) => {
+
+    const cookies = nookies.get(context)
+
+    if (cookies.token) {
+      return {
+        redirect: {
+          destination: '/movies',
+          permanent: false,
+        },
+      }
+    } else {
+        return {
+            props: {}
+          }
+    }
+
+    
+
+  }

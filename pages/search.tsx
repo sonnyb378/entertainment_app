@@ -1,9 +1,8 @@
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Main from "../components/Layout/Main/Main";
 import dynamic from "next/dynamic";
 import Spinner from "../components/Spinner/Spinner";
-// import SearchResults from "../components/Search/SearchResults/SearchResults";
 
 const SearchResults = dynamic(() => import("../components/Search/SearchResults/SearchResults"), {
   loading: () => <Spinner />
@@ -12,47 +11,57 @@ const SearchResults = dynamic(() => import("../components/Search/SearchResults/S
 import { NextPageWithLayout } from "./page";
 import { useRouter } from "next/router";
 import { useAppSelector } from "../app/hooks";
-import { selectAuth } from "../app/store/slices/auth";
-import { IAuthState } from "../ts/states/auth_state";
 import { IUrl } from "../app/store/slices/url";
 import { selectCurrentUrl } from "../app/store/slices/url";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase";
+import { GetServerSideProps } from "next";
 
+import nookies, { parseCookies } from "nookies";
 
 const Search: NextPageWithLayout = () => {
-    const user = useAppSelector<IAuthState>(selectAuth);    
+
+    const [isRedirecting, setIsRedirecting] = useState(false);
     const new_url = useAppSelector<IUrl>(selectCurrentUrl)
+
+    const [user, loading] = useAuthState(auth);
 
     const router = useRouter();
     
     let cont: boolean = false;
     let kw: string = "";
 
-    if (!router.asPath.includes("/search?q=")) {
-      router.push(new_url.currentUrl)
-      // return <></>
-    } else {
-      const query = router.asPath.split("?")
-
-      kw = query[1].split("=")[1]
-      if (kw) {
-        cont = true;
-      }
-    }
+    const cookies = parseCookies()
 
     useEffect(() => {
-      if (!user || !user.accessToken) {
-        router.push("/signin");
-      } else if (!cont) {
-        router.push(new_url.currentUrl);
+      if (isRedirecting) {
+        return;
       }
-    }, [router, new_url.currentUrl, cont, user])
+      if (!loading && !user && !cookies.token) {
+        router.replace("/signin", undefined, { shallow: true })
+        setIsRedirecting(true)
+      }
+    }, [user])
 
-    // useEffect(() => {
-    //   if (!user || !user.accessToken) {
-    //     router.push("/signin");
-    //   }
-    // }, [router, user])
-
+    if (user) {
+      if (!router.asPath.includes("/search?q=")) {
+        router.push(new_url.currentUrl)
+      } else {
+        const query = router.asPath.split("?")
+        kw = query[1].split("=")[1]
+        if (kw) {
+          cont = true;
+        }
+      }
+    }
+    
+    useEffect(() => {
+      if (!cont) {
+        if (user) {
+          router.push(new_url.currentUrl, undefined, { shallow: true});
+        } 
+      }     
+    }, [cont])
 
 
     if (!cont) return null
@@ -91,6 +100,25 @@ const Search: NextPageWithLayout = () => {
   };
 
 
-  
+  export const getServerSideProps: GetServerSideProps = async (context:any) => {
+
+    const cookies = nookies.get(context)
+
+    if (!cookies.token) {
+      return {
+        redirect: {
+          destination: '/signin',
+          permanent: false,
+        },
+      }
+    } else {
+      return {
+        props: {}
+      }
+    }
+
+   
+
+  }
 
 

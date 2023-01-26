@@ -1,5 +1,5 @@
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Main from "../components/Layout/Main/Main";
 import axios from "axios";
 import Image from "next/image";
@@ -7,50 +7,55 @@ import Info from "../components/Info/Info";
 import CustomBtn from "../components/Button/CustomBtn/CustomBtn";
 import dynamic from "next/dynamic";
 import Spinner from "../components/Spinner/Spinner";
-// import Carousel from "../components/Carousel/Carousel";
+
+import { GetServerSideProps } from "next";
+import { useRouter } from "next/router";
+import { useAuthState } from "react-firebase-hooks/auth";
+import nookies, { parseCookies } from "nookies"
+import { PlusCircleIcon, MinusCircleIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
+import { NextPageWithLayout } from "./page";
+import { useAppSelector, useAppDispatch } from "../app/hooks";
+import { setCurrentUrl } from "../app/store/slices/url";
+import { useAppContext } from "../context/state";
+import { getRandom } from "../lib/getRandom";
+import { fadeScreen } from "../lib/fadeScreen";
+import { IBookmarkData, removeDataBookmarks, selectBookmarkData, setDataBookmarks } from "../app/store/slices/bookmarks";
+import { useTVDetail } from "../lib/hooks/useTVDetail";
+import { auth } from "../firebase";
 
 const Carousel = dynamic(() => import("../components/Carousel/Carousel"), {
   loading: () => <Spinner />
 })
 
-import { NextPageWithLayout } from "./page";
-import { useRouter } from "next/router";
-import { useAppSelector, useAppDispatch } from "../app/hooks";
-import { selectAuth } from "../app/store/slices/auth";
-import { IAuthState } from "../ts/states/auth_state";
-import { setCurrentUrl } from "../app/store/slices/url";
-import { useAppContext } from "../context/state";
-import { getRandom } from "../lib/getRandom";
-import { useTVDetail } from "../lib/hooks/useTVDetail";
-import { PlusCircleIcon, MinusCircleIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
-import { GetStaticProps } from "next";
-import { fadeScreen } from "../lib/fadeScreen";
-import { IBookmarkData, removeDataBookmarks, selectBookmarkData, setDataBookmarks } from "../app/store/slices/bookmarks";
 // import { fake_tv_featured, fake_tv_trending } from "../model/fake_tv_trending";
 // import { fake_tv_popular } from "../model/fake_tv_popular";
 
-
 const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
-    const user = useAppSelector<IAuthState>(selectAuth);    
-    const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
-    
+  
     const router = useRouter();
     const dispatch = useAppDispatch();
+    const [user, loading] = useAuthState(auth);
+    const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
+    const [isRedirecting, setIsRedirecting] = useState(false)
+    const cookies = parseCookies()
 
     let isBookmarked = false;
     let recommendationsArr:any[] = [];  
     const genres:any = [];
 
     useEffect(() => {
-      if (!user || !user.accessToken) {
-        router.replace("/signin");
-      } 
-    },[router, user]);
+      if (isRedirecting) {
+        return;
+      }
+      if (!loading && !user && !cookies.token) {
+        router.replace("/signin", undefined, { shallow: true })
+        setIsRedirecting(true)
+      }
+    }, [user])
 
 
     const { videoIsPlayed, showData } = useAppContext();
 
-    
     const { trending, popular, feature_id } = data;
     // const featured = fake_tv_featured as any;
     // const featuredIsLoading = false;
@@ -183,11 +188,11 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
                           {/* <CustomBtn title="Season" Icon={ChevronDownIcon} onClickHandler={() => console.log("Dropdown season: ",data.id)} /> */}
                           {
                             !isBookmarked ? 
-                              user && user.accessToken && <CustomBtn title="Add to List" Icon={PlusCircleIcon} onClickHandler={() => 
+                              user && <CustomBtn title="Add to List" Icon={PlusCircleIcon} onClickHandler={() => 
                                 saveBookmark(featured)
                               } />
                             :
-                              user && user.accessToken &&  <CustomBtn title="Remove from List" Icon={MinusCircleIcon} onClickHandler={() => 
+                              user &&  <CustomBtn title="Remove from List" Icon={MinusCircleIcon} onClickHandler={() => 
                                 deleteBookmark(featured.id)
                               } />
                           }
@@ -277,7 +282,7 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
 
             {
           
-              user && user.accessToken &&
+              user &&
                 <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]" data-testid="mylist_container">
                   <h1 className="ml-[50px] text-[20px]">My List</h1>
                   
@@ -325,48 +330,72 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
 
   };
 
-  // export const getStaticProps: GetStaticProps = async (context:any) => {
-  //   const featuredID = fake_tv_trending && fake_tv_trending[getRandom(fake_tv_trending.length-1)].id
-  //   return {
-  //     props: {
-  //       data: {
-  //         trending : fake_tv_trending,
-  //         popular: fake_tv_popular,
-  //         feature_id: featuredID
-  //       }
-  //     },
-  //     // revalidate: 10,
-  //   }  
+  // export const getServerSideProps: GetServerSideProps = async (context:any) => {
+
+  //   const cookies = nookies.get(context)
+
+  //   if (!cookies.token) {
+  //     return {
+  //       redirect: {
+  //         destination: '/signin',
+  //         permanent: false,
+  //       },
+  //     }
+  //   } else {
+  //     const featuredID = fake_tv_trending && fake_tv_trending[getRandom(fake_tv_trending.length-1)].id
+  //     return {
+  //       props: {
+  //         data: {
+  //           trending : fake_tv_trending,
+  //           popular: fake_tv_popular,
+  //           feature_id: featuredID
+  //         }
+  //       },
+  //       // revalidate: 10,
+  //     }  
+  //   }
+    
   // }
 
 
-  export const getStaticProps: GetStaticProps = async () => {
-    
-    const [reqTrending, reqPopular] = await Promise.all([
-      await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}trending/tv/day?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}`, {
-        headers: { "Accept-Encoding": "gzip,deflate,compress" } 
-      }).then(res => res.data),
-      await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}tv/popular?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&region=US&page=1`, {
-        headers: { "Accept-Encoding": "gzip,deflate,compress" } 
-      }).then(res => res.data)   
-    ])
+export const getServerSideProps: GetServerSideProps = async (context:any) => {
 
-    const [resTrending, resPopular] = await Promise.all([
-      reqTrending, reqPopular
-    ])
+  const cookies = nookies.get(context)
 
-    return {
-      props: {
-        data: {
-          trending: resTrending ? [].concat(...resTrending.results) : [],
-          popular: resPopular ? [].concat(...resPopular.results) : [],
-          feature_id: resTrending.results && resTrending.results[getRandom(2)].id //getRandom(resTrending.results.length-1)
-        }
-      },
-      // revalidate: 10,
+    if (!cookies.token) {
+      return {
+        redirect: {
+          destination: '/signin',
+          permanent: false,
+        },
+      }
+    } else {
+      const [reqTrending, reqPopular] = await Promise.all([
+        await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}trending/tv/day?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}`, {
+          headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+        }).then(res => res.data),
+        await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}tv/popular?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&region=US&page=1`, {
+          headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+        }).then(res => res.data)   
+      ])
+
+      const [resTrending, resPopular] = await Promise.all([
+        reqTrending, reqPopular
+      ])
+
+      return {
+        props: {
+          data: {
+            trending: resTrending ? [].concat(...resTrending.results) : [],
+            popular: resPopular ? [].concat(...resPopular.results) : [],
+            feature_id: resTrending.results && resTrending.results[getRandom(2)].id //getRandom(resTrending.results.length-1)
+          }
+        },
+        // revalidate: 10,
+      }
     }
 
-  }
+}
 
 
   

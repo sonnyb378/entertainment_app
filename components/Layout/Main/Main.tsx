@@ -10,22 +10,26 @@ import styles from "./Main.module.css";
 import Spinner from "../../Spinner/Spinner";
 
 const Header = dynamic(() => import("../Header/Header"), {
-    loading: () => <Spinner />
+    loading: () => <div></div> //<Spinner />
 })
 
 const Footer = dynamic(() => import("../Footer/Footer"), {
-    loading: () => <Spinner />
+    loading: () => <div></div> //<Spinner />
 })
 
 const Hero = dynamic(() => import("../../Hero/Hero"), {
-    loading: () => <Spinner />
+    loading: () => <div></div> //<Spinner />
 })
 
-
-
 import Seo from "../../SEO/Seo"
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../../../firebase";
+import { useRouter } from "next/router";
 // import { useAppContext } from "../../../context/state";
 // import { AppProps } from "next/app";
+
+import { parseCookies } from "nookies"
+import { signOut } from "firebase/auth";
 
 export interface IMain {
     seo?: {
@@ -37,13 +41,17 @@ export interface IMain {
 }
 
 const Main: React.FC<IMain> = ({ children, seo, showHero }) => {
-   
+
+    const cookies = parseCookies()
+
+    if (!cookies.token) {
+        signOut(auth)
+    }
+
     return (
-        <div className={ styles.container } data-testid="main_component">
-
+        <div className={ styles.container } data-testid="main_component">        
             <div className="flex-col items-center justify-center w-full bg-black transition-all duration-100 opacity-100" id="main_component" >
-                    {/* <React.StrictMode> */}
-
+                    
                     {
                         seo && <Seo meta={seo} />
                     }
@@ -70,11 +78,12 @@ const Main: React.FC<IMain> = ({ children, seo, showHero }) => {
                         </>
                     }
                     
-                    {/* </React.StrictMode> */}
-            </div>
-        
+            </div>            
         </div>
-    );
+    )
+    
+
+    
     
 
 }

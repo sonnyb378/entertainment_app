@@ -1,5 +1,5 @@
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Main from "../../components/Layout/Main/Main";
 import Thumbnail from "../../components/Thumbnail/Thumbnail";
 
@@ -12,29 +12,42 @@ import { setCurrentUrl } from "../../app/store/slices/url";
 import { useAppContext } from "../../context/state";
 import { fadeScreen } from "../../lib/fadeScreen";
 import { IBookmarkData, selectBookmarkData } from "../../app/store/slices/bookmarks";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../../firebase";
+import { GetServerSideProps } from "next";
+import nookies, { parseCookies } from "nookies"
 
 const MyList: NextPageWithLayout = () => {
-    const user = useAppSelector<IAuthState>(selectAuth);  
+    // const user = useAppSelector<IAuthState>(selectAuth);  
+    // const {user, userLoading} = useUserStatus()
+    const [isRedirecting, setIsRedirecting] = useState(false)
     const router = useRouter();
     const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
+
+    const [user, loading] = useAuthState(auth);
     
     const { videoIsPlayed, showData } = useAppContext();
     
     const dispatch = useAppDispatch();
     
+    const cookies = parseCookies();
+
+    useEffect(() => {
+      if (isRedirecting) {
+        return;
+      }
+      if (!loading && !user && !cookies.token) {
+        router.replace("/signin", undefined, { shallow: true })
+        setIsRedirecting(true)
+      }
+    }, [user])
+
     useEffect(() => {
       dispatch(setCurrentUrl({
         currentUrl: router.pathname
       }))
     },[router.pathname, dispatch])
 
-    useEffect(() => {
-      if (!user || !user.accessToken) {
-        router.replace("/signin");
-      }
-    },[router, user])
-
-    
     useEffect(() => {
       fadeScreen(videoIsPlayed, () => {
         router.push(`/watch/${showData.id}?mt=${showData.media_type}`)
@@ -97,6 +110,28 @@ const MyList: NextPageWithLayout = () => {
     );
 
   };
+
+
+  export const getServerSideProps: GetServerSideProps = async (context:any) => {
+
+    const cookies = nookies.get(context)
+
+    if (!cookies.token) {
+      return {
+        redirect: {
+          destination: '/signin',
+          permanent: false,
+        },
+      }
+    } else {
+      return {
+        props: {}
+      }
+    }
+
+   
+
+  }
 
   
 

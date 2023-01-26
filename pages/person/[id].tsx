@@ -1,5 +1,5 @@
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Main from "../../components/Layout/Main/Main";
 import axios from "axios";
 import Image from "next/image"
@@ -15,6 +15,9 @@ import { GetServerSideProps } from "next";
 import { useAppContext } from "../../context/state";
 import { fadeScreen } from "../../lib/fadeScreen";
 import { IBookmarkData, selectBookmarkData } from "../../app/store/slices/bookmarks";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../../firebase";
+import nookies, { parseCookies } from "nookies"
 
 // import { fake_person_popular, fake_person_popular2 } from "../../model/fake_person_popular";
 
@@ -36,13 +39,27 @@ export interface IPerson {
 }
 
 const Person: NextPageWithLayout = (props:any) => {
-    const user = useAppSelector<IAuthState>(selectAuth); 
-    const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
+  const router = useRouter();
+  const [user, loading] = useAuthState(auth);
+  const { videoIsPlayed, showData } = useAppContext(); 
+  const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
+  const [isRedirecting, setIsRedirecting] = useState(false)
   
-    const router = useRouter();
-    const { videoIsPlayed, showData } = useAppContext(); 
+  const cookies = parseCookies();
+  
 
     const { data } = props;
+
+
+    useEffect(() => {
+      if (isRedirecting) {
+        return;
+      }
+      if (!loading && !user && !cookies.token) {
+        router.replace("/signin", undefined, { shallow: true })
+        setIsRedirecting(true)
+      }
+    }, [user])
 
     let movies: any = []
     let tvshows: any = []
@@ -203,27 +220,40 @@ const Person: NextPageWithLayout = (props:any) => {
 
   export const getServerSideProps: GetServerSideProps =  async (context:any) => {
 
-    const personID = context.params.id
+    const cookies = nookies.get(context)
 
-    const [reqPerson] = await Promise.all([
-      await axios.get(
-        `${process.env.NEXT_PUBLIC_TMDB_API_URL}person/${personID}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&append_to_response=combined_credits`,
-        {
-          headers: { "Accept-Encoding": "gzip,deflate,compress" } 
-        }
-        ).then(res => res.data),
-    ])
+    if (!cookies.token) {
+      return {
+        redirect: {
+          destination: '/signin',
+          permanent: false,
+        },
+      }
+    } else {
+      const personID = context.params.id
 
-    const [resPerson] = await Promise.all([
-      reqPerson
-    ])
+      const [reqPerson] = await Promise.all([
+        await axios.get(
+          `${process.env.NEXT_PUBLIC_TMDB_API_URL}person/${personID}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&append_to_response=combined_credits`,
+          {
+            headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+          }
+          ).then(res => res.data),
+      ])
 
-    return {
-        props: {
-            person_id: personID,
-            data: resPerson //resPerson //fake_person_popular
-        }
+      const [resPerson] = await Promise.all([
+        reqPerson
+      ])
+
+      return {
+          props: {
+              person_id: personID,
+              data: resPerson //resPerson //fake_person_popular
+          }
+      }
     }
+
+    
   }
 
   

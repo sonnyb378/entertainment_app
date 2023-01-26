@@ -17,8 +17,8 @@ const EpisodeCard:React.FC<IEpisodeCard> = ({ data }) => {
         <div className={`flex items-start justify-center p-2 rounded-md bg-[#40424A] my-2 border-4 border-[#40424A] relative
             ${ data.runtime && data.overview !== "" && "hover:cursor-pointer" }
             hover:border-4 hover:border-[#3F546E]
-        `}
-        data-testid="episode_card"
+            `}
+            data-testid="episode_card"
         >
             {
                 data.runtime && data.overview !== "" &&
@@ -38,7 +38,7 @@ const EpisodeCard:React.FC<IEpisodeCard> = ({ data }) => {
             <div className="image-container relative mr-[10px] w-[300px] h-[169px] border-0">
                 {
                     <Image 
-                        src={ data && data.still_path ?  `${ process.env.NEXT_PUBLIC_TMDB_IMAGE_PATH }${data.still_path}` : no_result}
+                        src={ data && data.still_path ?  `${ process.env.NEXT_PUBLIC_TMDB_IMAGE_PATH }${data.still_path}` : no_result }
                         layout="responsive"
                         width={300}
                         height={169}  
@@ -48,7 +48,7 @@ const EpisodeCard:React.FC<IEpisodeCard> = ({ data }) => {
                 }                
             </div>
 
-            <div className="flex flex-col items-start justify-center w-full">
+            <div className="flex flex-col items-start justify-center w-full h-[169px]">
                 <h1 className="text-lg text-[#61A5C3]">S.{data.season_number}-Ep. { data.episode_number} : { data.name } </h1>
                 <div className="flex items-center justify-start text-[12px] space-x-2">
                     <span>Air Date: {data.air_date}</span>

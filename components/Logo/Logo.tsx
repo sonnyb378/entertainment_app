@@ -5,10 +5,10 @@ import { useRouter } from "next/router";
 import logo from "../../assets/logo.svg"
 
 
-const Logo: React.FC = () => {
+const Logo: React.FC<{ urlPath: string}> = ({ urlPath}) => {
     const router = useRouter();
     const redirectHandler = () => {
-        router.replace("/");
+        router.replace(urlPath);
     }
     return (
         <div className="hover:cursor-pointer scale-[80%]

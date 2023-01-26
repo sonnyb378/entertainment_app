@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Main from '../components/Layout/Main/Main';
 import InputField from '../components/Form/InputField/InputField';
 import SigninBtn from '../components/Button/SignIn/SigninBtn';
@@ -9,9 +9,6 @@ import { NextPageWithLayout } from './page';
 import { ChevronDoubleRightIcon } from "@heroicons/react/24/solid";
 import { faq_list } from '../model/faq';
 import { useRouter } from "next/router"
-import { useAppSelector } from "../app/hooks";
-import { selectAuth } from "../app/store/slices/auth";
-import { IAuthState } from "../ts/states/auth_state";
 
 import tvframe from "../assets/tvframe.png";
 import download from "../assets/download.png";
@@ -19,32 +16,33 @@ import iphone from "../assets/iphone.png";
 import tablet from "../assets/tablet.png";
 import imac from "../assets/IMac_vector.png"; 
 import imac_gloss from "../assets/imac_gloss.png"; 
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase";
+import { GetServerSideProps } from "next";
 
-// const tvframe = require("../assets/tvframe.png");
-// const download = require("../assets/download.png");
-// const iphone = require("../assets/iphone.png");
-// const tablet = require("../assets/tablet.png");
-// const imac  = require("../assets/IMac_vector.png"); 
-// const imac_gloss = require("../assets/imac_gloss.png"); 
-
+import nookies, { parseCookies } from "nookies"
 
 const Home: NextPageWithLayout = () => {
 
-  // const [pageIsLoading, setPageIsLoading] = useState(true);
-  const user = useAppSelector<IAuthState>(selectAuth);
+  const [isRedirecting, setIsRedirecting] = useState(false)
+  const [user, loading] = useAuthState(auth);
   const router = useRouter();
+    
+  const cookies = parseCookies();
 
-  useEffect(() => {   
-    if (user && user.accessToken) {
-      router.replace("/movies");
-    } 
-  },[router, user]);
+  useEffect(() => {
+    if (isRedirecting) {
+      return;
+    }
+    if (!loading && user && cookies.token) {
+      router.replace("/movies", undefined, { shallow: true } )
+      setIsRedirecting(true)
+    }
+  }, [user])
   
   const getStartedHandler = () => {
     router.replace("/register");
   }
-
-  // if (pageIsLoading) return null
 
   return (
       <div className="flex flex-col items-center justify-start w-full" data-testid="homepage_container">      
@@ -134,8 +132,6 @@ const Home: NextPageWithLayout = () => {
             
           </section>
 
-          
-
       </div> 
   );
 };
@@ -154,3 +150,26 @@ Home.getLayout = (page) => {
       </Main>
   );
 };
+
+
+
+export const getServerSideProps: GetServerSideProps = async (context:any) => {
+
+  const cookies = nookies.get(context)
+
+  if (cookies.token) {
+    return {
+      redirect: {
+        destination: '/movies',
+        permanent: false,
+      },
+    }
+  } else {
+    return {
+      props: {}
+    }
+  }
+
+ 
+
+}

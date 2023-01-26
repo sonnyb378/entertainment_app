@@ -4,7 +4,7 @@ import { ArrowPathIcon } from "@heroicons/react/24/outline";
 const Spinner:React.FC = () => {
 
     return(
-        <div className="flex items-center justify-center" data-testid="spinner_container">
+        <div className="flex items-center justify-center h-[169px]" data-testid="spinner_container">
             <ArrowPathIcon className="w-[30px] h-[30px] text-white animate-spin" />
         </div>
     )

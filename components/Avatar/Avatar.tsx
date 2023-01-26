@@ -9,6 +9,7 @@ import { useAppDispatch } from "../../app/hooks";
 import { setAuthData } from "../../app/store/slices/auth";
 import { setCurrentUrl } from "../../app/store/slices/url";
 import { useRouter } from "next/router"
+import nookies from "nookies"
 
 export interface IAvatar {
     userInitial?: string
@@ -30,15 +31,11 @@ const Avatar: React.FC<IAvatar> = ({ userInitial }) => {
     const logoutHandler = () => {
         signOut(auth);
 
-        dispatch(setAuthData({
-            id: null,
-            accessToken: null,
-            expiresAt: null
-        }))
+        nookies.set(undefined, 'token', "", { path: '/' });
+
         dispatch(setCurrentUrl({
             currentUrl: "/"
         }))
-        router.replace("/")
     }
 
     const myListHandler = () => { 

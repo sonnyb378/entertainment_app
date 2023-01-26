@@ -19,7 +19,6 @@ interface ISearchResultProps {
     keyword: string;
 }
 
-
 const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
     const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
 
@@ -63,18 +62,6 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
                     data-testid="results_item_container" 
                     id="results_item_container"
                 >
-                    {
-                        // data.results && data.results.map((result:any, i:any) => {
-                        //     return (
-                        //         <SearchResultItem 
-                        //             key={i} 
-                        //             result={result} 
-                        //             bookmarkData={[...bookmarks.data]}
-                        //         /> 
-                        //     )                       
-                        // })
-                    }
-
                     
                     {
                         search_results.map((result, i) => {

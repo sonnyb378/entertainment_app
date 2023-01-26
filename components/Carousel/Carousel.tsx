@@ -6,11 +6,12 @@ import styles from "./Carousel.module.css"
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { useEffect, useRef, useState } from "react";
 import { IAuthState } from "../../ts/states/auth_state";
+import { User } from "firebase/auth";
 
 
 const Carousel: React.FC<{ 
     data:any[] | null, 
-    user:IAuthState, 
+    user:User | null | undefined, 
     maxItems:number,
     bookmarkData?:any[] | null,
     baseWidth?:number,
@@ -46,58 +47,64 @@ const Carousel: React.FC<{
     }, [])
 
     const resize_ob = new ResizeObserver(function(entries) {
-        let rect = entries[0].contentRect;  
-        let width = rect.width;
-        
-        const track = document.getElementById(`${target}_track`)
-        const carousel_ul = document.getElementById(`${target}_carousel_ul`)
-        const li_thumbnail = document.querySelectorAll(`.${target}_carousel_li`)
 
-        const visibleThumbnail = Math.floor((width / THUMBNAIL_BASEWIDTH));
-        let singleItemWidth = Math.floor(width / visibleThumbnail);
-        const newTrackWidth = Math.floor((singleItemWidth * visibleThumbnail) - 100)
-
-        if (track) {
-          track.style.width = `${newTrackWidth}px`
-        } 
-        
-        li_thumbnail.forEach((item) => {
-            (item as HTMLDivElement).style.width = `${Math.floor(newTrackWidth / visibleThumbnail)}px`
-        })
-
-        if (carousel_ul) {
-            if (currentIndex > 0) {
-                const totalDisplayed = visibleThumbnail * (currentIndex + 1);
-                let itemsRemaining = MAX_ITEMS - totalDisplayed
-
-                if (itemsRemaining < 0) {
-                    itemsRemaining = MAX_ITEMS - (visibleThumbnail * currentIndex)
-                }
-
-                singleItemWidth = Math.floor(newTrackWidth / visibleItem);
-                const widthOffset = (singleItemWidth - 0) * visibleItem;
-
-                if ((currentIndex + 1) === maxIndex && itemsRemaining) {
-                    const additionalTrackWidth = Math.floor( singleItemWidth * Math.abs(itemsRemaining) )
-                    carousel_ul.style.transform = `translateX(-${Math.floor(((currentIndex-1) * widthOffset) + (additionalTrackWidth ))}px)`;
-                } else {
-                    carousel_ul.style.transform = `translateX(-${Math.floor((currentIndex) * widthOffset)}px)`;
-                }
-            } else {
-                carousel_ul.style.transform = `translateX(-${0}px)`;
+        window.requestAnimationFrame(() => {
+            if (!Array.isArray(entries) || !entries.length) {
+              return;
             }
-        }
+            let rect = entries[0].contentRect;  
+            let width = rect.width;
+            
+            const track = document.getElementById(`${target}_track`)
+            const carousel_ul = document.getElementById(`${target}_carousel_ul`)
+            const li_thumbnail = document.querySelectorAll(`.${target}_carousel_li`)
 
-        if (currentIndex >= maxIndex) {
-            const newIndex = maxIndex - 1
-            isMounted.current && setCurrentIndex(newIndex < 0 ? 0 : maxIndex - 1)
-        }
-       
-        if (isMounted.current) {
-            setVisibleItem(visibleThumbnail);
-            setTranslateWidth(newTrackWidth)
-            setMaxIndex(Math.ceil(MAX_ITEMS / visibleThumbnail))
-        }
+            const visibleThumbnail = Math.floor((width / THUMBNAIL_BASEWIDTH));
+            let singleItemWidth = Math.floor(width / visibleThumbnail);
+            const newTrackWidth = Math.floor((singleItemWidth * visibleThumbnail) - 100)
+
+            if (track) {
+            track.style.width = `${newTrackWidth}px`
+            } 
+            
+            li_thumbnail.forEach((item) => {
+                (item as HTMLDivElement).style.width = `${Math.floor(newTrackWidth / visibleThumbnail)}px`
+            })
+
+            if (carousel_ul) {
+                if (currentIndex > 0) {
+                    const totalDisplayed = visibleThumbnail * (currentIndex + 1);
+                    let itemsRemaining = MAX_ITEMS - totalDisplayed
+
+                    if (itemsRemaining < 0) {
+                        itemsRemaining = MAX_ITEMS - (visibleThumbnail * currentIndex)
+                    }
+
+                    singleItemWidth = Math.floor(newTrackWidth / visibleItem);
+                    const widthOffset = (singleItemWidth - 0) * visibleItem;
+
+                    if ((currentIndex + 1) === maxIndex && itemsRemaining) {
+                        const additionalTrackWidth = Math.floor( singleItemWidth * Math.abs(itemsRemaining) )
+                        carousel_ul.style.transform = `translateX(-${Math.floor(((currentIndex-1) * widthOffset) + (additionalTrackWidth ))}px)`;
+                    } else {
+                        carousel_ul.style.transform = `translateX(-${Math.floor((currentIndex) * widthOffset)}px)`;
+                    }
+                } else {
+                    carousel_ul.style.transform = `translateX(-${0}px)`;
+                }
+            }
+
+            if (currentIndex >= maxIndex) {
+                const newIndex = maxIndex - 1
+                isMounted.current && setCurrentIndex(newIndex < 0 ? 0 : maxIndex - 1)
+            }
+        
+            if (isMounted.current) {
+                setVisibleItem(visibleThumbnail);
+                setTranslateWidth(newTrackWidth)
+                setMaxIndex(Math.ceil(MAX_ITEMS / visibleThumbnail))
+            }
+        });        
 
     });    
 

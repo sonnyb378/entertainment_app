@@ -9,33 +9,51 @@ import { NextPageWithLayout } from "./page";
 import { useRouter } from "next/router";
 import { auth, googleProvider } from "../firebase";
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { selectAuth, setAuthData } from "../app/store/slices/auth";
-import { IAuthState } from "../ts/states/auth_state";
+import { GetServerSideProps } from "next";
 
 import googleLogo from "../assets/google_logo.svg";
+import { useAuthState } from "react-firebase-hooks/auth";
+
+import nookies, {parseCookies} from "nookies"
 
 interface SignInErrors {
   error: string;
 }
 
-const Signin: NextPageWithLayout = () => {
-    const user = useAppSelector<IAuthState>(selectAuth);
+const Signin: NextPageWithLayout = (props) => {
+
+    const COOKIES_MAX_AGE = 60 * 60 * 24 * 30; // 30days
+    const [ isRedirecting, setIsRedirecting] = useState(false);
+    const [user, loading] = useAuthState(auth);
+
     const router = useRouter();
-    const dispatch = useAppDispatch();
 
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [email, setEmail] = useState("demo@demo.com");
     const [password, setPassword] = useState("demodemo");
     const [signInErrors, setSignInErrors] = useState<SignInErrors[]>([]);
 
-    // const [rememberme, setRememberMe] = useState(false);
+    const cookies = parseCookies()
+    
 
     useEffect(() => {
-      if (user && user.accessToken) {
-            router.replace("/movies");
-          }
-    },[router, user])
+      // console.log("signin useEffect")
+      if (typeof window !== 'undefined') {
+        const mainComponent = document.getElementById("main_component");
+        mainComponent!.style.scale = "100%";
+        mainComponent!.style.opacity = "100";
+        mainComponent!.style.transition = "all 1s";
+        mainComponent!.style.overflow = "hidden";
+      }
+      if (isRedirecting) {
+        return;
+      }
+      if (!loading && user && cookies.token) {
+        router.replace("/movies", undefined, { shallow: true } )
+        setIsRedirecting(true)
+      }
+    }, [user])
+
 
     const signinHandler = () => {
       let signInOk = true; 
@@ -68,14 +86,8 @@ const Signin: NextPageWithLayout = () => {
           user.getIdTokenResult()
           .then((result) => {
               setIsSubmitted(false);
-              dispatch(setAuthData({
-                id: result.claims.user_id,
-                accessToken: result.token,
-                expiresAt: result.expirationTime
-              }));
-          }).finally(() => {
-              router.replace("./movies")
-          })          
+              nookies.set(undefined, 'token', result.token, { maxAge:COOKIES_MAX_AGE, path: '/' });
+          })       
         })
         .catch((error) => {
             setIsSubmitted(false);
@@ -86,11 +98,11 @@ const Signin: NextPageWithLayout = () => {
             // auth/invalid-email
             setSignInErrors([{error: "Please check your email and password" }]);
         });
+
       } else {        
         setIsSubmitted(false);
       }       
     }
-
     const emailHandler = (e:React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
     }
@@ -100,7 +112,6 @@ const Signin: NextPageWithLayout = () => {
     const createAccountHandler = () => {
         router.push("./register");
     }
-
     const signInWithGoogleHandler = async () => {
       // console.log("sign in with google handler");
       // setSignInErrors([]);
@@ -114,30 +125,27 @@ const Signin: NextPageWithLayout = () => {
           return userData.user.getIdTokenResult();        
         }).then((user:any) => {          
           return user;
-        }).catch(() => {
-
+        }).catch((e) => {
         })
 
+      if (!result) return;
+
       if (result.token) {
-          dispatch(setAuthData({
-            id: result.claims.user_id,
-            accessToken: result.token,
-            expiresAt: result.expirationTime
-          }));
-          router.replace("./movies")
+        nookies.set(undefined, 'token', result.token, { maxAge:COOKIES_MAX_AGE, path: '/' });
       }
 
       
     }
 
+
     return (
-      <div className="flex flex-col items-center justify-start w-full h-screen
+      <div className={`flex flex-col items-center justify-start w-full h-screen
       sm:w-[80%]
       md:w-[70%]
       lg:w-[60%]
       xl:w-[50%]
       2xl:w-[40%]
-      "
+      `}
       data-testid="signin_container">
         <div className="flex flex-col items-center justify-start w-full">
           <section className="flex flex-col items-center justify-center w-full">
@@ -226,3 +234,26 @@ const Signin: NextPageWithLayout = () => {
         </Main>
     );
   };
+
+
+  export const getServerSideProps: GetServerSideProps = async (context:any) => {
+
+    const cookies = nookies.get(context)
+
+    if (cookies.token) {
+      return {
+        redirect: {
+          destination: '/movies',
+          permanent: false,
+        },
+      }
+    } else {
+      return {
+        props: {
+          token: cookies.token || null 
+        }
+      }
+    }
+
+
+  }

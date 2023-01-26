@@ -1,49 +1,62 @@
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Main from "../../components/Layout/Main/Main";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Info from "../../components/Info/Info";
 import Spinner from "../../components/Spinner/Spinner";
 import CustomBtn from "../../components/Button/CustomBtn/CustomBtn";
-// import Carousel from "../../components/Carousel/Carousel";
-
-const Carousel = dynamic(() => import("../../components/Carousel/Carousel"), {
-  loading: () => <Spinner />
-})
 
 import { NextPageWithLayout } from "../page";
 import { useRouter } from "next/router";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { IAuthState } from "../../ts/states/auth_state";
-import { selectAuth } from "../../app/store/slices/auth";
 import { useMovieDetail } from "../../lib/hooks/useMovieDetail";
 import { useAppContext } from "../../context/state";
 import { ArrowPathIcon, PlayCircleIcon, PlusCircleIcon, MinusCircleIcon, ChevronLeftIcon } from "@heroicons/react/24/outline";
 import { fadeScreen } from "../../lib/fadeScreen";
 import { IBookmarkData, selectBookmarkData, setDataBookmarks, removeDataBookmarks } from "../../app/store/slices/bookmarks";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../../firebase";
+import nookies, { parseCookies } from "nookies"
 
+const Carousel = dynamic(() => import("../../components/Carousel/Carousel"), {
+  loading: () => <Spinner />
+})
+
+// import { IAuthState } from "../../ts/states/auth_state";
+// import { selectAuth } from "../../app/store/slices/auth";
 // import { movieData } from "../../model/fake_detail";
 
+
 const Movie: NextPageWithLayout = (props:any) => {
-  const user = useAppSelector<IAuthState>(selectAuth);
-  const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
-  
   const router = useRouter();
-
-  let isBookmarked = false;
-
-  const { setVideoIsPlayed, videoIsPlayed, showData } = useAppContext()  
-
   const dispatch = useAppDispatch() 
-
+  const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
+  const [user, loading] = useAuthState(auth);
+  const [isRedirecting, setIsRedirecting] = useState(false);
+  const cookies = parseCookies();
+  
+  let isBookmarked = false;
+  let recommendationsArr:any[] = [];
+  
+  const { setVideoIsPlayed, videoIsPlayed, showData } = useAppContext()  
   const { movie_detail: data, isLoading, isError } = useMovieDetail(props.movie_id); 
 
   // const isLoading = false;
   // const isError = undefined;
   // const data = movieData
 
-  let recommendationsArr:any[] = [];
+  useEffect(() => {
+    if (isRedirecting) {
+      return;
+    }
+    if (!loading && !user && !cookies.token) {
+      router.replace("/signin", undefined, { shallow: true })
+      setIsRedirecting(true)
+    }
+  }, [user])
+
+
   
   if (data) {
     data.recommendations && data.recommendations.results && data.recommendations.results.slice(0,20).map((item:any) => {
@@ -148,17 +161,17 @@ const Movie: NextPageWithLayout = (props:any) => {
                     sm:space-y-0 sm:space-x-2 sm:flex-row
                     lg:space-x-2">
                       {
-                        user && user.accessToken &&
+                        user &&
                           <CustomBtn title="Play" Icon={PlayCircleIcon} onClickHandler={() => setVideoIsPlayed(true, {...data, media_type: "movie"})} />
                       }
                       {
 
                         !isBookmarked ? 
-                          user && user.accessToken && <CustomBtn title="Add to List" Icon={PlusCircleIcon} onClickHandler={() => 
+                          user && <CustomBtn title="Add to List" Icon={PlusCircleIcon} onClickHandler={() => 
                             saveBookmark(data)                          
                         } />
                         :
-                          user && user.accessToken &&  <CustomBtn title="Remove from List" Icon={MinusCircleIcon} onClickHandler={() => 
+                          user  &&  <CustomBtn title="Remove from List" Icon={MinusCircleIcon} onClickHandler={() => 
                             deleteBookmark(data.id)
                           } />
 
@@ -206,7 +219,7 @@ const Movie: NextPageWithLayout = (props:any) => {
                   </section>
               }
               {
-                user && user.accessToken &&
+                user &&
                   <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]" data-testid="bookmark_container">
                     <h1 className="ml-[50px] text-[20px]">My List</h1>
                     
@@ -253,11 +266,25 @@ const Movie: NextPageWithLayout = (props:any) => {
   };
 
   export async function getServerSideProps(context:any) {
-    return {
+
+    const cookies = nookies.get(context)
+
+    if (!cookies.token) {
+      return {
+        redirect: {
+          destination: '/signin',
+          permanent: false,
+        },
+      }
+    } else {
+      return {
         props: {
             movie_id: context.params.id
         }
+      }
     }
+
+   
   }
 
 

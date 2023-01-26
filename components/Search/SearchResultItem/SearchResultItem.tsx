@@ -4,6 +4,8 @@ import { IAuthState } from "../../../ts/states/auth_state";
 import { useAppSelector } from "../../../app/hooks";
 import { selectAuth } from "../../../app/store/slices/auth";
 import Thumbnail from "../../Thumbnail/Thumbnail";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../../../firebase";
 
 interface IKnownFor {
     id: number,
@@ -45,7 +47,8 @@ const SearchResultItem: React.FC<{
         result,
         bookmarkData
     }) => {
-    const user = useAppSelector<IAuthState>(selectAuth);
+    
+    const [user, loading] = useAuthState(auth);
 
     return(
         <li className="flex flex-col items-center justify-center cursor-pointer relative transition-all duration-100 p-0.5 border-0 w-6/12

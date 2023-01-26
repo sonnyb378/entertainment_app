@@ -11,26 +11,37 @@ import { useRouter } from "next/router";
 import { useAppSelector } from "../../app/hooks";
 import { IAuthState } from "../../ts/states/auth_state";
 import { selectAuth } from "../../app/store/slices/auth";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../../firebase";
+import nookies, { parseCookies} from "nookies"
 
 
 const WatchShow: NextPageWithLayout<{ data: any }> = ({ data }) => {
-    const user = useAppSelector<IAuthState>(selectAuth); 
+
+    const [isRedirecting, setIsRedirecting] = useState(false);
+    const [user, loading] = useAuthState(auth);
     const router = useRouter()
     const [showControl, setShowControls] = useState(true)
     const { setVideoIsPlayed } = useAppContext()
     
     const { info } = data
 
+    const cookies = parseCookies()
+
+    useEffect(() => {
+        if (isRedirecting) {
+            return;
+        }
+        if (!loading && !user && !cookies.token) {
+            router.replace("/signin", undefined, { shallow: true })
+            setIsRedirecting(true)
+        }
+    }, [user])
+
     useEffect(() => {
         setVideoIsPlayed(false, {})
     }, [])
-
-    useEffect(() => {
-        if (!user || !user.accessToken) {
-            router.push("/signin");
-        }
-    }, [router, user])
-
+    
     const videoControlsHandler = (callback: (...args: [any]) => void, delay: number) => {
         let timer: NodeJS.Timeout;
         return function (...args: [any]) {
@@ -51,7 +62,9 @@ const WatchShow: NextPageWithLayout<{ data: any }> = ({ data }) => {
                 () => {
                     setShowControls(!showControl)
                 }, showControl ? 3000:0 ) } 
-            className={`flex flex-col items-start justify-start w-full h-[100%] relative border-0 bg-black" data-testid="show_container`}>
+            className={`flex flex-col items-start justify-start w-full h-[100%] relative border-0 bg-black`}
+            data-testid="show_container"
+            >
 
             <div
                 className="flex relative z-[1000] w-full h-screen items-center justify-center">
@@ -116,27 +129,40 @@ WatchShow.getLayout = (page) => {
 
   export const  getServerSideProps: GetServerSideProps = async (context:any) => {
     
-    const show_id = context.params.id;
-    let url: string = `${context.query.mt}/${show_id}`
+    const cookies = nookies.get(context)
 
-    if (context.query.mt === "tv" && context.query.s) {
-        url = `tv/${context.query.t}/season/${context.query.s}/episode/${context.query.e}`
-    }
+    if (!cookies.token) {
+        return {
+            redirect: {
+                destination: '/signin',
+                permanent: false,
+            },
+        }
+    } else {
+        const show_id = context.params.id;
+        let url: string = `${context.query.mt}/${show_id}`
     
-    const [reqShow] = await Promise.all([
-        await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}${url}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US`, {
-            headers: { "Accept-Encoding": "gzip,deflate,compress" } 
-          }).then(res => res.data)
-    ]) 
-    const [resShow] = await Promise.all([
-        reqShow
-    ])
-
-    return {
-        props: {
-            data: {
-                info: { ...resShow },
+        if (context.query.mt === "tv" && context.query.s) {
+            url = `tv/${context.query.t}/season/${context.query.s}/episode/${context.query.e}`
+        }
+        
+        const [reqShow] = await Promise.all([
+            await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}${url}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US`, {
+                headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+              }).then(res => res.data)
+        ]) 
+        const [resShow] = await Promise.all([
+            reqShow
+        ])
+    
+        return {
+            props: {
+                data: {
+                    info: { ...resShow },
+                }
             }
         }
     }
+
+    
   }
