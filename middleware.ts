@@ -8,7 +8,6 @@ export async function middleware(req: NextRequest) {
   if (isPathProtected) {
     if (!req.cookies.get("token")) {
       const url = new URL(`/signin`, req.url);
-    //   url.searchParams.set("callbackUrl", pathname);
       return NextResponse.redirect(url);
     }
   }
