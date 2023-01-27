@@ -137,7 +137,7 @@ const Carousel: React.FC<{
             setTranslateWidth(newTrackWidth)
             setMaxIndex(Math.ceil(MAX_ITEMS / visibleThumbnail))
         }    
-    }, [MAX_ITEMS, target, THUMBNAIL_BASEWIDTH ])
+    }, [])
 
     const prevHandler = () => {
         if (currentIndex <= 0) return     

@@ -24,7 +24,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { useTVDetail } from "../../lib/hooks/useTVDetail";
 import { useAppContext } from "../../context/state";
 import { ArrowPathIcon, PlusCircleIcon, MinusCircleIcon, ChevronLeftIcon } from "@heroicons/react/24/outline";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetStaticPaths, GetStaticProps } from "next";
 import { fadeScreen } from "../../lib/fadeScreen";
 import { IBookmarkData, removeDataBookmarks, selectBookmarkData, setDataBookmarks } from "../../app/store/slices/bookmarks";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -50,8 +50,9 @@ const TV: NextPageWithLayout = (props:any) => {
   
   const cookies = parseCookies();
 
-  const { tv_detail: data, isLoading, isError } = useTVDetail(props.tv_id); 
-  
+  // const { tv_detail: data, isLoading, isError } = useTVDetail(props.tv_id); 
+  const { data } = props;
+
   // const isLoading = false;
   // const isError = undefined;
   // const data = tvData
@@ -61,12 +62,10 @@ const TV: NextPageWithLayout = (props:any) => {
       return;
     }
     if (!loading && !user && !cookies.token) {
-      router.replace("/signin", undefined, { shallow: true })
+      router.replace("/signin")
       setIsRedirecting(true)
     }
   }, [user])
-
-
 
 
   let isBookmarked = false;
@@ -133,18 +132,18 @@ const TV: NextPageWithLayout = (props:any) => {
     )
   }
     
-    if (isError) return <div>Error occured while fetching TV details. Please try again.</div>
+    // if (isError) return <div>Error occured while fetching TV details. Please try again.</div>
 
     return (
       <div className="flex flex-col items-start justify-center w-full overflow-hidden pb-[100px] -mt-[4px]" data-testid="tv_container">
         {
-            isLoading && <div className="flex items-center justify-start w-full p-6" data-testid="loading_container">
-                <ArrowPathIcon className="w-[30px] h-[30px] animate-spin mr-2" />
-                <span>Loading</span>
-            </div>
+            // isLoading && <div className="flex items-center justify-start w-full p-6" data-testid="loading_container">
+            //     <ArrowPathIcon className="w-[30px] h-[30px] animate-spin mr-2" />
+            //     <span>Loading</span>
+            // </div>
         }
         {
-          !isLoading && data && 
+          data && 
           <section className="flex flex-col items-start justify-center w-full p-0">
             
             <section className={`flex flex-1 flex-col items-start justify-center w-full border-0 relative h-[100%]
@@ -358,28 +357,53 @@ const TV: NextPageWithLayout = (props:any) => {
 
   };
 
-  export const  getServerSideProps: GetServerSideProps = async (context:any) => {
-    
-    const tvID = context.params.id;
-    const cookies = nookies.get(context)
 
-    if (!cookies.token) {
-      return {
-        redirect: {
-          destination: '/signin',
-          permanent: false,
-        },
-      }
-    } else {
-      return {
-        props: {
-            tv_id: tvID
+
+   export const getStaticPaths: GetStaticPaths = async () => {
+
+    const [reqTrending] = await Promise.all([
+      await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}trending/tv/day?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}`, {
+        headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+      }).then(res => res.data)
+    ])
+
+    const [resTrending] = await Promise.all([
+      reqTrending
+    ])
+
+    const paths = resTrending.results.map((tv: any) => ({
+      params: { id: tv.id.toString() },
+    }))
+
+    return {
+      paths,
+      fallback: "blocking"
+    }
+  }
+
+  export const  getStaticProps: GetStaticProps = async (context:any) => {
+
+    const tv_id = context.params.id;
+
+    const [reqTVShow] = await Promise.all([
+      await axios.get(
+        `${process.env.NEXT_PUBLIC_TMDB_API_URL}tv/${tv_id}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&append_to_response=recommendations,credits,season/1`,
+        {
+          headers: { "Accept-Encoding": "gzip,deflate,compress" } 
         }
-     }
+        ).then(res => res.data),
+    ])
+
+    const [resTVShow] = await Promise.all([
+      reqTVShow
+    ])
+
+    return {
+      props: {
+          data: resTVShow
+      }
     }
 
-
-   
   }
 
 

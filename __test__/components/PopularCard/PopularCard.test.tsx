@@ -9,6 +9,7 @@ import * as React from "react";
 import * as AppContext from '../../../context/state';
 import { removeDataBookmarks, setDataBookmarks } from '../../../app/store/slices/bookmarks'
 import { useRouter } from "next/router"
+import { User } from 'firebase/auth'
 
 
 jest.mock("../../../app/store/slices/bookmarks", () => ({
@@ -53,10 +54,8 @@ describe("<PopularCard />", () => {
 
     it("must render <PopularCard />", () => {
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = fake_popular[0];
         render(<PopularCard 
             visibleItems={3}
@@ -72,10 +71,8 @@ describe("<PopularCard />", () => {
     it("must render <PopularCard /> with the <BackdropImage /> component", () => {
        
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = { ...fake_popular[0] };
         render(<PopularCard 
             visibleItems={3}
@@ -94,10 +91,8 @@ describe("<PopularCard />", () => {
     it("must render <PopularCard /> with the <PosterImage /> component", () => {        
         
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = { ...fake_popular[0], backdrop_path: null };
         render(<PopularCard 
             visibleItems={3}
@@ -116,10 +111,8 @@ describe("<PopularCard />", () => {
     it("must render <PopularCard /> with the <MediaTypeShow /> component", () => {        
         
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = { ...fake_popular[0] };
         render(<PopularCard 
             visibleItems={3}
@@ -143,10 +136,8 @@ describe("<PopularCard />", () => {
         jest.spyOn(AppContext, 'useAppContext').mockImplementation(mockContext);
 
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = { ...fake_popular[0] };
         const { debug, container } = render(<PopularCard 
             visibleItems={3}
@@ -186,10 +177,8 @@ describe("<PopularCard />", () => {
         jest.spyOn(AppContext, 'useAppContext').mockImplementation(mockContext);
 
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = { ...fake_popular[0] };
         const { debug, container } = render(<PopularCard 
             visibleItems={3}
@@ -222,10 +211,8 @@ describe("<PopularCard />", () => {
         jest.spyOn(AppContext, 'useAppContext').mockImplementation(mockContext);
 
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = { ...fake_popular[0] };
         const { debug, container } = render(<PopularCard 
             visibleItems={3}
@@ -263,10 +250,8 @@ describe("<PopularCard />", () => {
         jest.spyOn(AppContext, 'useAppContext').mockImplementation(mockContext);
 
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = { ...fake_popular[0] };
         const { debug, container } = render(<PopularCard 
             visibleItems={3}
@@ -288,10 +273,8 @@ describe("<PopularCard />", () => {
     it("must render <PlusIcon />", () => {
        
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = { ...fake_popular[0] };
 
         const { debug, container } = render(<PopularCard 
@@ -311,10 +294,8 @@ describe("<PopularCard />", () => {
     it("must render <CheckIcon />", () => {
         
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = { ...fake_popular[0] };
         const { debug, container } = render(<PopularCard 
             visibleItems={3}
@@ -334,10 +315,8 @@ describe("<PopularCard />", () => {
     it("must trigger add Bookmark button", async () => {
 
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = { ...fake_popular[0] };
 
         const dispatch = useAppDispatch as jest.Mock;
@@ -367,10 +346,8 @@ describe("<PopularCard />", () => {
     it("must trigger remove Bookmark button", async () => {
 
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = { ...fake_popular[0] };
 
         const dispatch = useAppDispatch as jest.Mock;
@@ -406,10 +383,8 @@ describe("<PopularCard />", () => {
         router.mockReturnValue(mockRouter);
 
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = { ...fake_popular[0] };
         const { debug, container } = render(<PopularCard 
             visibleItems={3}

@@ -35,7 +35,7 @@ const Home: NextPageWithLayout = () => {
       return;
     }
     if (!loading && user && cookies.token) {
-      router.replace("/movies", undefined, { shallow: true } )
+      router.replace("/movies")
       setIsRedirecting(true)
     }
   }, [user])

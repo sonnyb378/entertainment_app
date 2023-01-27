@@ -38,7 +38,7 @@ const Search: NextPageWithLayout = () => {
         return;
       }
       if (!loading && !user && !cookies.token) {
-        router.replace("/signin", undefined, { shallow: true })
+        router.replace("/signin")
         setIsRedirecting(true)
       }
     }, [user])
@@ -100,25 +100,25 @@ const Search: NextPageWithLayout = () => {
   };
 
 
-  export const getServerSideProps: GetServerSideProps = async (context:any) => {
+  // export const getServerSideProps: GetServerSideProps = async (context:any) => {
 
-    const cookies = nookies.get(context)
+  //   const cookies = nookies.get(context)
 
-    if (!cookies.token) {
-      return {
-        redirect: {
-          destination: '/signin',
-          permanent: false,
-        },
-      }
-    } else {
-      return {
-        props: {}
-      }
-    }
+  //   if (!cookies.token) {
+  //     return {
+  //       redirect: {
+  //         destination: '/signin',
+  //         permanent: false,
+  //       },
+  //     }
+  //   } else {
+  //     return {
+  //       props: {}
+  //     }
+  //   }
 
    
 
-  }
+  // }
 
 

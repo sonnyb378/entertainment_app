@@ -8,7 +8,7 @@ import CustomBtn from "../components/Button/CustomBtn/CustomBtn";
 import dynamic from "next/dynamic";
 import Spinner from "../components/Spinner/Spinner";
 
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { useAuthState } from "react-firebase-hooks/auth";
 import nookies, { parseCookies } from "nookies"
@@ -48,7 +48,7 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
         return;
       }
       if (!loading && !user && !cookies.token) {
-        router.replace("/signin", undefined, { shallow: true })
+        router.replace("/signin")
         setIsRedirecting(true)
       }
     }, [user])
@@ -358,18 +358,8 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
   // }
 
 
-export const getServerSideProps: GetServerSideProps = async (context:any) => {
-
-  const cookies = nookies.get(context)
-
-    if (!cookies.token) {
-      return {
-        redirect: {
-          destination: '/signin',
-          permanent: false,
-        },
-      }
-    } else {
+export const getStaticProps: GetStaticProps = async () => {
+    
       const [reqTrending, reqPopular] = await Promise.all([
         await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}trending/tv/day?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}`, {
           headers: { "Accept-Encoding": "gzip,deflate,compress" } 
@@ -393,7 +383,7 @@ export const getServerSideProps: GetServerSideProps = async (context:any) => {
         },
         // revalidate: 10,
       }
-    }
+    
 
 }
 

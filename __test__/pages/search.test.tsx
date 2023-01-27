@@ -7,7 +7,11 @@ import useSWRInfinite from 'swr/infinite'
 import { useRouter } from "next/router"
 import { removeDataBookmarks, setDataBookmarks } from '../../app/store/slices/bookmarks'
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAuthState } from "react-firebase-hooks/auth";
 
+jest.mock("react-firebase-hooks/auth", () => ({
+    useAuthState: jest.fn()
+}))
 
 jest.mock("next/router", () => ({
     __esModule: true,
@@ -58,12 +62,13 @@ describe("<Search />", () => {
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
         .mockReturnValue({
-            accessToken: "123"
-        })
-        .mockReturnValue({
             currentUrl: "/movies"
         })
         .mockReturnValue({ data: [bookmarkData] })
+
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+        
     })
 
     afterEach(() => {
@@ -232,8 +237,7 @@ describe("<Search />", () => {
             push: jest.fn()
         }
         router.mockReturnValue(mockRouter)
-
-
+        
         const { debug, container } = render(<Search />)
         const search_container = within(container).getByTestId("search_container")
         expect(search_container).toBeInTheDocument();

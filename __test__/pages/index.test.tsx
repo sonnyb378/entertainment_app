@@ -8,6 +8,19 @@ import Home from "../../pages/index"
 import { useRouter } from "next/router"
 // import { selectAuth } from "../../app/store/slices/auth";
 import { useAppSelector } from "../../app/hooks";
+import { useAuthState } from "react-firebase-hooks/auth";
+
+jest.mock('nookies', () => (
+    {
+        __esModule: true,
+        parseCookies: jest.fn().mockReturnValue({
+            token: "sometokenvalue"
+        })
+    }
+))
+jest.mock("react-firebase-hooks/auth", () => ({
+    useAuthState: jest.fn()
+}))
 
 jest.mock("next/router", () => ({
     __esModule: true,
@@ -21,6 +34,9 @@ jest.mock("../../app/hooks", () => ({
     useAppSelector: jest.fn()
 }))
 jest.mock("../../app/store/slices/auth", () => ({}))
+
+
+
 
 // const searchSection = function(parent: string, searchFor?: string) {
 //     let section: any
@@ -51,17 +67,15 @@ describe("Homepage", () => {
         const setState = jest.fn();
         jest.spyOn(React, "useState")
         .mockImplementationOnce(() => [false, setState])
+
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([false, false]);
         
         const router = useRouter as jest.Mock;
         const mockRouter = {
             asPath: jest.fn()
         }
         router.mockReturnValue(mockRouter)
-
-        const mockAppSelector = useAppSelector as jest.Mock
-        mockAppSelector.mockReturnValue({
-            accessToken: null
-        })
 
         render(<Home />)      
         const parent_container = screen.getByTestId("homepage_container")
@@ -70,21 +84,22 @@ describe("Homepage", () => {
     })
 
     it("must redirect to /movies if user is logged in", () => {  
+
+
         const setState = jest.fn();
         jest.spyOn(React, "useState")
         .mockImplementationOnce(() => [true, setState])
+
         const router = useRouter as jest.Mock;
         const mockRouter = {
-            replace: jest.fn()
+            push: jest.fn()
         }
         router.mockReturnValue(mockRouter)
-        const mockAppSelector = useAppSelector as jest.Mock
-        mockAppSelector.mockReturnValue({
-            accessToken: "123"
-        })
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
 
         render(<Home />)
-        expect(mockRouter.replace).toHaveBeenCalledWith("/movies")
+        expect(mockRouter.push).toHaveBeenCalledWith("/movies")
     })
 
     it("must render 'Getting Started' section", () => {  
@@ -92,10 +107,8 @@ describe("Homepage", () => {
         jest.spyOn(React, "useState")
         .mockImplementationOnce(() => [false, setState])
         
-        const mockAppSelector = useAppSelector as jest.Mock
-        mockAppSelector.mockReturnValue({
-            accessToken: null
-        })
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([false, false]);
 
         render(<Home />)      
         const parent_container = screen.getByTestId("homepage_container")
@@ -110,10 +123,8 @@ describe("Homepage", () => {
         jest.spyOn(React, "useState")
         .mockImplementationOnce(() => [false, setState])
         
-        const mockAppSelector = useAppSelector as jest.Mock
-        mockAppSelector.mockReturnValue({
-            accessToken: null
-        })
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([false, false]);
 
         const router = useRouter as jest.Mock;
         const mockRouter = {
@@ -137,10 +148,8 @@ describe("Homepage", () => {
         jest.spyOn(React, "useState")
         .mockImplementationOnce(() => [false, setState])
         
-        const mockAppSelector = useAppSelector as jest.Mock
-        mockAppSelector.mockReturnValue({
-            accessToken: null
-        })
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([false, false]);
 
         render(<Home />)      
         const parent_container = screen.getByTestId("homepage_container")
@@ -155,10 +164,8 @@ describe("Homepage", () => {
         jest.spyOn(React, "useState")
         .mockImplementationOnce(() => [false, setState])
         
-        const mockAppSelector = useAppSelector as jest.Mock
-        mockAppSelector.mockReturnValue({
-            accessToken: null
-        })
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([false, false]);
 
         render(<Home />)      
         const parent_container = screen.getByTestId("homepage_container")
@@ -173,10 +180,8 @@ describe("Homepage", () => {
         jest.spyOn(React, "useState")
         .mockImplementationOnce(() => [false, setState])
         
-        const mockAppSelector = useAppSelector as jest.Mock
-        mockAppSelector.mockReturnValue({
-            accessToken: null
-        })
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([false, false]);
 
         render(<Home />)      
         const parent_container = screen.getByTestId("homepage_container")
@@ -191,10 +196,8 @@ describe("Homepage", () => {
         jest.spyOn(React, "useState")
         .mockImplementationOnce(() => [false, setState])
         
-        const mockAppSelector = useAppSelector as jest.Mock
-        mockAppSelector.mockReturnValue({
-            accessToken: null
-        })
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([false, false]);
 
         render(<Home />)      
         const parent_container = screen.getByTestId("homepage_container")

@@ -18,6 +18,8 @@ import { IBookmarkData, selectBookmarkData, setDataBookmarks, removeDataBookmark
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
 import nookies, { parseCookies } from "nookies"
+import axios from "axios";
+import { GetStaticPaths } from "next";
 
 const Carousel = dynamic(() => import("../../components/Carousel/Carousel"), {
   loading: () => <Spinner />
@@ -40,7 +42,9 @@ const Movie: NextPageWithLayout = (props:any) => {
   let recommendationsArr:any[] = [];
   
   const { setVideoIsPlayed, videoIsPlayed, showData } = useAppContext()  
-  const { movie_detail: data, isLoading, isError } = useMovieDetail(props.movie_id); 
+  // const { movie_detail: data, isLoading, isError } = useMovieDetail(props.movie_id); 
+
+  const { data } = props;
 
   // const isLoading = false;
   // const isError = undefined;
@@ -51,13 +55,12 @@ const Movie: NextPageWithLayout = (props:any) => {
       return;
     }
     if (!loading && !user && !cookies.token) {
-      router.replace("/signin", undefined, { shallow: true })
+      router.replace("/signin")
       setIsRedirecting(true)
     }
   }, [user])
 
 
-  
   if (data) {
     data.recommendations && data.recommendations.results && data.recommendations.results.slice(0,20).map((item:any) => {
       recommendationsArr.push(item)
@@ -99,18 +102,18 @@ const Movie: NextPageWithLayout = (props:any) => {
   }
 
 
-    if (isError) return <div>Error occured while fetching movie details. Please try again.</div>
+    // if (isError) return <div>Error occured while fetching movie details. Please try again.</div>
 
     return (
       <div className="flex flex-col items-start justify-center w-full overflow-hidden pb-[100px] -mt-[4px]" data-testid="movie_container">
         {
-            isLoading && <div className="flex items-center justify-start w-full" data-testid="loading_container">
-                <ArrowPathIcon className="w-[30px] h-[30px] animate-spin mr-2" />
-                <span>Loading</span>
-            </div>
+            // isLoading && <div className="flex items-center justify-start w-full" data-testid="loading_container">
+            //     <ArrowPathIcon className="w-[30px] h-[30px] animate-spin mr-2" />
+            //     <span>Loading</span>
+            // </div>
         }
         {
-          !isLoading && data && 
+          data && 
             <section className="flex flex-col items-start justify-center w-full p-0">
               
               <section className={`flex flex-1 flex-col items-start justify-center w-full border-0 relative h-[100%]
@@ -265,26 +268,50 @@ const Movie: NextPageWithLayout = (props:any) => {
 
   };
 
-  export async function getServerSideProps(context:any) {
 
-    const cookies = nookies.get(context)
+  export const getStaticPaths: GetStaticPaths = async () => {
 
-    if (!cookies.token) {
-      return {
-        redirect: {
-          destination: '/signin',
-          permanent: false,
-        },
-      }
-    } else {
-      return {
-        props: {
-            movie_id: context.params.id
+    const [reqTrending] = await Promise.all([
+      await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}trending/movie/day?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}`,{
+        headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+      }).then(res => res.data)
+    ])
+    const [resTrending] = await Promise.all([
+      reqTrending
+    ])
+
+    const paths = resTrending.results.map((movie: any) => ({
+      params: { id: movie.id.toString() },
+    }))
+
+    return {
+      paths,
+      fallback: "blocking"
+    }
+  }
+
+  export async function getStaticProps(context:any) {
+
+    const movie_id = context.params.id;
+
+    const [reqMovie] = await Promise.all([
+      await axios.get(
+        `${process.env.NEXT_PUBLIC_TMDB_API_URL}movie/${movie_id}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&append_to_response=recommendations,credits`,
+        {
+          headers: { "Accept-Encoding": "gzip,deflate,compress" } 
         }
+        ).then(res => res.data),
+    ])
+
+    const [resMovie] = await Promise.all([
+      reqMovie
+    ])
+
+    return {
+      props: {
+          data: resMovie
       }
     }
-
-   
   }
 
 

@@ -8,6 +8,7 @@ import * as AppContext from '../../../context/state';
 import { removeDataBookmarks, setDataBookmarks } from '../../../app/store/slices/bookmarks'
 import { useRouter } from "next/router"
 import { fake_trending } from '../../../model/fake_trending'
+import { User } from "firebase/auth";
 
 jest.mock("../../../app/store/slices/bookmarks", () => ({
     setDataBookmarks: jest.fn(),
@@ -47,10 +48,8 @@ describe("<Thumbnail />", () => {
 
     it("must render <Thumbnail />", () => {
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = fake_trending[0];
         const { container } = render(<Thumbnail 
             user={user}
@@ -69,10 +68,8 @@ describe("<Thumbnail />", () => {
         .mockImplementationOnce(() => [false, mockSetState])
 
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = { ...fake_trending[0] };
 
         const { container } = render(<Thumbnail 
@@ -98,10 +95,8 @@ describe("<Thumbnail />", () => {
         .mockImplementationOnce(() => [false, mockSetState])
 
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = { ...fake_trending[0] };
 
         const { debug, container } = render(<Thumbnail 
@@ -123,10 +118,8 @@ describe("<Thumbnail />", () => {
     it("must render <Thumbnail /> with the <MediaTypeShow /> component", () => {        
         
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = { ...fake_trending[0] };
         const {debug, container} = render(<Thumbnail 
             user={user}
@@ -145,10 +138,8 @@ describe("<Thumbnail />", () => {
 
     it("must render <Thumbnail /> with the <MediaTypePerson /> component", () => {   
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = {
             "adult": false,
             "gender": 0,
@@ -201,10 +192,8 @@ describe("<Thumbnail />", () => {
         jest.spyOn(AppContext, 'useAppContext').mockImplementation(mockContext);
 
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = { ...fake_trending[0] };
         const { debug, container } = render(<Thumbnail 
             user={user}
@@ -239,10 +228,8 @@ describe("<Thumbnail />", () => {
         jest.spyOn(AppContext, 'useAppContext').mockImplementation(mockContext);
 
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = { ...fake_trending[0] };
         const { debug, container } = render(<Thumbnail 
             user={user}
@@ -270,10 +257,8 @@ describe("<Thumbnail />", () => {
         jest.spyOn(AppContext, 'useAppContext').mockImplementation(mockContext);
 
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = { ...fake_trending[0] };
         const { debug, container } = render(<Thumbnail 
             user={user}
@@ -307,10 +292,8 @@ describe("<Thumbnail />", () => {
         jest.spyOn(AppContext, 'useAppContext').mockImplementation(mockContext);
 
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = { ...fake_trending[0] };
         const { debug, container } = render(<Thumbnail
             user={user}
@@ -330,10 +313,8 @@ describe("<Thumbnail />", () => {
     it("must render <PlusIcon />", () => {
        
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = { ...fake_trending[0] };
 
         const { debug, container } = render(<Thumbnail
@@ -351,10 +332,8 @@ describe("<Thumbnail />", () => {
     it("must render <CheckIcon />", () => {
         
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = { ...fake_trending[0] };
         const { debug, container } = render(<Thumbnail 
             user={user}
@@ -372,10 +351,8 @@ describe("<Thumbnail />", () => {
     it("must trigger add Bookmark button", async () => {
 
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = { ...fake_trending[0] };
 
         const dispatch = useAppDispatch as jest.Mock;
@@ -403,10 +380,8 @@ describe("<Thumbnail />", () => {
     it("must trigger remove Bookmark button", async () => {
 
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = { ...fake_trending[0] };
 
         const dispatch = useAppDispatch as jest.Mock;
@@ -440,10 +415,8 @@ describe("<Thumbnail />", () => {
         router.mockReturnValue(mockRouter);
 
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const item:any = { ...fake_trending[0] };
         const { debug, container } = render(<Thumbnail
             user={user}

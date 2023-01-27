@@ -10,10 +10,15 @@ import Register from "../../pages/register"
 import { useRouter } from "next/router"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { setAuthData } from "../../app/store/slices/auth";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 jest.mock('react', ()=>({
     ...jest.requireActual('react'),
     useState: jest.fn()
+}))
+
+jest.mock("react-firebase-hooks/auth", () => ({
+    useAuthState: jest.fn()
 }))
 
 jest.mock("next/router", () => ({
@@ -69,11 +74,8 @@ describe("test register page", () => {
         }
         router.mockReturnValue(mockRouter);
 
-        const mockAppSelector = useAppSelector as jest.Mock
-        mockAppSelector
-        .mockReturnValueOnce({
-            accessToken: "123"
-        })
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
     })
 
     afterAll(() => {
@@ -151,6 +153,7 @@ describe("test register page", () => {
     it("must render an error message", () => {
         const mockSetState = jest.fn()
         jest.spyOn(React, 'useState')
+        .mockImplementationOnce(() => [false, mockSetState])
         .mockImplementationOnce(() => [true, mockSetState])
         .mockImplementationOnce(() => ["demo@demo.com", mockSetState])
         .mockImplementationOnce(() => ["demo@demo.comm", mockSetState])
@@ -190,7 +193,6 @@ describe("test register page", () => {
 
     })
 
-    
     it("must render 'Sign In here' button", () => {
         render(<Register />)
         const signinHere = screen.getByText("Sign In here")
@@ -220,8 +222,6 @@ describe("test register page", () => {
 
 
     })
-    
-
 
     it("must mock register", async () => {
 

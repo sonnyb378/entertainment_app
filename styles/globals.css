@@ -49,3 +49,67 @@ body {
   transition: background-color 5000s ease-in-out 0s;
   color: white;
 }
+
+.page_container {
+  /* flex flex-col items-start justify-center w-full overflow-hidden pb-[100px] -mt-[4px] */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  overflow: hidden;
+  padding-bottom: 100px;
+  margin-top: -4px;
+}
+
+.trending_container {
+  /* flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px] */
+  display: flex;
+  flex-direction: column;
+  z-index: 2000;
+  border: 0px;
+  width: 100%;
+  position: relative;
+  margin-top: 50px;
+}
+
+.popular_container {
+  /* flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px] */
+  display: flex;
+  flex-direction: column;
+  z-index: 2000;
+  width: 100%;
+  position: relative;
+  margin-top: 50px;
+}
+
+.recommended_container {
+  /* flex flex-col px-[0px] z-[1000] border-0 w-full relative mt-[50px] */
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  width: 100%;
+  position: relative;
+  margin-top: 50px;
+}
+
+.mylist_container {
+  /* flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px] */
+  display: flex;
+  flex-direction: column;
+  z-index: 2000;
+  width: 100%;
+  position: relative;
+  margin-top: 50px;
+}
+
+.mylist_page_container {
+  /* flex flex-col items-start justify-center w-[90%] p-5 relative */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  width: 90%;
+  padding: 5px;
+  position: relative;
+}

@@ -14,7 +14,7 @@ import { GetServerSideProps } from "next";
 import googleLogo from "../assets/google_logo.svg";
 import { useAuthState } from "react-firebase-hooks/auth";
 
-import nookies, {parseCookies} from "nookies"
+import nookies, {parseCookies, setCookie} from "nookies"
 
 interface SignInErrors {
   error: string;
@@ -22,12 +22,12 @@ interface SignInErrors {
 
 const Signin: NextPageWithLayout = (props) => {
 
-    const COOKIES_MAX_AGE = 60 * 60 * 24 * 30; // 30days
-    const [ isRedirecting, setIsRedirecting] = useState(false);
+    const COOKIES_MAX_AGE = 60 * 2; //60 * 60 * 24 * 30; // 30days
     const [user, loading] = useAuthState(auth);
-
+    
     const router = useRouter();
-
+    
+    const [isRedirecting, setIsRedirecting] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [email, setEmail] = useState("demo@demo.com");
     const [password, setPassword] = useState("demodemo");
@@ -35,21 +35,21 @@ const Signin: NextPageWithLayout = (props) => {
 
     const cookies = parseCookies()
     
-
     useEffect(() => {
-      // console.log("signin useEffect")
       if (typeof window !== 'undefined') {
-        const mainComponent = document.getElementById("main_component");
-        mainComponent!.style.scale = "100%";
-        mainComponent!.style.opacity = "100";
-        mainComponent!.style.transition = "all 1s";
-        mainComponent!.style.overflow = "hidden";
+        const mainComponent = document.getElementById("main_component") as HTMLElement;
+        if (mainComponent) {
+          mainComponent.style.scale = "100%";
+          mainComponent.style.opacity = "100";
+          mainComponent.style.transition = "all 1s";
+          mainComponent.style.overflow = "hidden";
+        }       
       }
       if (isRedirecting) {
         return;
       }
       if (!loading && user && cookies.token) {
-        router.replace("/movies", undefined, { shallow: true } )
+        router.replace("/movies")
         setIsRedirecting(true)
       }
     }, [user])
@@ -86,7 +86,7 @@ const Signin: NextPageWithLayout = (props) => {
           user.getIdTokenResult()
           .then((result) => {
               setIsSubmitted(false);
-              nookies.set(undefined, 'token', result.token, { maxAge:COOKIES_MAX_AGE, path: '/' });
+              setCookie(undefined, 'token', result.token, { maxAge:COOKIES_MAX_AGE, path: '/' });
           })       
         })
         .catch((error) => {
@@ -131,7 +131,7 @@ const Signin: NextPageWithLayout = (props) => {
       if (!result) return;
 
       if (result.token) {
-        nookies.set(undefined, 'token', result.token, { maxAge:COOKIES_MAX_AGE, path: '/' });
+        setCookie(undefined, 'token', result.token, { maxAge:COOKIES_MAX_AGE, path: '/' });
       }
 
       
@@ -180,13 +180,14 @@ const Signin: NextPageWithLayout = (props) => {
                         mt-[2rem]`} >
                           {
                             isSubmitted ?
-                            <div className="flex items-center justify-center text-white" data-testid="spinning_component">
-                              <ArrowPathIcon className="w-[25px] h-[25px] animate-spin" />
-                              <span className="ml-2">Logging In</span>
-                            </div> :
-                            <div className="flex items-center justify-center text-white">
-                              Sign In
-                            </div>
+                              <div className="flex items-center justify-center text-white" data-testid="spinning_component">
+                                <ArrowPathIcon className="w-[25px] h-[25px] animate-spin" />
+                                <span className="ml-2">Logging In</span>
+                              </div> 
+                            :
+                              <div className="flex items-center justify-center text-white">
+                                Sign In
+                              </div>
                           }
                         </div>
                     }

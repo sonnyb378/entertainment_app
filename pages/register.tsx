@@ -14,14 +14,14 @@ import { auth } from "../firebase";
 import { GetServerSideProps } from "next";
 
 
-import nookies, { parseCookies } from "nookies"
+import nookies, { parseCookies, setCookie } from "nookies"
 
 interface IError {
     error: string;
 }
 const Register: NextPageWithLayout = () => {
 
-    const COOKIES_MAX_AGE = 60 * 60 * 24 * 30;
+    const COOKIES_MAX_AGE = 60 * 2; // 60 * 60 * 24 * 30;
     const [user, loading] = useAuthState(auth);
     const router = useRouter();
     
@@ -41,7 +41,7 @@ const Register: NextPageWithLayout = () => {
           return;
         }
         if (!loading && user && cookies.token) {
-          router.replace("/movies", undefined, { shallow: true } )
+          router.replace("/movies")
           setIsRedirecting(true)
         }
       }, [user])
@@ -118,9 +118,9 @@ const Register: NextPageWithLayout = () => {
 
             // if (result.token) {
             //     setIsSubmitted(false);
-            //     nookies.set(undefined, 'token', result.token, { maxAge:COOKIES_MAX_AGE, path: '/' });
+            //     setCookie(undefined, 'token', result.token, { maxAge:COOKIES_MAX_AGE, path: '/' });
             // }
-            
+
             /*
                 *** END ***
             */

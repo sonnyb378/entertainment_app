@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 import { useAppSelector } from "../../app/hooks";
 import { IAuthState } from "../../ts/states/auth_state";
 import { selectAuth } from "../../app/store/slices/auth";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetStaticPaths, GetStaticProps } from "next";
 import { useAppContext } from "../../context/state";
 import { fadeScreen } from "../../lib/fadeScreen";
 import { IBookmarkData, selectBookmarkData } from "../../app/store/slices/bookmarks";
@@ -47,16 +47,14 @@ const Person: NextPageWithLayout = (props:any) => {
   
   const cookies = parseCookies();
   
-
     const { data } = props;
-
 
     useEffect(() => {
       if (isRedirecting) {
         return;
       }
       if (!loading && !user && !cookies.token) {
-        router.replace("/signin", undefined, { shallow: true })
+        router.replace("/signin")
         setIsRedirecting(true)
       }
     }, [user])
@@ -218,40 +216,31 @@ const Person: NextPageWithLayout = (props:any) => {
 
   };
 
+
   export const getServerSideProps: GetServerSideProps =  async (context:any) => {
 
-    const cookies = nookies.get(context)
+    const personID = context.params.id
 
-    if (!cookies.token) {
-      return {
-        redirect: {
-          destination: '/signin',
-          permanent: false,
-        },
-      }
-    } else {
-      const personID = context.params.id
+    const [reqPerson] = await Promise.all([
+      await axios.get(
+        `${process.env.NEXT_PUBLIC_TMDB_API_URL}person/${personID}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&append_to_response=combined_credits`,
+        {
+          headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+        }
+        ).then(res => res.data),
+    ])
 
-      const [reqPerson] = await Promise.all([
-        await axios.get(
-          `${process.env.NEXT_PUBLIC_TMDB_API_URL}person/${personID}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&append_to_response=combined_credits`,
-          {
-            headers: { "Accept-Encoding": "gzip,deflate,compress" } 
-          }
-          ).then(res => res.data),
-      ])
+    const [resPerson] = await Promise.all([
+      reqPerson
+    ])
 
-      const [resPerson] = await Promise.all([
-        reqPerson
-      ])
-
-      return {
-          props: {
-              person_id: personID,
-              data: resPerson //resPerson //fake_person_popular
-          }
-      }
+    return {
+        props: {
+            person_id: personID,
+            data: resPerson //resPerson //fake_person_popular
+        }
     }
+    
 
     
   }

@@ -1,17 +1,35 @@
-import { render, screen, fireEvent, within } from '@testing-library/react'
+import { render, screen, fireEvent, within, act, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
 
 import { useRouter } from "next/router"
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { fake_trending, fake_featured } from '../../model/fake_trending'
-import { fake_popular } from '../../model/fake_popular'
 import { useState } from "react";
 import { setCurrentUrl } from '../../app/store/slices/url'
 import { removeDataBookmarks, setDataBookmarks } from '../../app/store/slices/bookmarks'
 import { useMovieDetail } from '../../lib/hooks/useMovieDetail' 
 import * as AppContext from '../../context/state';
 
+import * as React from "react";
 import Movies from "../../pages/movies"
+
+import { fake_trending, fake_featured } from '../../model/fake_trending'
+import { fake_popular } from '../../model/fake_popular'
+import { useAuthState } from "react-firebase-hooks/auth";
+import { parseCookies } from "nookies"
+
+import axios from "axios"
+
+jest.mock('axios');
+jest.mock('nookies', () => (
+    {
+        __esModule: true,
+        parseCookies: jest.fn()
+    }
+))
+
+jest.mock("react-firebase-hooks/auth", () => ({
+    useAuthState: jest.fn()
+}))
 
 jest.mock("next/router", () => ({
     __esModule: true,
@@ -104,19 +122,14 @@ describe("<Movies />", () => {
         jest.clearAllMocks();
     })
 
-    it("must render the movies page", () => {
-        const trending = fake_trending
-        const popular = fake_popular
-        const data = {
-            trending,
-            popular
-        }
+    it("must render the movies page", async () => {
 
-        const router = useRouter as jest.Mock;
-        const mockRouter = {
-            push: jest.fn()
-        }
-        router.mockReturnValue(mockRouter);
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
 
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
@@ -134,9 +147,32 @@ describe("<Movies />", () => {
                 ]
             }]
         })
+
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
+        })
+    
+        const router = useRouter as jest.Mock;
+        const mockRouter = {
+            push: jest.fn()
+        }
+        router.mockReturnValue(mockRouter);
+
+
+        const trending = fake_trending
+        const popular = fake_popular
+        const data = {
+            trending,
+            popular,
+            feature_id: 555604,
+        }
         
-        render(<Movies data={ data } />)
-        const movies_container = screen.getByTestId("movies_container")
+        const {container} = render(<Movies data={ data } />)
+        const movies_container = within(container).getByTestId("movies_container")
+        waitFor(() => {
+            expect(axios.get).toHaveBeenCalled()
+        })
         expect(movies_container).toBeInTheDocument();
     })
 
@@ -148,6 +184,13 @@ describe("<Movies />", () => {
             popular
         }
 
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+        
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+
         const router = useRouter as jest.Mock;
         const mockRouter = {
             push: jest.fn()
@@ -156,9 +199,6 @@ describe("<Movies />", () => {
 
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
-        .mockReturnValueOnce({
-            accessToken: "123"
-        })
         .mockReturnValueOnce({
             data: [{
                 "id": 555604,
@@ -172,6 +212,10 @@ describe("<Movies />", () => {
                     18
                 ]
             }]
+        })
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
         })
 
         const {debug, container } = render(<Movies data={data} />);
@@ -192,11 +236,15 @@ describe("<Movies />", () => {
             trending,
             popular
         }
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+        
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
-        .mockReturnValueOnce({
-            accessToken: "sometoken"
-        })
         .mockReturnValueOnce({
             data: []
         })
@@ -217,11 +265,15 @@ describe("<Movies />", () => {
             trending,
             popular
         }
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+        
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([false, false]);
+
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
-        .mockReturnValueOnce({
-            accessToken: null
-        })
         .mockReturnValueOnce({
             data: []
         })
@@ -243,11 +295,16 @@ describe("<Movies />", () => {
             trending,
             popular
         }
+
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+        
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
-        .mockReturnValueOnce({
-            accessToken: "sometoken"
-        })
         .mockReturnValueOnce({
             data: [{
                 "id": 555604,
@@ -282,16 +339,19 @@ describe("<Movies />", () => {
         }
 
         const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+        
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+
         const mockContext = jest.fn().mockReturnValue({
-            setVideoIsPlayed: mockSetState,
+            setVideoIsPlayed: jest.fn(),
             showData: jest.fn()
         })
         jest.spyOn(AppContext, 'useAppContext').mockImplementation(mockContext);
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
-        .mockReturnValueOnce({
-            accessToken: "sometoken"
-        })
         .mockReturnValueOnce({
             data: [{
                 "id": 555604,
@@ -319,11 +379,16 @@ describe("<Movies />", () => {
     })
 
     it("must trigger 'Add to List' button", () => {
+
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+        
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
-        .mockReturnValueOnce({
-            accessToken: "123"
-        })
         .mockReturnValueOnce({ data: [] })
 
         const trending = fake_trending
@@ -359,11 +424,21 @@ describe("<Movies />", () => {
         const add_bookmark = within(container).getByText("Add to List")
         expect(add_bookmark).toBeInTheDocument();  
 
-        fireEvent.click(add_bookmark)
+        act(() => {
+            fireEvent.click(add_bookmark)
+        })
         expect(dispatch).toHaveBeenCalled()
     })
 
     it("must trigger 'Remove from List' button", () => {
+
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+        
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+
         const bookmarkData = {
             "id": 555604,
             "name": "Guillermo del Toro's Pinocchio",
@@ -378,9 +453,6 @@ describe("<Movies />", () => {
         }
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
-        .mockReturnValueOnce({
-            accessToken: "123"
-        })
         .mockReturnValueOnce({ data: [bookmarkData] })
 
         const trending = fake_trending
@@ -403,11 +475,22 @@ describe("<Movies />", () => {
         const remove_bookmark = within(container).getByText("Remove from List")
         expect(remove_bookmark).toBeInTheDocument();  
 
-        fireEvent.click(remove_bookmark)
+        act(() => {
+            fireEvent.click(remove_bookmark)
+        })
         expect(dispatch).toHaveBeenCalled()
     })
 
+    
     it("must trigger 'More Info' button", () => {
+        
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+        
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+
         const trending = fake_trending
         const popular = fake_popular
         const data = {
@@ -429,9 +512,6 @@ describe("<Movies />", () => {
         }
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
-        .mockReturnValueOnce({
-            accessToken: "123"
-        })
         .mockReturnValueOnce({ data: [bookmarkData] })
 
         const router = useRouter as jest.Mock;
@@ -453,6 +533,14 @@ describe("<Movies />", () => {
     })
 
     it("must render 'Trending Movies' section", () => {
+
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+        
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+
         const trending = fake_trending
         const popular = fake_popular
         const data = {
@@ -461,9 +549,6 @@ describe("<Movies />", () => {
         }
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
-        .mockReturnValue({
-            accessToken: "sometoken"
-        })
         .mockReturnValue({
             data: [{
                 "id": 555604,
@@ -488,6 +573,15 @@ describe("<Movies />", () => {
     })
 
     it("must render 'Popular Movies' section", () => {
+
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+        
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+
+
         const trending = fake_trending
         const popular = fake_popular
         const data = {
@@ -496,9 +590,6 @@ describe("<Movies />", () => {
         }
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
-        .mockReturnValue({
-            accessToken: "sometoken"
-        })
         .mockReturnValue({
             data: [{
                 "id": 555604,
@@ -523,6 +614,14 @@ describe("<Movies />", () => {
     })
 
     it("must render 'Recommended Movies' section", () => {
+
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+        
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+
         const trending = fake_trending
         const popular = fake_popular
         const data = {
@@ -531,9 +630,6 @@ describe("<Movies />", () => {
         }
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
-        .mockReturnValue({
-            accessToken: "sometoken"
-        })
         .mockReturnValue({
             data: [{
                 "id": 555604,
@@ -558,6 +654,14 @@ describe("<Movies />", () => {
     })
 
     it("must render 'My List' section", () => {
+
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+        
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+
         const trending = fake_trending
         const popular = fake_popular
         const data = {
@@ -566,9 +670,6 @@ describe("<Movies />", () => {
         }
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
-        .mockReturnValueOnce({
-            accessToken: "123"
-        })
         .mockReturnValue({
             data: [{
                 "id": 555604,
@@ -593,6 +694,14 @@ describe("<Movies />", () => {
     })
 
     it("must not render 'My List'", () => {
+
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+        
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([false, false]);
+
         const trending = fake_trending
         const popular = fake_popular
         const data = {
@@ -601,9 +710,6 @@ describe("<Movies />", () => {
         }
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
-        .mockReturnValueOnce({
-            accessToken: null
-        })
         .mockReturnValue({
             data: [{
                 "id": 555604,
@@ -626,6 +732,13 @@ describe("<Movies />", () => {
     })
 
     it("must display 'No bookmarks found' if bookmark data is empty", () => {
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+        
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+        
         const trending = fake_trending
         const popular = fake_popular
         const data = {
@@ -634,9 +747,6 @@ describe("<Movies />", () => {
         }
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
-        .mockReturnValueOnce({
-            accessToken: "123"
-        })
         .mockReturnValue({
             data: []
         })

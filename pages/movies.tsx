@@ -9,7 +9,7 @@ import Spinner from "../components/Spinner/Spinner";
 import CustomBtn from "../components/Button/CustomBtn/CustomBtn";
 
 import { useRouter } from "next/router";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetStaticProps } from "next";
 import { useAuthState } from "react-firebase-hooks/auth";
 import nookies, { parseCookies } from "nookies"
 import { PlayCircleIcon, PlusCircleIcon, MinusCircleIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
@@ -34,24 +34,26 @@ const Carousel = dynamic(() => import("../components/Carousel/Carousel"), {
 const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
     const router = useRouter();
     const dispatch = useAppDispatch();
+    const [ isRedirecting, setIsRedirecting] = useState(false);
     const [user, loading] = useAuthState(auth);
     const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
     const { videoIsPlayed, setVideoIsPlayed, showData } = useAppContext();
+
+    
     const cookies = parseCookies()
-
-    const [ isRedirecting, setIsRedirecting] = useState(false);
-
 
     let recommendationsArr:any[] = [];
     const genres:any = [];
     
+    
+    // console.log(">> ", user, loading, cookies.token, isRedirecting )
 
     useEffect(() => {
       if (isRedirecting) {
         return;
       }
       if (!loading && !user && !cookies.token) {
-        router.replace("/signin", undefined, { shallow: true })
+        router.replace("/signin")
         setIsRedirecting(true)
       }
     }, [user])
@@ -91,6 +93,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
         router.push(`/watch/${showData.id}?mt=${showData.media_type}`)
       })
     }, [videoIsPlayed, showData.id, showData.media_type, router])
+    
 
     const saveBookmark = (data:any) => {
       dispatch(setDataBookmarks({
@@ -109,8 +112,9 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
       )
     }
 
+
     return (
-      <div className={`flex flex-col items-start justify-center w-full overflow-hidden pb-[100px] -mt-[4px]`} data-testid="movies_container">
+      <div className="flex flex-col items-start justify-center w-full overflow-hidden pb-[100px] -mt-[4px]" data-testid="movies_container">
         <section className="flex flex-col items-start justify-center w-full p-0">
             
             <section className={`flex flex-col items-start transition-all duraiton-200 ease-in-out justify-center w-full border-0 relative h-[100%] -mt-[0px]
@@ -302,18 +306,8 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
     );
   };
 
-  // export const getServerSideProps: GetServerSideProps = async (context:any) => {
+  // export const getServerSideProps: GetServerSideProps = async () => {
 
-  //   const cookies = nookies.get(context)
-
-  //   if (!cookies.token) {
-  //     return {
-  //       redirect: {
-  //         destination: '/signin',
-  //         permanent: false,
-  //       },
-  //     }
-  //   } else {
   //     const featuredID = fake_trending && fake_trending[getRandom(fake_trending.length-1)].id;
   //     return {
   //       props: {
@@ -325,23 +319,13 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
   //       },
   //       // revalidate: 10,
   //     }  
-  //   }
+  //   
 
   // }
 
 
-  export const getServerSideProps: GetServerSideProps = async (context:any) => {
+  export const getStaticProps: GetStaticProps = async () => {
 
-    const cookies = nookies.get(context)
-
-    if (!cookies.token) {
-      return {
-        redirect: {
-          destination: '/signin',
-          permanent: false,
-        },
-      }
-    } else {
       const [reqTrending, reqPopular] = await Promise.all([
         await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}trending/movie/day?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}`,{
           headers: { "Accept-Encoding": "gzip,deflate,compress" } 
@@ -363,9 +347,9 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
             feature_id: resTrending.results && resTrending.results[getRandom(2)].id //getRandom(resTrending.results.length-1)
           }
         },
-        // revalidate: 10,
+        revalidate: 10,
       }
-    }
+    
     
 
   }

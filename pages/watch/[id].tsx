@@ -33,7 +33,7 @@ const WatchShow: NextPageWithLayout<{ data: any }> = ({ data }) => {
             return;
         }
         if (!loading && !user && !cookies.token) {
-            router.replace("/signin", undefined, { shallow: true })
+            router.replace("/signin")
             setIsRedirecting(true)
         }
     }, [user])
@@ -128,41 +128,31 @@ WatchShow.getLayout = (page) => {
   };
 
   export const  getServerSideProps: GetServerSideProps = async (context:any) => {
-    
-    const cookies = nookies.get(context)
 
-    if (!cookies.token) {
-        return {
-            redirect: {
-                destination: '/signin',
-                permanent: false,
-            },
-        }
-    } else {
-        const show_id = context.params.id;
-        let url: string = `${context.query.mt}/${show_id}`
+    const show_id = context.params.id;
+    let url: string = `${context.query.mt}/${show_id}`
+
+    if (context.query.mt === "tv" && context.query.s) {
+        url = `tv/${context.query.t}/season/${context.query.s}/episode/${context.query.e}`
+    }
     
-        if (context.query.mt === "tv" && context.query.s) {
-            url = `tv/${context.query.t}/season/${context.query.s}/episode/${context.query.e}`
-        }
-        
-        const [reqShow] = await Promise.all([
-            await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}${url}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US`, {
-                headers: { "Accept-Encoding": "gzip,deflate,compress" } 
-              }).then(res => res.data)
-        ]) 
-        const [resShow] = await Promise.all([
-            reqShow
-        ])
-    
-        return {
-            props: {
-                data: {
-                    info: { ...resShow },
-                }
+    const [reqShow] = await Promise.all([
+        await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}${url}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US`, {
+            headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+            }).then(res => res.data)
+    ]) 
+    const [resShow] = await Promise.all([
+        reqShow
+    ])
+
+    return {
+        props: {
+            data: {
+                info: { ...resShow },
             }
         }
     }
+    
 
     
   }

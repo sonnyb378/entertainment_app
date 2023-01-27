@@ -1,5 +1,5 @@
 import * as React from "react";
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, screen, fireEvent, within, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 // import { PlayCircleIcon, PlusCircleIcon, MinusCircleIcon } from "@heroicons/react/24/outline";
 
@@ -9,6 +9,8 @@ import Carousel from '../../../components/Carousel/Carousel';
 import { useAppDispatch } from "../../../app/hooks"
 import { fake_popular } from "../../../model/fake_popular"
 import { useState } from "react";
+import { User } from "firebase/auth";
+
 
 jest.mock("react-firebase-hooks/auth", () => ({
     useAuthState: jest.fn()
@@ -61,10 +63,9 @@ describe('<CustomBtn />', () => {
         .mockImplementationOnce(() => [0, mockSetState])
 
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
+
         const dataBookmark:any = []
         const carouselData:any = fake_popular.slice(0,6);
         
@@ -92,10 +93,8 @@ describe('<CustomBtn />', () => {
         
         const dispatch = useAppDispatch as jest.Mock;
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const dataBookmark:any = []
         
         const { container } = render(<Carousel 
@@ -125,10 +124,8 @@ describe('<CustomBtn />', () => {
         
         
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const dataBookmark:any = []
         
         const { container } = render(<Carousel 
@@ -162,10 +159,8 @@ describe('<CustomBtn />', () => {
         jest.spyOn(React, 'useState').mockImplementation(useStateMock);
         
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const dataBookmark:any = []
         
         const { container } = render(<Carousel 
@@ -183,7 +178,9 @@ describe('<CustomBtn />', () => {
 
         const nextBtn = within(container).getByTestId("next_btn")
         expect(nextBtn).toBeInTheDocument();
-        fireEvent.click(nextBtn)
+        act(() => {
+            fireEvent.click(nextBtn)
+        })
         expect(setStateMock).toHaveBeenCalled();
 
     })
@@ -203,10 +200,8 @@ describe('<CustomBtn />', () => {
         jest.spyOn(React, 'useState').mockImplementation(useStateMock);
         
         const user = {
-            id: "somevalue",
-            accessToken: "someToken",
-            expiresAt: "someTimestamp"
-        }
+            id: "sometoken"
+        } as unknown as User
         const dataBookmark:any = []
         
         const { container } = render(<Carousel 
@@ -224,12 +219,17 @@ describe('<CustomBtn />', () => {
 
         const nextBtn = within(container).getByTestId("next_btn")
         expect(nextBtn).toBeInTheDocument();
-        fireEvent.click(nextBtn)
+
+        act(() => {
+            fireEvent.click(nextBtn)
+        })
         expect(setStateMock).toHaveBeenCalled();
 
         const prevBtn = within(container).getByTestId("prev_btn")
         expect(prevBtn).toBeInTheDocument();
-        fireEvent.click(prevBtn)
+        act(() => {
+            fireEvent.click(prevBtn)
+        })
         expect(setStateMock).toHaveBeenCalled();
 
     })

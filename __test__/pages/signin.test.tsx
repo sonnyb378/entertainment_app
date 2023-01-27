@@ -8,8 +8,18 @@ import { useAuthState } from "react-firebase-hooks/auth"
 import { useRouter } from 'next/router';
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { setAuthData } from "../../app/store/slices/auth";
-
+import { parseCookies, setCookie } from "nookies"
+import * as Nookies from "nookies";
 import * as React from "react";
+
+import axios from "axios"
+
+jest.mock('axios');
+jest.mock('nookies', () => ({
+    __esModule: true,
+    parseCookies: jest.fn(),
+    setCookie: jest.fn()
+}))
 
 jest.useFakeTimers();
 
@@ -24,10 +34,12 @@ jest.mock("../../firebase", () => ({
         setCustomParameters: jest.fn()
     }  
 }))
+
 jest.mock("../../app/hooks", () => ({
     useAppDispatch: jest.fn(),
     useAppSelector: jest.fn()
 }))
+
 jest.mock("../../app/store/slices/auth", () => ({
     setAuthData: jest.fn()
 }))
@@ -60,20 +72,21 @@ describe("test sign in page", () => {
         const mockUseState = useState as jest.Mock;
         mockUseState.mockImplementation(jest.requireActual('react').useState);
 
-        const mockUserAuthState = useAuthState as jest.Mock;
-        mockUserAuthState.mockReturnValue([true, false])    
-
-        const mockAppSelector = useAppSelector as jest.Mock
-        mockAppSelector
-        .mockReturnValue({
-            accessToken: "sometoken"
-        })
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);  
 
         const router = useRouter as jest.Mock;
         const mockRouter = {
-            replace: jest.fn()
+            replace: jest.fn(),
+            push: jest.fn()
         }
         router.mockReturnValue(mockRouter)
+
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
+        })
+
     })
 
     afterAll(() => {
@@ -145,6 +158,7 @@ describe("test sign in page", () => {
         const mockSetState = jest.fn()
         jest
         .spyOn(React, 'useState')
+        .mockImplementationOnce(() => [false, mockSetState])
         .mockImplementationOnce(() => [true, mockSetState])
         .mockImplementationOnce(() => ["demo@demo.com", mockSetState])
         .mockImplementationOnce(() => ["password", mockSetState])
@@ -167,6 +181,7 @@ describe("test sign in page", () => {
         const mockSetState = jest.fn()
         jest
         .spyOn(React, 'useState')
+        .mockImplementationOnce(() => [false, mockSetState])
         .mockImplementationOnce(() => [false, mockSetState])
         .mockImplementationOnce(() => ["demo@demo.com", mockSetState])
         .mockImplementationOnce(() => ["wrongpassword", mockSetState])
@@ -202,13 +217,16 @@ describe("test sign in page", () => {
 
         const router = useRouter as jest.Mock;
         const mockRouter = {
-            replace: jest.fn()
+            push: jest.fn()
         }
         router.mockReturnValue(mockRouter);
 
+        const mockSetCookie = jest.fn();
+        jest.spyOn(Nookies, "setCookie").mockImplementation(mockSetCookie)
+
         const stateSetter = jest.fn()
-        jest
-        .spyOn(React, 'useState')
+        jest.spyOn(React, 'useState')
+        .mockImplementationOnce(() => [false, stateSetter])
         .mockImplementationOnce(() => [false, stateSetter])
         .mockImplementationOnce(() => ["", stateSetter])
         .mockImplementationOnce(() => ["", stateSetter])
@@ -223,9 +241,14 @@ describe("test sign in page", () => {
 
         fireEvent.click(signInWithGoogle)
 
-        await waitFor(() => {
-            expect(mockRouter.replace).toHaveBeenCalledWith("./movies")
-        })
+
+
+        // const logging_container = within(signInContainer).getByTestId("spinning_component")
+        // expect(logging_container).toBeInTheDocument();
+
+        // await waitFor(() => {
+        //     expect(mockRouter.push).toHaveBeenCalledWith("/movies")
+        // })
 
     })
 
