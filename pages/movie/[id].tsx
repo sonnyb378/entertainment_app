@@ -192,6 +192,7 @@ const Movie: NextPageWithLayout = (props:any) => {
                   sm:flex sm:-left-[5px]
                   "></div>       
                   <Image 
+                      key={data.id}
                       src={ `${process.env.NEXT_PUBLIC_TMDB_IMAGE_PATH_ORIGINAL}${data.backdrop_path}` } 
                       layout="responsive"
                       priority={true}  

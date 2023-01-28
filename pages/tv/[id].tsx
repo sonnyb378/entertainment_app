@@ -94,7 +94,7 @@ const TV: NextPageWithLayout = (props:any) => {
     setIsEpisodesLoading(true)
     callback(season_number)
 
-    const season_episodes = await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}tv/${props.tv_id}/season/${season_number}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US`).then(res => res.data) 
+    const season_episodes = await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}tv/${data.id}/season/${season_number}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US`).then(res => res.data) 
     
     // console.log("fetch season episodes : ", season_number, season_episodes.episodes)
     
@@ -245,6 +245,7 @@ const TV: NextPageWithLayout = (props:any) => {
                 sm:flex sm:-left-[5px]
                 "></div>       
                 <Image 
+                    key={data.id}
                     src={ `${process.env.NEXT_PUBLIC_TMDB_IMAGE_PATH_ORIGINAL}${data.backdrop_path}` } 
                     layout="responsive"
                     priority={true}  
