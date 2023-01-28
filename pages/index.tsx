@@ -152,7 +152,6 @@ Home.getLayout = (page) => {
 };
 
 
-
 export const getServerSideProps: GetServerSideProps = async (context:any) => {
 
   const cookies = nookies.get(context)

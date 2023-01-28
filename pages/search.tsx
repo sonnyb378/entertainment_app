@@ -4,10 +4,6 @@ import Main from "../components/Layout/Main/Main";
 import dynamic from "next/dynamic";
 import Spinner from "../components/Spinner/Spinner";
 
-const SearchResults = dynamic(() => import("../components/Search/SearchResults/SearchResults"), {
-  loading: () => <Spinner />
-})
-
 import { NextPageWithLayout } from "./page";
 import { useRouter } from "next/router";
 import { useAppSelector } from "../app/hooks";
@@ -16,6 +12,11 @@ import { selectCurrentUrl } from "../app/store/slices/url";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
 import { parseCookies } from "nookies";
+
+const SearchResults = dynamic(() => import("../components/Search/SearchResults/SearchResults"), {
+  loading: () => <Spinner />
+})
+
 // import nookies from "nookies";
 // import { GetServerSideProps } from "next";
 
