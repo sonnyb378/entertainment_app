@@ -155,7 +155,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                       <div className="flex flex-col items-start justify-start border-0 pb-[0px] h-[100%] w-full">
                         
                         <div className="w-full p-4 text-[30px] font-bold">{ featured.title || featured.original_title }</div>
-                        <div className="flex items-center justify-start p-4 border-0">
+                        <div className="flex items-center justify-start p-0 border-0">
                           <Info title="" valueFor="runtime" value={featured.runtime} />
                           <span className="ml-[10px] mr-[10px] text-[11px]">●</span>
                           <div className="flex items-start justify-start text-[12px] border-0">
