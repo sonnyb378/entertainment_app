@@ -20,7 +20,7 @@ describe('<Logo />', () => {
     it('must display logo', async () => {
         const alt = "logo"
 
-        render(<Logo />);
+        render(<Logo urlPath='/' />);
         const img = screen.getByAltText(alt);
         expect(img).toBeInTheDocument();
     })
@@ -33,13 +33,31 @@ describe('<Logo />', () => {
         }
         router.mockReturnValue(mockRouter)
 
-        render(<Logo />);        
+        render(<Logo urlPath="/" />);        
         const buttonComponent = screen.getByTestId("logo_container");
         expect(buttonComponent).toBeInTheDocument();
         
         fireEvent.click(buttonComponent)
         
         expect(mockRouter.replace).toHaveBeenCalledWith("/")
+
+    })
+
+    it("must redirect to /movies when a loggedin user clicks logo", () => {
+        
+        const router = useRouter as jest.Mock;
+        const mockRouter =  {
+            replace: jest.fn() 
+        }
+        router.mockReturnValue(mockRouter)
+
+        render(<Logo urlPath="/movies" />);        
+        const buttonComponent = screen.getByTestId("logo_container");
+        expect(buttonComponent).toBeInTheDocument();
+        
+        fireEvent.click(buttonComponent)
+        
+        expect(mockRouter.replace).toHaveBeenCalledWith("/movies")
 
     })
 

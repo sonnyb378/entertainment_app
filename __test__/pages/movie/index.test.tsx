@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, within } from '@testing-library/react'
+import { render, screen, fireEvent, within, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
@@ -9,6 +9,22 @@ import { setCurrentUrl } from '../../../app/store/slices/url'
 import { useRouter } from 'next/router';
 import Movie from '../../../pages/movie/[id]'
 import { useAuthState } from 'react-firebase-hooks/auth';
+
+import * as React from "react";
+import { parseCookies } from "nookies"
+import axios from 'axios';
+
+
+jest.mock('axios');
+jest.mock('nookies', () => (
+    {
+        __esModule: true,
+        parseCookies: jest.fn()
+    }
+))
+jest.mock("react-firebase-hooks/auth", () => ({
+    useAuthState: jest.fn()
+}))
 
 jest.mock("../../../lib/hooks/useMovieDetail", () => ({
     __esModule: true,
@@ -107,6 +123,18 @@ describe("<Movie />", () => {
 
     it("must render Movie detail page", () => {
         
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
+        })
+
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
         .mockReturnValueOnce({
@@ -124,173 +152,176 @@ describe("<Movie />", () => {
             }]
         })        
 
-        const {container} = render(<Movie />)
+        const {container} = render(<Movie data={movieData} />)
         const movie_container = within(container).getByTestId("movie_container")
+
+        waitFor(() => {
+            expect(axios.get).toHaveBeenCalled()
+        })
         expect(movie_container).toBeInTheDocument()
 
     })
 
-    // it("must render Loading icon", () => {
-    //     const mockUseMovieDetail = useMovieDetail as jest.Mock;
-    //     const mockUseMovie = { 
-    //         movie_detail: { ...movieData }, 
-    //         isLoading: true, 
-    //         isError: null
-    //     }
-    //     mockUseMovieDetail.mockReturnValueOnce(mockUseMovie)
 
-    //     const mockAppSelector = useAppSelector as jest.Mock
-    //     mockAppSelector
-    //     .mockReturnValueOnce({
-    //         accessToken: "123"
-    //     })
-    //     .mockReturnValueOnce({
-    //         data: [{
-    //             "id": 555604,
-    //             "name": "Guillermo del Toro's Pinocchio",
-    //             "backdrop_path": "/tyNqJUWqqb0tjhqXYH4uwRwsp6A.jpg",
-    //             "poster_path": "/vx1u0uwxdlhV2MUzj4VlcMB0N6m.jpg",
-    //             "media_type": "movie",
-    //             "genre_ids": [
-    //                 16,
-    //                 14,
-    //                 18
-    //             ]
-    //         }]
-    //     })  
+    it("must render movie details", () => {
 
-    //     const {container} = render(<Movie />)
-    //     const movie_container = within(container).getByTestId("movie_container")
-    //     expect(movie_container).toBeInTheDocument()
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
 
-    //     const loading_container = within(movie_container).getByTestId("loading_container")
-    //     expect(loading_container).toBeInTheDocument()
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
 
-    // })
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
+        })
 
-    // it("must render movie details", () => {
+        const mockAppSelector = useAppSelector as jest.Mock
+        mockAppSelector
+        .mockReturnValueOnce({
+            data: [{
+                "id": 555604,
+                "name": "Guillermo del Toro's Pinocchio",
+                "backdrop_path": "/tyNqJUWqqb0tjhqXYH4uwRwsp6A.jpg",
+                "poster_path": "/vx1u0uwxdlhV2MUzj4VlcMB0N6m.jpg",
+                "media_type": "movie",
+                "genre_ids": [
+                    16,
+                    14,
+                    18
+                ]
+            }]
+        })  
 
-    //     const mockAppSelector = useAppSelector as jest.Mock
-    //     mockAppSelector
-    //     .mockReturnValueOnce({
-    //         accessToken: "123"
-    //     })
-    //     .mockReturnValueOnce({
-    //         data: [{
-    //             "id": 555604,
-    //             "name": "Guillermo del Toro's Pinocchio",
-    //             "backdrop_path": "/tyNqJUWqqb0tjhqXYH4uwRwsp6A.jpg",
-    //             "poster_path": "/vx1u0uwxdlhV2MUzj4VlcMB0N6m.jpg",
-    //             "media_type": "movie",
-    //             "genre_ids": [
-    //                 16,
-    //                 14,
-    //                 18
-    //             ]
-    //         }]
-    //     })  
+        const {container} = render(<Movie data={movieData} />)
+        const movie_container = within(container).getByTestId("movie_container")
+        expect(movie_container).toBeInTheDocument()
 
-    //     const {container} = render(<Movie />)
-    //     const movie_container = within(container).getByTestId("movie_container")
-    //     expect(movie_container).toBeInTheDocument()
+        const movie_info = within(movie_container).getByTestId("movie_info_container")
+        expect(movie_info).toBeInTheDocument()
 
-    //     const movie_info = within(movie_container).getByTestId("movie_info_container")
-    //     expect(movie_info).toBeInTheDocument()
+        const title = within(movie_info).getByText("The Guardians of the Galaxy Holiday Special")
+        expect(title).toBeInTheDocument()
 
-    //     const title = within(movie_info).getByText("The Guardians of the Galaxy Holiday Special")
-    //     expect(title).toBeInTheDocument()
+    })
 
-    // })
+    it("must render recommended movies", () => {
 
-    // it("must render recommended movies", () => {
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
 
-    //     const mockAppSelector = useAppSelector as jest.Mock
-    //     mockAppSelector
-    //     .mockReturnValueOnce({
-    //         accessToken: "123"
-    //     })
-    //     .mockReturnValueOnce({
-    //         data: [{
-    //             "id": 555604,
-    //             "name": "Guillermo del Toro's Pinocchio",
-    //             "backdrop_path": "/tyNqJUWqqb0tjhqXYH4uwRwsp6A.jpg",
-    //             "poster_path": "/vx1u0uwxdlhV2MUzj4VlcMB0N6m.jpg",
-    //             "media_type": "movie",
-    //             "genre_ids": [
-    //                 16,
-    //                 14,
-    //                 18
-    //             ]
-    //         }]
-    //     })  
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
 
-    //     const {container} = render(<Movie />)
-    //     const movie_container = within(container).getByTestId("movie_container")
-    //     expect(movie_container).toBeInTheDocument()
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
+        })
 
-    //     const recommended_movies = within(movie_container).getByTestId("recommended_movies")
-    //     expect(recommended_movies).toBeInTheDocument()
+        const mockAppSelector = useAppSelector as jest.Mock
+        mockAppSelector
+        .mockReturnValueOnce({
+            data: [{
+                "id": 555604,
+                "name": "Guillermo del Toro's Pinocchio",
+                "backdrop_path": "/tyNqJUWqqb0tjhqXYH4uwRwsp6A.jpg",
+                "poster_path": "/vx1u0uwxdlhV2MUzj4VlcMB0N6m.jpg",
+                "media_type": "movie",
+                "genre_ids": [
+                    16,
+                    14,
+                    18
+                ]
+            }]
+        })  
 
-    //     const carousel = within(recommended_movies).getByTestId("carousel_maincontainer")
-    //     expect(carousel).toBeInTheDocument()
+        const {container} = render(<Movie data={ movieData } />)
+        const movie_container = within(container).getByTestId("movie_container")
+        expect(movie_container).toBeInTheDocument()
 
-    // })
+        const recommended_movies = within(movie_container).getByTestId("recommended_movies")
+        expect(recommended_movies).toBeInTheDocument()
 
-    // it("must render bookmark", () => {
+        const carousel = within(recommended_movies).getByTestId("carousel_maincontainer")
+        expect(carousel).toBeInTheDocument()
 
-    //     const mockAppSelector = useAppSelector as jest.Mock
-    //     mockAppSelector
-    //     .mockReturnValueOnce({
-    //         accessToken: "123"
-    //     })
-    //     .mockReturnValueOnce({
-    //         data: [{
-    //             "id": 555604,
-    //             "name": "Guillermo del Toro's Pinocchio",
-    //             "backdrop_path": "/tyNqJUWqqb0tjhqXYH4uwRwsp6A.jpg",
-    //             "poster_path": "/vx1u0uwxdlhV2MUzj4VlcMB0N6m.jpg",
-    //             "media_type": "movie",
-    //             "genre_ids": [
-    //                 16,
-    //                 14,
-    //                 18
-    //             ]
-    //         }]
-    //     })  
+    })
 
-    //     const {container} = render(<Movie />)
-    //     const movie_container = within(container).getByTestId("movie_container")
-    //     expect(movie_container).toBeInTheDocument()
+    it("must render bookmark", () => {
 
-    //     const bookmark_container = within(movie_container).getByTestId("bookmark_container")
-    //     expect(bookmark_container).toBeInTheDocument()
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
 
-    //     const carousel = within(bookmark_container).getByTestId("carousel_maincontainer")
-    //     expect(carousel).toBeInTheDocument()
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
 
-    // })
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
+        })
 
-    // it("must render 'No bookmarks found'", () => {
+        const mockAppSelector = useAppSelector as jest.Mock
+        mockAppSelector
+        .mockReturnValueOnce({
+            data: [{
+                "id": 555604,
+                "name": "Guillermo del Toro's Pinocchio",
+                "backdrop_path": "/tyNqJUWqqb0tjhqXYH4uwRwsp6A.jpg",
+                "poster_path": "/vx1u0uwxdlhV2MUzj4VlcMB0N6m.jpg",
+                "media_type": "movie",
+                "genre_ids": [
+                    16,
+                    14,
+                    18
+                ]
+            }]
+        })  
 
-    //     const mockAppSelector = useAppSelector as jest.Mock
-    //     mockAppSelector
-    //     .mockReturnValueOnce({
-    //         accessToken: "123"
-    //     })
-    //     .mockReturnValueOnce({
-    //         data: []
-    //     })  
+        const {container} = render(<Movie data={ movieData } />)
+        const movie_container = within(container).getByTestId("movie_container")
+        expect(movie_container).toBeInTheDocument()
 
-    //     const {container} = render(<Movie />)
-    //     const movie_container = within(container).getByTestId("movie_container")
-    //     expect(movie_container).toBeInTheDocument()
+        const bookmark_container = within(movie_container).getByTestId("bookmark_container")
+        expect(bookmark_container).toBeInTheDocument()
 
-    //     const bookmark_container = within(movie_container).getByTestId("bookmark_container")
-    //     expect(bookmark_container).toBeInTheDocument()
+        const carousel = within(bookmark_container).getByTestId("carousel_maincontainer")
+        expect(carousel).toBeInTheDocument()
 
-    //     const no_bookmark = within(bookmark_container).getByText("No bookmarks found")
-    //     expect(no_bookmark).toBeInTheDocument()
+    })
 
-    // })
+    it("must render 'No bookmarks found'", () => {
+
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
+        })
+
+        const mockAppSelector = useAppSelector as jest.Mock
+        mockAppSelector
+        .mockReturnValueOnce({
+            data: []
+        })  
+
+        const {container} = render(<Movie data={ movieData } />)
+        const movie_container = within(container).getByTestId("movie_container")
+        expect(movie_container).toBeInTheDocument()
+
+        const bookmark_container = within(movie_container).getByTestId("bookmark_container")
+        expect(bookmark_container).toBeInTheDocument()
+
+        const no_bookmark = within(bookmark_container).getByText("No bookmarks found")
+        expect(no_bookmark).toBeInTheDocument()
+
+    })
 
 })

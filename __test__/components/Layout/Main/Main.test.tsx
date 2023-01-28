@@ -1,11 +1,23 @@
 import * as React from 'react';
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import '@testing-library/jest-dom'
 
 import Main from "../../../../components/Layout/Main/Main"
 
 import { useRouter } from "next/router"
 import { useAuthState } from "react-firebase-hooks/auth";
+
+import { parseCookies, setCookie } from "nookies"
+import axios from "axios"
+
+jest.mock('axios');
+jest.mock('nookies', () => (
+    {
+        __esModule: true,
+        parseCookies: jest.fn(),
+        setCookie: jest.fn()
+    }
+))
 
 jest.mock("../../../../firebase", () => ({}))
 jest.mock("../../../../app/hooks")
@@ -27,6 +39,11 @@ describe("<Main />", () => {
     beforeAll(() => {
         const mockUseAuthState = useAuthState as jest.Mock;
         mockUseAuthState.mockReturnValue([true, false])
+
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
+        })
     })
     afterAll(() => {
         jest.clearAllMocks()
@@ -41,6 +58,9 @@ describe("<Main />", () => {
         
         render(<Main showHero={true} ></Main>)
         const mainComponent = screen.getByTestId("main_component")
+        waitFor(() => {
+            expect(axios.get).toBeCalled()
+        })
         expect(mainComponent).toBeInTheDocument();        
     }) 
 

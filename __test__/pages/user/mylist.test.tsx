@@ -7,6 +7,24 @@ import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { setCurrentUrl } from '../../../app/store/slices/url'
 import { useRouter } from "next/router"
 
+
+import { useAuthState } from 'react-firebase-hooks/auth';
+
+import * as React from "react";
+import { parseCookies } from "nookies"
+
+jest.mock('axios');
+jest.mock('nookies', () => (
+    {
+        __esModule: true,
+        parseCookies: jest.fn()
+    }
+))
+jest.mock("react-firebase-hooks/auth", () => ({
+    useAuthState: jest.fn()
+}))
+
+
 jest.mock("next/router", () => ({
     __esModule: true,
     useRouter: jest.fn()
@@ -48,10 +66,16 @@ describe("<Movies />", () => {
     })
 
     it("must render the My List page", () => {
-        const mockAppSelector = useAppSelector as jest.Mock
-        mockAppSelector
-        .mockReturnValue({
-            accessToken: "sometoken"
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
         })
 
         const router = useRouter as jest.Mock;
@@ -60,17 +84,44 @@ describe("<Movies />", () => {
         }
         router.mockReturnValueOnce(mockRouter);
 
+        const mockAppSelector = useAppSelector as jest.Mock
+        mockAppSelector
+        .mockReturnValue({
+            data: [{
+                "id": 105971,
+                "name": "Star Wars: The Bad Batch",
+                "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
+                "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
+                "media_type": "tv",
+                "genre_ids": [
+                    16,
+                    10759,
+                    10765
+                ]
+            }]
+        })  
+
         render(<MyList />)
         const movies_container = screen.getByTestId("mylist_container")
         expect(movies_container).toBeInTheDocument();
     })
 
     it("must render bookmarks", () => {
+
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
+        })
+
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
-        .mockReturnValue({
-            accessToken: "sometoken"
-        })
         .mockReturnValue({
             data: [{
                 "id": 555604,
@@ -114,11 +165,21 @@ describe("<Movies />", () => {
     })
 
     it("must render 'No bookmarks found'", () => {
+
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
+        })
+        
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
-        .mockReturnValue({
-            accessToken: "sometoken"
-        })
         .mockReturnValue({
             data: []
         })

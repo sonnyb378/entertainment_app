@@ -92,14 +92,14 @@ describe("Homepage", () => {
 
         const router = useRouter as jest.Mock;
         const mockRouter = {
-            push: jest.fn()
+            replace: jest.fn()
         }
         router.mockReturnValue(mockRouter)
         const user = useAuthState as jest.Mock;     
         user.mockReturnValue([true, false]);
 
         render(<Home />)
-        expect(mockRouter.push).toHaveBeenCalledWith("/movies")
+        expect(mockRouter.replace).toHaveBeenCalledWith("/movies")
     })
 
     it("must render 'Getting Started' section", () => {  

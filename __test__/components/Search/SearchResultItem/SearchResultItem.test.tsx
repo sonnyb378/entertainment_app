@@ -10,10 +10,14 @@ import { useBlackAdam } from '../../../../model/fake_search'
 import { useAppSelector } from "../../../../app/hooks"
 // import { IAuthState } from '../../../ts/states/auth_state'
 
+import { useAuthState } from "react-firebase-hooks/auth"
+
 jest.mock("react-firebase-hooks/auth", () => ({
     useAuthState: jest.fn()
 }))
-
+jest.mock("../../../../firebase", () => ({
+    auth: jest.fn(),
+}))
 jest.mock("../../../../app/hooks", () => ({
     useAppDispatch: jest.fn(),
     useAppSelector: jest.fn()
@@ -28,7 +32,9 @@ jest.mock('next/image', () => ({
 
 describe("<SearchResultItem />", () => {
 
-    beforeAll(() => {           
+    beforeAll(() => {     
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);      
     })
 
     afterEach(() => {

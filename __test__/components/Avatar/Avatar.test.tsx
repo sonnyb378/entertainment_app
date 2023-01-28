@@ -8,7 +8,21 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useAppDispatch } from "../../../app/hooks"
 import { setAuthData } from "../../../app/store/slices/auth";
 
+import axios from "axios"
+
 import Avatar from '../../../components/Avatar/Avatar';
+
+import { parseCookies, setCookie } from "nookies"
+import * as Nookies from "nookies";
+import { setCurrentUrl } from "../../../app/store/slices/url";
+
+
+jest.mock('axios');
+jest.mock('nookies', () => ({
+    __esModule: true,
+    parseCookies: jest.fn(),
+    setCookie: jest.fn()
+}))
 
 jest.mock('next/router', () => ({
     __esModule: true,
@@ -23,6 +37,10 @@ jest.mock("../../../firebase", () => ({}))
 
 jest.mock("../../../app/store/slices/auth", () => ({
     setAuthData: jest.fn()
+}))
+
+jest.mock("../../../app/store/slices/url", () => ({
+    setCurrentUrl: jest.fn()
 }))
 
 jest.mock("../../../app/hooks", () => ({
@@ -66,20 +84,24 @@ describe("<Avatar />", () => {
     })
 
     it("must logout user", () => {
+
+        const mockSetCookie = setCookie as jest.Mock;
+        mockSetCookie.mockReturnValue(jest.fn());
+
+        const dispatch = useAppDispatch as jest.Mock;
+        const mockSetCurrentUrl = setCurrentUrl as unknown as jest.Mock;
+        const mockCurrentUrl = jest.fn()
+        mockSetCurrentUrl.mockReturnValue(mockCurrentUrl)
+        dispatch.mockReturnValue(mockSetCurrentUrl)
+
         const user = useAuthState as jest.Mock;        
-        user.mockReturnValue([true]);
+        user.mockReturnValue([true, false]);
 
         const router = useRouter as jest.Mock;
         const mockRouter = {
             replace: jest.fn()
         }
         router.mockReturnValue(mockRouter);
-
-        const dispatch = useAppDispatch as jest.Mock;
-        const mockSetAuthData = setAuthData as unknown as jest.Mock;
-        const mockUserAuth = jest.fn()
-        mockSetAuthData.mockReturnValue(mockUserAuth)
-        dispatch.mockReturnValue(mockSetAuthData)
 
         render(<Avatar />)
         const avatarComponent = screen.getByTestId("avatar")
@@ -90,11 +112,9 @@ describe("<Avatar />", () => {
 
         fireEvent.click(logoutButton)
 
-        expect(mockSetAuthData).toHaveBeenCalledWith({
-            id: null,
-            accessToken: null,
-            expiresAt: null,
-        })
+        expect(mockSetCookie).toHaveBeenCalled()
+        expect(mockSetCurrentUrl).toHaveBeenCalled()
+
     })
 
     it("must toggle dropdown", () => {

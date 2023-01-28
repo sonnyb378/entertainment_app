@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, within } from '@testing-library/react'
+import { render, screen, fireEvent, within, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
@@ -8,6 +8,22 @@ import { useState } from "react";
 import { setCurrentUrl } from '../../../app/store/slices/url'
 import { useRouter } from 'next/router';
 import TV from '../../../pages/tv/[id]'
+import { useAuthState } from 'react-firebase-hooks/auth';
+
+import * as React from "react";
+import { parseCookies } from "nookies"
+import axios from "axios";
+
+jest.mock('axios');
+jest.mock('nookies', () => (
+    {
+        __esModule: true,
+        parseCookies: jest.fn()
+    }
+))
+jest.mock("react-firebase-hooks/auth", () => ({
+    useAuthState: jest.fn()
+}))
 
 jest.mock("../../../lib/hooks/useTVDetail", () => ({
     __esModule: true,
@@ -99,11 +115,20 @@ describe("<TV />", () => {
 
     it("must render TV detail page", () => {
           
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
+        })
+
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
-        .mockReturnValueOnce({
-            accessToken: "123"
-        })
         .mockReturnValue({
             data: [{
                 "id": 105971,
@@ -119,57 +144,33 @@ describe("<TV />", () => {
             }]
         })        
 
-        const {container} = render(<TV />)
+        const {container} = render(<TV data={ tvData } />)
         const tv_container = within(container).getByTestId("tv_container")
-        expect(tv_container).toBeInTheDocument()
-
-    })
-
-    it("must render Loading icon", () => {
-        const mockUseTVDetail = useTVDetail as jest.Mock;
-        const mockUseTV = { 
-            tv_detail: { ...tvData }, 
-            isLoading: true, 
-            isError: null
-        }
-        mockUseTVDetail.mockReturnValue(mockUseTV)
-
-        const mockAppSelector = useAppSelector as jest.Mock
-        mockAppSelector
-        .mockReturnValueOnce({
-            accessToken: "123"
+        waitFor(() => {
+            expect(axios.get).toHaveBeenCalled()
         })
-        .mockReturnValueOnce({
-            data: [{
-                "id": 105971,
-                "name": "Star Wars: The Bad Batch",
-                "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
-                "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
-                "media_type": "tv",
-                "genre_ids": [
-                    16,
-                    10759,
-                    10765
-                ]
-            }]
-        })  
-
-        const {container} = render(<TV />)
-        const tv_container = within(container).getByTestId("tv_container")
         expect(tv_container).toBeInTheDocument()
 
-        const loading_container = within(tv_container).getByTestId("loading_container")
-        expect(loading_container).toBeInTheDocument()
-
     })
+
+
 
     it("must render tv details", () => {
 
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
+        })
+
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
-        .mockReturnValueOnce({
-            accessToken: "123"
-        })
         .mockReturnValueOnce({
             data: [{
                 "id": 105971,
@@ -185,7 +186,7 @@ describe("<TV />", () => {
             }]
         })  
 
-        const {container} = render(<TV />)
+        const {container} = render(<TV data={ tvData } />)
         const tv_container = within(container).getByTestId("tv_container")
         expect(tv_container).toBeInTheDocument()
 
@@ -199,11 +200,20 @@ describe("<TV />", () => {
 
     it("must render recommended tv shows", () => {
 
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
+        })
+
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
-        .mockReturnValueOnce({
-            accessToken: "123"
-        })
         .mockReturnValueOnce({
             data: [{
                 "id": 105971,
@@ -219,7 +229,7 @@ describe("<TV />", () => {
             }]
         })  
 
-        const {container} = render(<TV />)
+        const {container} = render(<TV data={ tvData } />)
         const tv_container = within(container).getByTestId("tv_container")
         expect(tv_container).toBeInTheDocument()
 
@@ -233,10 +243,21 @@ describe("<TV />", () => {
 
     it("must render bookmark", () => {
 
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
+        })
+
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
         .mockReturnValue({
-            accessToken: "123",
             data: [{
                 "id": 105971,
                 "name": "Star Wars: The Bad Batch",
@@ -251,7 +272,7 @@ describe("<TV />", () => {
             }]
         })  
 
-        const {container} = render(<TV />)
+        const {container} = render(<TV data={ tvData } />)
         const tv_container = within(container).getByTestId("tv_container")
         expect(tv_container).toBeInTheDocument()
 
@@ -265,14 +286,25 @@ describe("<TV />", () => {
 
     it("must render 'No bookmarks found'", () => {
 
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
+        })
+
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
         .mockReturnValue({
-            accessToken: "123",
             data: []
         })
 
-        const {container} = render(<TV />)
+        const {container} = render(<TV data={ tvData } />)
         const tv_container = within(container).getByTestId("tv_container")
         expect(tv_container).toBeInTheDocument()
 

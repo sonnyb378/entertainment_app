@@ -61,15 +61,15 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
     const { trending, popular, feature_id } = data;
     // const featured = fake_tv_featured as any;
     // const featuredIsLoading = false;
-    
+   
     const { tv_detail: featured, isLoading: featuredIsLoading } = useTVDetail(`${feature_id}`); 
 
     if (!featuredIsLoading) {
+      
       featured.recommendations && featured.recommendations.results && featured.recommendations.results.slice(0,20).map((item:any) => {
         recommendationsArr.push(item)
       })
 
-      
       if (featured.genres) {
         featured.genres.map((genre:any) => {
           genres.push(genre.id)
@@ -79,7 +79,6 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
       }
 
       isBookmarked = bookmarks.data.findIndex((show:any) => show.id === featured.id) !== -1
-
     }
     
     useEffect(() => {

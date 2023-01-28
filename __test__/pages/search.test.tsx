@@ -1,5 +1,5 @@
 import * as React from "react";
-import { render, screen, fireEvent, within } from '@testing-library/react'
+import { render, screen, fireEvent, within, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import Search from '../../pages/search'
 import useSWRInfinite from 'swr/infinite'
@@ -8,6 +8,10 @@ import { useRouter } from "next/router"
 import { removeDataBookmarks, setDataBookmarks } from '../../app/store/slices/bookmarks'
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { useAuthState } from "react-firebase-hooks/auth";
+
+import axios from "axios"
+
+jest.mock('axios');
 
 jest.mock("react-firebase-hooks/auth", () => ({
     useAuthState: jest.fn()
@@ -240,6 +244,10 @@ describe("<Search />", () => {
         
         const { debug, container } = render(<Search />)
         const search_container = within(container).getByTestId("search_container")
+
+        waitFor(() => {
+            expect(axios.get).toBeCalled()
+        })
         expect(search_container).toBeInTheDocument();
 
         // debug();

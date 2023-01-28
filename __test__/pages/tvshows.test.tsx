@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, within } from '@testing-library/react'
+import { render, screen, fireEvent, within, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
 
 import { useRouter } from "next/router"
@@ -77,7 +77,7 @@ jest.mock("../../app/store/slices/url", () => ({
     setCurrentUrl: jest.fn()
 }))
 
-describe("<TVShow s />", () => {
+describe("<TVShows />", () => {
     
     beforeEach(() => {
         const mockUseState = useState as jest.Mock;
@@ -102,15 +102,16 @@ describe("<TVShow s />", () => {
         const mockSetCurrentURL = setCurrentUrl as unknown as jest.Mock;
         const mockCurrentURL = jest.fn()
         mockSetCurrentURL.mockReturnValue(mockCurrentURL)
-        dispatch.mockReturnValue(mockSetCurrentURL)        
-
+        dispatch.mockReturnValue(mockSetCurrentURL)      
+        
         const mockUseTVDetail = useTVDetail as jest.Mock;
         const mockUseTV = { 
-            tv_detail: { ...fake_tv_featured }, 
+            tv_detail: { ...fake_tv_featured }, //105971
             featuredIsLoading: false, 
             featuredHasError: null
         }
-        mockUseTVDetail.mockReturnValue(mockUseTV)        
+        mockUseTVDetail.mockReturnValue(mockUseTV)  
+      
 
     })
 
@@ -157,454 +158,602 @@ describe("<TVShow s />", () => {
         
         render(<TVShows data={ data } />)
         const tv_container = screen.getByTestId("tv_container")
+
+        waitFor(() => {
+            expect(axios.get).toHaveBeenCalled()
+        })
+
         expect(tv_container).toBeInTheDocument();
     })
 
-    // it("must render featured tv show", () => {
-    //     const trending = fake_tv_trending
-    //     const popular = fake_tv_popular
-    //     const data = {
-    //         trending,
-    //         popular
-    //     }
-    //     const mockAppSelector = useAppSelector as jest.Mock
-    //     mockAppSelector
-    //     .mockReturnValueOnce({
-    //         accessToken: "123"
-    //     })
-    //     .mockReturnValueOnce({
-    //         data: [{
-    //             "id": 105971,
-    //             "name": "Star Wars: The Bad Batch",
-    //             "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
-    //             "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
-    //             "media_type": "tv",
-    //             "genre_ids": [
-    //                 16,
-    //                 10759,
-    //                 10765
-    //             ]
-    //         }]
-    //     })
+    it("must render featured tv show", () => {
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
+        const data = {
+            trending,
+            popular
+        }
 
-    //     const {debug, container } = render(<TVShows data={data} />);
-    //     const tv_container = within(container).getByTestId("tv_container")
-    //     expect(tv_container).toBeInTheDocument();
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
 
-    //     const backdrop = within(tv_container).getByTestId("featured_backdrop")
-    //     expect(backdrop).toBeInTheDocument();
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
 
-    //     const title = within(tv_container).getByText("Star Wars: The Bad Batch")
-    //     expect(title).toBeInTheDocument();
-    // })
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
+        })
 
-    // it("must render 'Add to List' button", () => {
-    //     const trending = fake_tv_trending
-    //     const popular = fake_tv_popular
-    //     const data = {
-    //         trending,
-    //         popular
-    //     }
-    //     const mockAppSelector = useAppSelector as jest.Mock
-    //     mockAppSelector
-    //     .mockReturnValueOnce({
-    //         accessToken: "sometoken"
-    //     })
-    //     .mockReturnValueOnce({
-    //         data: []
-    //     })
+        const mockAppSelector = useAppSelector as jest.Mock
+        mockAppSelector
+        .mockReturnValueOnce({
+            data: [{
+                "id": 105971,
+                "name": "Star Wars: The Bad Batch",
+                "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
+                "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
+                "media_type": "tv",
+                "genre_ids": [
+                    16,
+                    10759,
+                    10765
+                ]
+            }]
+        })
 
-    //     const {debug, container } = render(<TVShows data={data} />);
-    //     const tv_container = within(container).getByTestId("tv_container")
-    //     expect(tv_container).toBeInTheDocument();
+        const {debug, container } = render(<TVShows data={data} />);
+        const tv_container = within(container).getByTestId("tv_container")
+        expect(tv_container).toBeInTheDocument();
 
-    //     const add_bookmark = within(container).queryByText("Add to List")
-    //     expect(add_bookmark).toBeInTheDocument();
+        const backdrop = within(tv_container).getByTestId("featured_backdrop")
+        expect(backdrop).toBeInTheDocument();
 
-    // })
+        const title = within(tv_container).getByText("Star Wars: The Bad Batch")
+        expect(title).toBeInTheDocument();
+    })
 
-    // it("must not render 'Add to List' button", () => {
-    //     const trending = fake_tv_trending
-    //     const popular = fake_tv_popular
-    //     const data = {
-    //         trending,
-    //         popular
-    //     }
-    //     const mockAppSelector = useAppSelector as jest.Mock
-    //     mockAppSelector
-    //     .mockReturnValueOnce({
-    //         accessToken: null
-    //     })
-    //     .mockReturnValueOnce({
-    //         data: []
-    //     })
+    it("must render 'Add to List' button", () => {
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
+        const data = {
+            trending,
+            popular
+        }
 
-    //     const {debug, container } = render(<TVShows data={data} />);
-    //     const tv_container = within(container).getByTestId("tv_container")
-    //     expect(tv_container).toBeInTheDocument();
+        const mockUseTVDetail = useTVDetail as jest.Mock;
+        const mockUseTV = { 
+            tv_detail: { ...fake_tv_featured }, //105971
+            featuredIsLoading: false, 
+            featuredHasError: null
+        }
+        mockUseTVDetail.mockReturnValue(mockUseTV)  
 
-    //     const add_bookmark = within(container).queryByText("Add to List")
-    //     expect(add_bookmark).not.toBeInTheDocument();
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
 
-    // })
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
 
-    // it("must render 'Remove from List' button", () => {
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
+        })
 
-    //     const trending = fake_tv_trending
-    //     const popular = fake_tv_popular
-    //     const data = {
-    //         trending,
-    //         popular
-    //     }
-    //     const mockAppSelector = useAppSelector as jest.Mock
-    //     mockAppSelector
-    //     .mockReturnValueOnce({
-    //         accessToken: "sometoken"
-    //     })
-    //     .mockReturnValueOnce({
-    //         data: [{
-    //             "id": 105971,
-    //             "name": "Star Wars: The Bad Batch",
-    //             "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
-    //             "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
-    //             "media_type": "tv",
-    //             "genre_ids": [
-    //                 16,
-    //                 10759,
-    //                 10765
-    //             ]
-    //         }]
-    //     })
+        const mockAppSelector = useAppSelector as jest.Mock
+        mockAppSelector
+        .mockReturnValueOnce({
+            data: [{
+                "id": 105972,
+                "name": "Star Wars: The Bad Batch",
+                "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
+                "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
+                "media_type": "tv",
+                "genre_ids": [
+                    16,
+                    10759,
+                    10765
+                ]
+            }]
+        })
 
-    //     const {debug, container } = render(<TVShows data={data} />);
-    //     const tv_container = within(container).getByTestId("tv_container")
-    //     expect(tv_container).toBeInTheDocument();
+        const {debug, container } = render(<TVShows data={data} />);
+        const tv_container = within(container).getByTestId("tv_container")
+        expect(tv_container).toBeInTheDocument();
 
-    //     const remove_bookmark = within(container).queryByText("Remove from List")
-    //     expect(remove_bookmark).toBeInTheDocument();
+        waitFor(() => {
+            expect(axios.get).toHaveBeenCalled()
+        })
 
-    // })
+        const add_bookmark = within(container).queryByText("Add to List")
+        expect(add_bookmark).toBeInTheDocument();
 
-    // it("must trigger 'Add to List' button", () => {
-    //     const mockAppSelector = useAppSelector as jest.Mock
-    //     mockAppSelector
-    //     .mockReturnValueOnce({
-    //         accessToken: "123"
-    //     })
-    //     .mockReturnValueOnce({ data: [] })
+    })
 
-    //     const trending = fake_tv_trending
-    //     const popular = fake_tv_popular
-    //     const data = {
-    //         trending,
-    //         popular
-    //     }
+    it("must not render 'Add to List' button", () => {
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
+        const data = {
+            trending,
+            popular,
+            feature_id: 105971
+        }
 
-    //     const bookmarkData = {
-    //         "id": 105971,
-    //         "name": "Star Wars: The Bad Batch",
-    //         "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
-    //         "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
-    //         "media_type": "tv",
-    //         "genre_ids": [
-    //             16,
-    //             10759,
-    //             10765
-    //         ]
-    //     }
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
 
-    //     const dispatch = useAppDispatch as jest.Mock;
-    //     const mockSetDataBookmarks = setDataBookmarks as unknown as jest.Mock;
-    //     const mockBookmark = jest.fn().mockReturnValue(bookmarkData)
-    //     mockSetDataBookmarks.mockReturnValue(mockBookmark)
-    //     dispatch.mockImplementation(mockSetDataBookmarks)
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
 
-    //     const {debug, container } = render(<TVShows data={ data } />);
-    //     const tv_container = within(container).getByTestId("tv_container")
-    //     expect(tv_container).toBeInTheDocument();
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
+        })
 
-    //     const add_bookmark = within(container).getByText("Add to List")
-    //     expect(add_bookmark).toBeInTheDocument();  
+        const mockAppSelector = useAppSelector as jest.Mock
+        mockAppSelector
+        .mockReturnValue({
+            data: [{
+                "id": 105971,
+                "name": "Star Wars: The Bad Batch",
+                "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
+                "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
+                "media_type": "tv",
+                "genre_ids": [
+                    16,
+                    10759,
+                    10765
+                ]
+            }]
+        })
 
-    //     fireEvent.click(add_bookmark)
-    //     expect(dispatch).toHaveBeenCalled()
-    // })
+        const {debug, container } = render(<TVShows data={data} />);
+        const tv_container = within(container).getByTestId("tv_container")
+        expect(tv_container).toBeInTheDocument();
 
-    // it("must trigger 'Remove from List' button", () => {
-    //     const bookmarkData = {
-    //         "id": 105971,
-    //         "name": "Star Wars: The Bad Batch",
-    //         "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
-    //         "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
-    //         "media_type": "tv",
-    //         "genre_ids": [
-    //             16,
-    //             10759,
-    //             10765
-    //         ]
-    //     }
-    //     const mockAppSelector = useAppSelector as jest.Mock
-    //     mockAppSelector
-    //     .mockReturnValueOnce({
-    //         accessToken: "123"
-    //     })
-    //     .mockReturnValueOnce({ data: [bookmarkData] })
+        const add_bookmark = within(container).queryByText("Add to List")
+        expect(add_bookmark).not.toBeInTheDocument()
 
-    //     const trending = fake_tv_trending
-    //     const popular = fake_tv_popular
-    //     const data = {
-    //         trending,
-    //         popular
-    //     }
+    })
 
-    //     const dispatch = useAppDispatch as jest.Mock;
-    //     const mockRemoveDataBookmark = removeDataBookmarks as unknown as jest.Mock;
-    //     const mockBookmark = jest.fn().mockReturnValue({ id: 105971 })
-    //     mockRemoveDataBookmark.mockReturnValue(mockBookmark)
-    //     dispatch.mockImplementation(mockRemoveDataBookmark)
+    it("must render 'Remove from List' button", () => {
 
-    //     const {debug, container } = render(<TVShows data={ data } />);
-    //     const tv_container = within(container).getByTestId("tv_container")
-    //     expect(tv_container).toBeInTheDocument();
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
+        const data = {
+            trending,
+            popular,
+            feature_id: 105971
+        }
 
-    //     const remove_bookmark = within(container).getByText("Remove from List")
-    //     expect(remove_bookmark).toBeInTheDocument();  
+        const mockUseTVDetail = useTVDetail as jest.Mock;
+        const mockUseTV = { 
+            tv_detail: { ...fake_tv_featured }, //105971
+            featuredIsLoading: false, 
+            featuredHasError: null
+        }
+        mockUseTVDetail.mockReturnValue(mockUseTV)  
 
-    //     fireEvent.click(remove_bookmark)
-    //     expect(dispatch).toHaveBeenCalled()
-    // })
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
 
-    // it("must trigger 'More Info' button", () => {
-    //     const trending = fake_tv_trending
-    //     const popular = fake_tv_popular
-    //     const data = {
-    //         trending,
-    //         popular
-    //     }
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
 
-    //     const bookmarkData = {
-    //         "id": 105971,
-    //         "name": "Star Wars: The Bad Batch",
-    //         "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
-    //         "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
-    //         "media_type": "tv",
-    //         "genre_ids": [
-    //             16,
-    //             10759,
-    //             10765
-    //         ]
-    //     }
-    //     const mockAppSelector = useAppSelector as jest.Mock
-    //     mockAppSelector
-    //     .mockReturnValueOnce({
-    //         accessToken: "123"
-    //     })
-    //     .mockReturnValueOnce({ data: [bookmarkData] })
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
+        })
 
-    //     const router = useRouter as jest.Mock;
-    //     const mockRouter = {
-    //         push: jest.fn()
-    //     }
-    //     router.mockReturnValue(mockRouter)
+        const mockAppSelector = useAppSelector as jest.Mock
+        mockAppSelector
+        .mockReturnValueOnce({
+            data: [{
+                "id": 105971,
+                "name": "Star Wars: The Bad Batch",
+                "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
+                "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
+                "media_type": "tv",
+                "genre_ids": [
+                    16,
+                    10759,
+                    10765
+                ]
+            }]
+        })
 
-    //     const {debug, container } = render(<TVShows data={ data } />);
-    //     const tv_container = within(container).getByTestId("tv_container")
-    //     expect(tv_container).toBeInTheDocument();
+        const {debug, container } = render(<TVShows data={data} />);
+        const tv_container = within(container).getByTestId("tv_container")
+        expect(tv_container).toBeInTheDocument();
 
-    //     const more_info = within(container).getByText("More Info")
-    //     expect(more_info).toBeInTheDocument();  
+        const remove_bookmark = within(container).queryByText("Remove from List")
+        expect(remove_bookmark).toBeInTheDocument();
 
-    //     fireEvent.click(more_info)
-    //     expect(mockRouter.push).toHaveBeenCalledWith("/tv/105971")
+    })
 
-    // })
+    it("must trigger 'Add to List' button", () => {
 
-    // it("must render 'Trending TV Shows' section", () => {
-    //     const trending = fake_tv_trending
-    //     const popular = fake_tv_popular
-    //     const data = {
-    //         trending,
-    //         popular
-    //     }
-    //     const mockAppSelector = useAppSelector as jest.Mock
-    //     mockAppSelector
-    //     .mockReturnValue({
-    //         data: [{
-    //             "id": 105971,
-    //             "name": "Star Wars: The Bad Batch",
-    //             "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
-    //             "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
-    //             "media_type": "tv",
-    //             "genre_ids": [
-    //                 16,
-    //                 10759,
-    //                 10765
-    //             ]
-    //         }]
-    //     })
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
+        })
+
+        const mockAppSelector = useAppSelector as jest.Mock
+        mockAppSelector
+        .mockReturnValueOnce({ data: [] })
+
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
+        const data = {
+            trending,
+            popular
+        }
+
+        const bookmarkData = {
+            "id": 105971,
+            "name": "Star Wars: The Bad Batch",
+            "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
+            "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
+            "media_type": "tv",
+            "genre_ids": [
+                16,
+                10759,
+                10765
+            ]
+        }
+
+        const dispatch = useAppDispatch as jest.Mock;
+        const mockSetDataBookmarks = setDataBookmarks as unknown as jest.Mock;
+        const mockBookmark = jest.fn().mockReturnValue(bookmarkData)
+        mockSetDataBookmarks.mockReturnValue(mockBookmark)
+        dispatch.mockImplementation(mockSetDataBookmarks)
+
+        const {debug, container } = render(<TVShows data={ data } />);
+        const tv_container = within(container).getByTestId("tv_container")
+        expect(tv_container).toBeInTheDocument();
+
+        const add_bookmark = within(container).getByText("Add to List")
+        expect(add_bookmark).toBeInTheDocument();  
+
+        fireEvent.click(add_bookmark)
+        expect(mockSetDataBookmarks).toHaveBeenCalled()
+    })
+
+    it("must trigger 'Remove from List' button", () => {
+
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
+        })
+
+        const bookmarkData = {
+            "id": 105971,
+            "name": "Star Wars: The Bad Batch",
+            "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
+            "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
+            "media_type": "tv",
+            "genre_ids": [
+                16,
+                10759,
+                10765
+            ]
+        }
+        const mockAppSelector = useAppSelector as jest.Mock
+        mockAppSelector
+        .mockReturnValueOnce({ data: [bookmarkData] })
+
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
+        const data = {
+            trending,
+            popular
+        }
+
+        const dispatch = useAppDispatch as jest.Mock;
+        const mockRemoveDataBookmark = removeDataBookmarks as unknown as jest.Mock;
+        const mockBookmark = jest.fn().mockReturnValue({ id: 105971 })
+        mockRemoveDataBookmark.mockReturnValue(mockBookmark)
+        dispatch.mockImplementation(mockRemoveDataBookmark)
+
+        const {debug, container } = render(<TVShows data={ data } />);
+        const tv_container = within(container).getByTestId("tv_container")
+        expect(tv_container).toBeInTheDocument();
+
+        const remove_bookmark = within(container).getByText("Remove from List")
+        expect(remove_bookmark).toBeInTheDocument();  
+
+        fireEvent.click(remove_bookmark)
+        expect(mockRemoveDataBookmark).toHaveBeenCalled()
+    })
+
+    it("must trigger 'More Info' button", () => {
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
+        const data = {
+            trending,
+            popular
+        }
+
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
+        })
+
+        const bookmarkData = {
+            "id": 105971,
+            "name": "Star Wars: The Bad Batch",
+            "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
+            "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
+            "media_type": "tv",
+            "genre_ids": [
+                16,
+                10759,
+                10765
+            ]
+        }
+        const mockAppSelector = useAppSelector as jest.Mock
+        mockAppSelector
+        .mockReturnValueOnce({ data: [bookmarkData] })
+
+        const router = useRouter as jest.Mock;
+        const mockRouter = {
+            push: jest.fn()
+        }
+        router.mockReturnValue(mockRouter)
+
+        const {debug, container } = render(<TVShows data={ data } />);
+        const tv_container = within(container).getByTestId("tv_container")
+        expect(tv_container).toBeInTheDocument();
+
+        const more_info = within(container).getByText("More Info")
+        expect(more_info).toBeInTheDocument();  
+
+        fireEvent.click(more_info)
+        expect(mockRouter.push).toHaveBeenCalledWith("/tv/105971")
+
+    })
+
+    it("must render 'Trending TV Shows' section", () => {
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
+        const data = {
+            trending,
+            popular
+        }
+        const mockAppSelector = useAppSelector as jest.Mock
+        mockAppSelector
+        .mockReturnValue({
+            data: [{
+                "id": 105971,
+                "name": "Star Wars: The Bad Batch",
+                "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
+                "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
+                "media_type": "tv",
+                "genre_ids": [
+                    16,
+                    10759,
+                    10765
+                ]
+            }]
+        })
  
-    //     const { container } = render(<TVShows data={ data } />)
-    //     const trending_tvshows = within(container).getByTestId("trending_tvshows")
-    //     expect(trending_tvshows).toBeInTheDocument();
+        const { container } = render(<TVShows data={ data } />)
+        const trending_tvshows = within(container).getByTestId("trending_tvshows")
+        expect(trending_tvshows).toBeInTheDocument();
 
-    //     const carousel = within(trending_tvshows).getByTestId("carousel_maincontainer")
-    //     expect(carousel).toBeInTheDocument();
-    // })
+        const carousel = within(trending_tvshows).getByTestId("carousel_maincontainer")
+        expect(carousel).toBeInTheDocument();
+    })
 
-    // it("must render 'Popular TV Shows' section", () => {
-    //     const trending = fake_tv_trending
-    //     const popular = fake_tv_popular
-    //     const data = {
-    //         trending,
-    //         popular
-    //     }
-    //     const mockAppSelector = useAppSelector as jest.Mock
-    //     mockAppSelector
-    //     .mockReturnValue({
-    //         data: [{
-    //             "id": 105971,
-    //             "name": "Star Wars: The Bad Batch",
-    //             "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
-    //             "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
-    //             "media_type": "tv",
-    //             "genre_ids": [
-    //                 16,
-    //                 10759,
-    //                 10765
-    //             ]
-    //         }]
-    //     })
+    it("must render 'Popular TV Shows' section", () => {
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
+        const data = {
+            trending,
+            popular
+        }
+        const mockAppSelector = useAppSelector as jest.Mock
+        mockAppSelector
+        .mockReturnValue({
+            data: [{
+                "id": 105971,
+                "name": "Star Wars: The Bad Batch",
+                "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
+                "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
+                "media_type": "tv",
+                "genre_ids": [
+                    16,
+                    10759,
+                    10765
+                ]
+            }]
+        })
   
-    //     const { container } = render(<TVShows data={ data } />)
-    //     const popular_tvshows = within(container).getByTestId("popular_tvshows")
-    //     expect(popular_tvshows).toBeInTheDocument();
+        const { container } = render(<TVShows data={ data } />)
+        const popular_tvshows = within(container).getByTestId("popular_tvshows")
+        expect(popular_tvshows).toBeInTheDocument();
 
-    //     const carousel = within(popular_tvshows).getByTestId("carousel_maincontainer")
-    //     expect(carousel).toBeInTheDocument();
-    // })
+        const carousel = within(popular_tvshows).getByTestId("carousel_maincontainer")
+        expect(carousel).toBeInTheDocument();
+    })
 
-    // it("must render 'Recommended TV Shows' section", () => {
-    //     const trending = fake_tv_trending
-    //     const popular = fake_tv_popular
-    //     const data = {
-    //         trending,
-    //         popular
-    //     }
-    //     const mockAppSelector = useAppSelector as jest.Mock
-    //     mockAppSelector
-    //     .mockReturnValue({
-    //         data: [{
-    //             "id": 105971,
-    //             "name": "Star Wars: The Bad Batch",
-    //             "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
-    //             "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
-    //             "media_type": "tv",
-    //             "genre_ids": [
-    //                 16,
-    //                 10759,
-    //                 10765
-    //             ]
-    //         }]
-    //     })
+    it("must render 'Recommended TV Shows' section", () => {
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
+        const data = {
+            trending,
+            popular
+        }
+        const mockAppSelector = useAppSelector as jest.Mock
+        mockAppSelector
+        .mockReturnValue({
+            data: [{
+                "id": 105971,
+                "name": "Star Wars: The Bad Batch",
+                "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
+                "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
+                "media_type": "tv",
+                "genre_ids": [
+                    16,
+                    10759,
+                    10765
+                ]
+            }]
+        })
 
-    //     const { container } = render(<TVShows data={ data } />)
-    //     const recommended_tvshows = within(container).getByTestId("recommended_tvshows")
-    //     expect(recommended_tvshows).toBeInTheDocument();
+        const { container } = render(<TVShows data={ data } />)
+        const recommended_tvshows = within(container).getByTestId("recommended_tvshows")
+        expect(recommended_tvshows).toBeInTheDocument();
 
-    //     const carousel = within(recommended_tvshows).getByTestId("carousel_maincontainer")
-    //     expect(carousel).toBeInTheDocument();        
-    // })
+        const carousel = within(recommended_tvshows).getByTestId("carousel_maincontainer")
+        expect(carousel).toBeInTheDocument();        
+    })
 
-    // it("must render 'My List' section", () => {
-    //     const trending = fake_tv_trending
-    //     const popular = fake_tv_popular
-    //     const data = {
-    //         trending,
-    //         popular
-    //     }
-    //     const mockAppSelector = useAppSelector as jest.Mock
-    //     mockAppSelector
-    //     .mockReturnValueOnce({
-    //         accessToken: "123"
-    //     })
-    //     .mockReturnValue({
-    //         data: [{
-    //             "id": 105971,
-    //             "name": "Star Wars: The Bad Batch",
-    //             "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
-    //             "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
-    //             "media_type": "tv",
-    //             "genre_ids": [
-    //                 16,
-    //                 10759,
-    //                 10765
-    //             ]
-    //         }]
-    //     })
+    it("must render 'My List' section", () => {
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
+        const data = {
+            trending,
+            popular
+        }
 
-    //     const { container } = render(<TVShows data={ data } />)
-    //     const mylist_container = within(container).getByTestId("mylist_container")
-    //     expect(mylist_container).toBeInTheDocument();
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
 
-    //     const carousel = within(mylist_container).getByTestId("carousel_maincontainer")
-    //     expect(carousel).toBeInTheDocument();  
-    // })
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
 
-    // it("must not render 'My List'", () => {
-    //     const trending = fake_tv_trending
-    //     const popular = fake_tv_popular
-    //     const data = {
-    //         trending,
-    //         popular
-    //     }
-    //     const mockAppSelector = useAppSelector as jest.Mock
-    //     mockAppSelector
-    //     .mockReturnValueOnce({
-    //         accessToken: null
-    //     })
-    //     .mockReturnValue({
-    //         data: [{
-    //             "id": 105971,
-    //             "name": "Star Wars: The Bad Batch",
-    //             "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
-    //             "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
-    //             "media_type": "tv",
-    //             "genre_ids": [
-    //                 16,
-    //                 10759,
-    //                 10765
-    //             ]
-    //         }]
-    //     })
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
+        })
 
-    //     const { container } = render(<TVShows data={ data } />)
-    //     const mylist_container = within(container).queryByTestId("mylist_container")
-    //     expect(mylist_container).not.toBeInTheDocument();
+        const mockAppSelector = useAppSelector as jest.Mock
+        mockAppSelector
+        .mockReturnValue({
+            data: [{
+                "id": 105971,
+                "name": "Star Wars: The Bad Batch",
+                "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
+                "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
+                "media_type": "tv",
+                "genre_ids": [
+                    16,
+                    10759,
+                    10765
+                ]
+            }]
+        })
 
-    // })
+        const { container } = render(<TVShows data={ data } />)
+        const mylist_container = within(container).getByTestId("mylist_container")
+        expect(mylist_container).toBeInTheDocument();
 
-    // it("must display 'No bookmarks found' if bookmark data is empty", () => {
-    //     const trending = fake_tv_trending
-    //     const popular = fake_tv_popular
-    //     const data = {
-    //         trending,
-    //         popular
-    //     }
-    //     const mockAppSelector = useAppSelector as jest.Mock
-    //     mockAppSelector
-    //     .mockReturnValueOnce({
-    //         accessToken: "123"
-    //     })
-    //     .mockReturnValue({
-    //         data: []
-    //     })
+        const carousel = within(mylist_container).getByTestId("carousel_maincontainer")
+        expect(carousel).toBeInTheDocument();  
+    })
 
-    //     const { container } = render(<TVShows data={ data } />)
-    //     const mylist_container = within(container).getByTestId("mylist_container")
-    //     expect(mylist_container).toBeInTheDocument();
+    it("must not render 'My List' section", () => {
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
+        const data = {
+            trending,
+            popular
+        }
 
-    //     const not_found = within(mylist_container).getByText("No bookmarks found")
-    //     expect(not_found).toBeInTheDocument();  
-    // })
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([false, false]);
+
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
+        })
+
+        const mockAppSelector = useAppSelector as jest.Mock
+        mockAppSelector
+        .mockReturnValue({
+            data: [{
+                "id": 105971,
+                "name": "Star Wars: The Bad Batch",
+                "backdrop_path": "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
+                "poster_path": "/5Q6z9bjy8dHKA5T8kNmCd8hj6Gl.jpg",
+                "media_type": "tv",
+                "genre_ids": [
+                    16,
+                    10759,
+                    10765
+                ]
+            }]
+        })
+
+        const { container } = render(<TVShows data={ data } />)
+        const mylist_container = within(container).queryByTestId("mylist_container")
+        expect(mylist_container).not.toBeInTheDocument();
+
+    })
+
+    it("must display 'No bookmarks found' if bookmark data is empty", () => {
+        const trending = fake_tv_trending
+        const popular = fake_tv_popular
+        const data = {
+            trending,
+            popular
+        }
+
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementation(() => [false, mockSetState])
+
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);
+
+        const mockNookies = parseCookies as jest.Mock;
+        mockNookies.mockReturnValue({
+            token: "somecookietoken"
+        })
+
+        const mockAppSelector = useAppSelector as jest.Mock
+        mockAppSelector
+        .mockReturnValue({
+            data: []
+        })
+
+        const { container } = render(<TVShows data={ data } />)
+        const mylist_container = within(container).getByTestId("mylist_container")
+        expect(mylist_container).toBeInTheDocument();
+
+        const not_found = within(mylist_container).getByText("No bookmarks found")
+        expect(not_found).toBeInTheDocument();  
+    })
     
 })

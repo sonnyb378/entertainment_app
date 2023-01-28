@@ -9,7 +9,7 @@ import { useAppDispatch } from "../../app/hooks";
 import { setAuthData } from "../../app/store/slices/auth";
 import { setCurrentUrl } from "../../app/store/slices/url";
 import { useRouter } from "next/router"
-import nookies from "nookies"
+import nookies, { setCookie } from "nookies"
 
 export interface IAvatar {
     userInitial?: string
@@ -31,7 +31,7 @@ const Avatar: React.FC<IAvatar> = ({ userInitial }) => {
     const logoutHandler = () => {
         signOut(auth);
 
-        nookies.set(undefined, 'token', "", { path: '/' });
+        setCookie(undefined, 'token', "", { path: '/' });
 
         dispatch(setCurrentUrl({
             currentUrl: "/"

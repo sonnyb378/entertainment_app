@@ -36,7 +36,7 @@ import { selectAuth } from "../../app/store/slices/auth";
 import { tvData } from "../../model/fake_tv_detail";
 // import { fake_tv_episodes } from "../../model/fake_tv_episodes";
 
-const TV: NextPageWithLayout = (props:any) => {
+const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
   
   const router = useRouter();
   const dispatch = useAppDispatch() 
@@ -51,7 +51,7 @@ const TV: NextPageWithLayout = (props:any) => {
   const cookies = parseCookies();
 
   // const { tv_detail: data, isLoading, isError } = useTVDetail(props.tv_id); 
-  const { data } = props;
+  // const { data } = props;
 
   // const isLoading = false;
   // const isError = undefined;

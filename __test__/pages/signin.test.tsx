@@ -217,7 +217,7 @@ describe("test sign in page", () => {
 
         const router = useRouter as jest.Mock;
         const mockRouter = {
-            push: jest.fn()
+            replace: jest.fn()
         }
         router.mockReturnValue(mockRouter);
 
@@ -241,14 +241,7 @@ describe("test sign in page", () => {
 
         fireEvent.click(signInWithGoogle)
 
-
-
-        // const logging_container = within(signInContainer).getByTestId("spinning_component")
-        // expect(logging_container).toBeInTheDocument();
-
-        // await waitFor(() => {
-        //     expect(mockRouter.push).toHaveBeenCalledWith("/movies")
-        // })
+        expect(mockRouter.replace).toHaveBeenCalledWith("/movies")
 
     })
 

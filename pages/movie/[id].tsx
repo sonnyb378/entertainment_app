@@ -21,16 +21,15 @@ import nookies, { parseCookies } from "nookies"
 import axios from "axios";
 import { GetStaticPaths } from "next";
 
-const Carousel = dynamic(() => import("../../components/Carousel/Carousel"), {
-  loading: () => <Spinner />
-})
-
 // import { IAuthState } from "../../ts/states/auth_state";
 // import { selectAuth } from "../../app/store/slices/auth";
 // import { movieData } from "../../model/fake_detail";
 
+const Carousel = dynamic(() => import("../../components/Carousel/Carousel"), {
+  loading: () => <Spinner />
+})
 
-const Movie: NextPageWithLayout = (props:any) => {
+const Movie: NextPageWithLayout<{data:any}> = ({data}) => {
   const router = useRouter();
   const dispatch = useAppDispatch() 
   const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
@@ -44,7 +43,7 @@ const Movie: NextPageWithLayout = (props:any) => {
   const { setVideoIsPlayed, videoIsPlayed, showData } = useAppContext()  
   // const { movie_detail: data, isLoading, isError } = useMovieDetail(props.movie_id); 
 
-  const { data } = props;
+  // const { data } = props;
 
   // const isLoading = false;
   // const isError = undefined;
@@ -100,7 +99,6 @@ const Movie: NextPageWithLayout = (props:any) => {
       removeDataBookmarks({ id: showID })
     )
   }
-
 
     // if (isError) return <div>Error occured while fetching movie details. Please try again.</div>
 

@@ -11,8 +11,15 @@ import { useAppSelector } from "../../../../app/hooks"
 import { useBlackAdam, useStarTrek } from '../../../../model/fake_search'
 
 import useSWRInfinite from 'swr/infinite'
+import { useAuthState } from "react-firebase-hooks/auth"
 
+jest.mock("react-firebase-hooks/auth", () => ({
+    useAuthState: jest.fn()
+}))
 
+jest.mock("../../../../firebase", () => ({
+    auth: jest.fn(),
+}))
 jest.mock("../../../../app/store/slices/bookmarks", () => ({
     setDataBookmarks: jest.fn(),
     removeDataBookmarks: jest.fn()
@@ -39,7 +46,9 @@ jest.mock("swr/infinite")
 
 describe("<SearchResults />", () => {
 
-    beforeAll(() => {           
+    beforeAll(() => {      
+        const user = useAuthState as jest.Mock;     
+        user.mockReturnValue([true, false]);     
     })
 
     afterEach(() => {
@@ -51,17 +60,21 @@ describe("<SearchResults />", () => {
         const fake_search = useBlackAdam(encodeURI("some movie title"));
 
         const mockAppSelector = useAppSelector as jest.Mock
-        mockAppSelector.mockReturnValue(jest.fn())
-        mockAppSelector.mockReturnValue({ data: [
-            {
-                id: 76600,
-                name: "Movie Title",
-                backdrop_path: "/tQ91wWQJ2WRNDXwxuO7GCXX5VPC.jpg",
-                poster_path: "/94xxm5701CzOdJdUEdIuwqZaowx.jpg",
-                media_type: "movie",
-                genre_ids: [878, 28, 12],
-            }
-        ]})
+        mockAppSelector
+        .mockReturnValue({
+            data: [{
+                "id": 555604,
+                "name": "Guillermo del Toro's Pinocchio",
+                "backdrop_path": "/tyNqJUWqqb0tjhqXYH4uwRwsp6A.jpg",
+                "poster_path": "/vx1u0uwxdlhV2MUzj4VlcMB0N6m.jpg",
+                "media_type": "movie",
+                "genre_ids": [
+                    16,
+                    14,
+                    18
+                ]
+            }]
+        })
 
         const useSWR_Infinite = useSWRInfinite as jest.Mock;
         const mockSWRInfinite = { 
@@ -81,16 +94,21 @@ describe("<SearchResults />", () => {
     it("must render <SearchResults /> with no result", async () => {
 
         const mockAppSelector = useAppSelector as jest.Mock
-        mockAppSelector.mockReturnValue({ data: [
-            {
-                id: 76600,
-                name: "Movie Title",
-                backdrop_path: "/tQ91wWQJ2WRNDXwxuO7GCXX5VPC.jpg",
-                poster_path: "/94xxm5701CzOdJdUEdIuwqZaowx.jpg",
-                media_type: "movie",
-                genre_ids: [878, 28, 12],
-            }
-        ]})
+        mockAppSelector
+        .mockReturnValue({
+            data: [{
+                "id": 555604,
+                "name": "Guillermo del Toro's Pinocchio",
+                "backdrop_path": "/tyNqJUWqqb0tjhqXYH4uwRwsp6A.jpg",
+                "poster_path": "/vx1u0uwxdlhV2MUzj4VlcMB0N6m.jpg",
+                "media_type": "movie",
+                "genre_ids": [
+                    16,
+                    14,
+                    18
+                ]
+            }]
+        })
 
         const useSWR_Infinite = useSWRInfinite as jest.Mock;
         const mockSWRInfinite = { 
@@ -117,16 +135,21 @@ describe("<SearchResults />", () => {
         const fake_search = useStarTrek(encodeURI("some movie title"));
 
         const mockAppSelector = useAppSelector as jest.Mock
-        mockAppSelector.mockReturnValue({ data: [
-            {
-                id: 76600,
-                name: "Movie Title",
-                backdrop_path: "/tQ91wWQJ2WRNDXwxuO7GCXX5VPC.jpg",
-                poster_path: "/94xxm5701CzOdJdUEdIuwqZaowx.jpg",
-                media_type: "movie",
-                genre_ids: [878, 28, 12],
-            }
-        ]})
+        mockAppSelector
+        .mockReturnValue({
+            data: [{
+                "id": 555604,
+                "name": "Guillermo del Toro's Pinocchio",
+                "backdrop_path": "/tyNqJUWqqb0tjhqXYH4uwRwsp6A.jpg",
+                "poster_path": "/vx1u0uwxdlhV2MUzj4VlcMB0N6m.jpg",
+                "media_type": "movie",
+                "genre_ids": [
+                    16,
+                    14,
+                    18
+                ]
+            }]
+        })
 
         const useSWR_Infinite = useSWRInfinite as jest.Mock;
         const mockSWRInfinite = { 
