@@ -8,10 +8,9 @@ import CustomBtn from "../components/Button/CustomBtn/CustomBtn";
 import dynamic from "next/dynamic";
 import Spinner from "../components/Spinner/Spinner";
 
-import { GetServerSideProps, GetStaticProps } from "next";
+import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { useAuthState } from "react-firebase-hooks/auth";
-import nookies, { parseCookies } from "nookies"
 import { PlusCircleIcon, MinusCircleIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 import { NextPageWithLayout } from "./page";
 import { useAppSelector, useAppDispatch } from "../app/hooks";
@@ -22,6 +21,9 @@ import { fadeScreen } from "../lib/fadeScreen";
 import { IBookmarkData, removeDataBookmarks, selectBookmarkData, setDataBookmarks } from "../app/store/slices/bookmarks";
 import { useTVDetail } from "../lib/hooks/useTVDetail";
 import { auth } from "../firebase";
+import { parseCookies } from "nookies"
+
+// import nookies from "nookies";
 
 const Carousel = dynamic(() => import("../components/Carousel/Carousel"), {
   loading: () => <Spinner />

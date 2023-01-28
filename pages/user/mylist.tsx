@@ -6,16 +6,18 @@ import Thumbnail from "../../components/Thumbnail/Thumbnail";
 import { NextPageWithLayout } from "../page";
 import { useRouter } from "next/router";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import { selectAuth } from "../../app/store/slices/auth";
-import { IAuthState } from "../../ts/states/auth_state";
 import { setCurrentUrl } from "../../app/store/slices/url";
 import { useAppContext } from "../../context/state";
 import { fadeScreen } from "../../lib/fadeScreen";
 import { IBookmarkData, selectBookmarkData } from "../../app/store/slices/bookmarks";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
-import { GetServerSideProps } from "next";
-import nookies, { parseCookies } from "nookies"
+import { parseCookies } from "nookies"
+
+// import nookies from "nookies";
+// import { selectAuth } from "../../app/store/slices/auth";
+// import { IAuthState } from "../../ts/states/auth_state";
+// import { GetServerSideProps } from "next";
 
 const MyList: NextPageWithLayout = () => {
     // const user = useAppSelector<IAuthState>(selectAuth);  

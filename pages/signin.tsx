@@ -22,7 +22,7 @@ interface SignInErrors {
 
 const Signin: NextPageWithLayout = (props) => {
 
-    const COOKIES_MAX_AGE = 60 * 2; //60 * 60 * 24 * 30; // 30days
+    const COOKIES_MAX_AGE = 60 * 60 * 24 * 30; // 30days
     const [user, loading] = useAuthState(auth);
     
     const router = useRouter();

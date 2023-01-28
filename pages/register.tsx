@@ -6,22 +6,23 @@ import Main from "../components/Layout/Main/Main";
 import { NextPageWithLayout } from "./page";
 import { useRouter } from "next/router";
 import { ArrowPathIcon } from "@heroicons/react/24/solid";
-import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { selectAuth } from "../app/store/slices/auth";
-import { IAuthState } from "../ts/states/auth_state";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
 import { GetServerSideProps } from "next";
 
-
-import nookies, { parseCookies, setCookie } from "nookies"
+import nookies, { parseCookies } from "nookies"
+// import { setCookie } from "nookies";
+// import { createUserWithEmailAndPassword } from "firebase/auth";
+// import { useAppDispatch, useAppSelector } from "../app/hooks";
+// import { selectAuth } from "../app/store/slices/auth";
+// import { IAuthState } from "../ts/states/auth_state";
 
 interface IError {
     error: string;
 }
 const Register: NextPageWithLayout = () => {
 
-    const COOKIES_MAX_AGE = 60 * 2; // 60 * 60 * 24 * 30;
+    const COOKIES_MAX_AGE = 60 * 60 * 24 * 30;
     const [user, loading] = useAuthState(auth);
     const router = useRouter();
     

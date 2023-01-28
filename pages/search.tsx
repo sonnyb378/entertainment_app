@@ -15,9 +15,9 @@ import { IUrl } from "../app/store/slices/url";
 import { selectCurrentUrl } from "../app/store/slices/url";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
-import { GetServerSideProps } from "next";
-
-import nookies, { parseCookies } from "nookies";
+import { parseCookies } from "nookies";
+// import nookies from "nookies";
+// import { GetServerSideProps } from "next";
 
 const Search: NextPageWithLayout = () => {
 
