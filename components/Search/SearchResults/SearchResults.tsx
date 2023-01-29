@@ -46,7 +46,7 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
         setSize(size + 1)
     }
 
-    const new_result = search_results.filter((data) => data.media_type !== "person" && data.backdrop_path !== null)
+    // const new_result = search_results.filter((data) => data.media_type !== "person" && data.backdrop_path !== null)
     // console.log("new_result: ", new_result)
 
     if (isError) return  <div>Sorry an error occurred. Please try again...</div>
@@ -57,7 +57,7 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
                 isEmpty && <div className="mt-4">No Records Found</div>
             }
             {
-                new_result &&
+                search_results &&
             
                 <ul 
                     className="flex flex-wrap items-start justify-start border-0 mt-4 w-full relative" 
@@ -66,7 +66,7 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
                 >
                     
                     {
-                        new_result.map((result, i) => {
+                        search_results.map((result, i) => {
                             return (
                                 <SearchResultItem 
                                     key={i} 
