@@ -36,7 +36,7 @@ jest.mock("next/router", () => ({
 
 describe("<Main />", () => {
 
-    beforeAll(() => {
+    beforeEach(() => {
         const mockUseAuthState = useAuthState as jest.Mock;
         mockUseAuthState.mockReturnValue([true, false])
 
@@ -44,6 +44,14 @@ describe("<Main />", () => {
         mockNookies.mockReturnValue({
             token: "somecookietoken"
         })
+        const router = useRouter as jest.Mock;
+        const mockRouter = {
+            asPath: {
+                includes: jest.fn()
+            }
+        }
+        router.mockReturnValue(mockRouter);
+
     })
     afterAll(() => {
         jest.clearAllMocks()
@@ -52,7 +60,9 @@ describe("<Main />", () => {
     it("must display the <Main /> component", () => {
         const router = useRouter as jest.Mock;
         const mockRouter = {
-            asPath: jest.fn()
+            asPath: {
+                includes: jest.fn()
+            }
         }
         router.mockReturnValue(mockRouter)
         

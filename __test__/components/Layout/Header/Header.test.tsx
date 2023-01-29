@@ -48,6 +48,14 @@ describe('Header', () => {
 
     it("must display header", () => {
 
+        const router = useRouter as jest.Mock;
+        const mockRouter = {
+            asPath: {
+                includes: jest.fn()
+            }
+        }
+        router.mockReturnValue(mockRouter);
+        
         render(<Header />)
         const headerComponent = screen.getByTestId("header")
         expect(headerComponent).toBeInTheDocument();           
@@ -59,6 +67,14 @@ describe('Header', () => {
         render(<Header />)
         const headerComponent = screen.getByTestId("header")
         expect(headerComponent).toBeInTheDocument(); 
+        
+        const router = useRouter as jest.Mock;
+        const mockRouter = {
+            asPath: {
+                includes: jest.fn()
+            }
+        }
+        router.mockReturnValue(mockRouter);
 
         const logoComponent = within(headerComponent).getByTestId("logo_container")
         expect(logoComponent).toBeInTheDocument();
@@ -70,7 +86,10 @@ describe('Header', () => {
 
         const router = useRouter as jest.Mock;
         const mockRouter = {
-            replace: jest.fn()
+            replace: jest.fn(),
+            asPath: {
+                includes: jest.fn()
+            }
         }
         router.mockReturnValue({ 
             replace: mockRouter.replace,
@@ -94,7 +113,10 @@ describe('Header', () => {
         const router = useRouter as jest.Mock;
         const mockRouter = {
             replace: jest.fn(),
-            pathname: "/signin"
+            pathname: "/signin",
+            asPath: {
+                includes: jest.fn()
+            }
         }
         router.mockReturnValue(mockRouter);
 
@@ -118,7 +140,10 @@ describe('Header', () => {
 
         const router = useRouter as jest.Mock;
         const mockRouter = {
-            replace: jest.fn()
+            replace: jest.fn(),
+            asPath: {
+                includes: jest.fn()
+            }
         }
         router.mockReturnValue({ 
             replace: mockRouter.replace,
@@ -142,7 +167,10 @@ describe('Header', () => {
         const router = useRouter as jest.Mock;
         const mockRouter = {
             replace: jest.fn(),
-            pathname: "/register"
+            pathname: "/register",
+            asPath: {
+                includes: jest.fn()
+            }
         }
         router.mockReturnValue(mockRouter);
 

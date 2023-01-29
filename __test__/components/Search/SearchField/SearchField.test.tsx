@@ -32,7 +32,9 @@ describe("<PopularCard />", () => {
     it("must render <SearchField />", () => {
         const router = useRouter as jest.Mock;
         const mockRouter = {
-            asPath: jest.fn()
+            asPath: {
+                includes: jest.fn()
+            }
         }
         router.mockReturnValue(mockRouter)
 
@@ -44,7 +46,9 @@ describe("<PopularCard />", () => {
     it("must trigger onChange handler", () => {
         const router = useRouter as jest.Mock;
         const mockRouter = {
-            asPath: jest.fn()
+            asPath: {
+                includes: jest.fn()
+            }
         }
         router.mockReturnValue(mockRouter)
 
