@@ -132,9 +132,9 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                     <Image 
                         src={ `${process.env.NEXT_PUBLIC_TMDB_IMAGE_PATH_ORIGINAL}${featured.backdrop_path}` } 
                         layout="responsive"
-                        priority={true}  
                         width={300}
                         height={169}    
+                        priority={true}
                         alt={`${featured.title}`} 
                         className={`object-cover z-[1000] opacity-40 border-2 border-red-500 object-center-top
                         sm:opacity-50`}
@@ -149,15 +149,17 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                   <div className="flex flex-col relative items-start transition-all duration-200 ease-in-out justify-center w-full z-[1200] border-0 p-10 h-[100%] top-0 left-0 -mt-[150px]
                       md:-mt-[300px]
                       lg:-mt-[400px]
-                      xl:-mt-[500px]
-                      2xl:-mt-[650px]
+                      xl:-mt-[500px] xl:w-[60%]
+                      2xl:-mt-[750px] 2xl:w-[50%] 2xl:pb-[100px]
                   ">   
-                      <div className="flex flex-col items-start justify-start border-0 pb-[0px] h-[100%] w-full">
+                      <div className="flex flex-col items-center justify-start border-0 pb-[0px] h-[100%] w-full
+                        md:items-start">
                         
-                        <div className="w-full p-4 text-[30px] font-bold">{ featured.title || featured.original_title }</div>
-                        <div className="flex items-center justify-start p-0 border-0">
+                        <div className="w-full p-4 text-[50px] font-bold text-center md:text-left">{ featured.title || featured.original_title }</div>
+                        <div className="flex flex-row items-center justify-center p-4 text-[12px] border-0 w-full space-y-0
+                          md:flex-row md:space-y-0 md:justify-start md:py-4 md:px-0">
                           <Info title="" valueFor="runtime" value={featured.runtime} />
-                          <span className="ml-[10px] mr-[10px] text-[11px]">●</span>
+                          <span className="hidden ml-[10px] mr-[10px] text-[11px] md:flex">●</span>
                           <div className="flex items-start justify-start text-[12px] border-0">
                             <span className="mr-[10px]">{ Math.floor(featured.vote_average) } / 10</span> 
                             <span className="mr-[10px]">-</span> 
@@ -165,7 +167,9 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                           </div>
                         </div>
 
-                        <div className="w-full p-4 text-[15px] ">{ featured.overview }</div>
+                        <div className="w-full p-4 text-[15px] line-clamp-3 mb-[20px]
+                          md:mb-[5px]
+                        ">{ featured.overview }</div>
                         
                         <Info title="Release Date" value={featured.release_date} />
                         <Info title="Country" value={featured.production_countries} />

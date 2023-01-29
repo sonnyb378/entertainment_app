@@ -248,7 +248,6 @@ const PopularCard:React.FC<{
                                         <Image 
                                             src={number_image}
                                             layout="fill"
-                                            priority={true}
                                             alt=""
                                             className={`z-[1001] !relative !h-[unset] object-cover`}
                                         />

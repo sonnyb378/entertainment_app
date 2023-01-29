@@ -131,9 +131,9 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
                     <Image 
                         src={ `${process.env.NEXT_PUBLIC_TMDB_IMAGE_PATH_ORIGINAL}${featured.backdrop_path}` } 
                         layout="responsive"
-                        priority={true}  
                         width={300}
                         height={169}     
+                        priority={true}
                         alt={featured.title || featured.name || featured.original_title || featured.original_name}
                         className={`object-cover z-[1000] opacity-40 border-2 border-red-500 object-center-top
                         sm:opacity-50`}
@@ -148,33 +148,51 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
                   <div className="flex flex-col relative items-start transition-all duration-200 ease-in-out justify-center w-full z-[1200] border-0 p-10 h-[100%] top-0 left-0 -mt-[150px]
                       md:-mt-[300px]
                       lg:-mt-[400px]
-                      xl:-mt-[500px]
-                      2xl:-mt-[650px]
+                      xl:-mt-[500px] xl:w-[60%]
+                      2xl:-mt-[750px] 2xl:w-[50%] 2xl:pb-[100px]
                   ">   
-                      <div className="flex flex-col items-start justify-start border-0 pb-[0px] h-[100%] w-full">
+                      <div className="flex flex-col items-center justify-start border-0 pb-[0px] h-[100%] w-full
+                        md:items-start
+                      ">
                         
-                        <div className="w-full p-4 text-[30px] font-bold">{ featured.name || featured.original_name }</div>
-                        <div className="flex items-center justify-start p-4 text-[12px] border-0">
-                          {
-                            featured.number_of_seasons && featured.number_of_seasons > 0 && 
-                              <>
-                                <div className="mr-[10px] p-2 border border-green-500 text-green-500">
-                                  Seasons: { featured.number_of_seasons }
-                                </div>  
-                                
-                              </>
+                        <div className="w-full p-4 text-[50px] font-bold text-center
+                          md:text-left
+                        ">{ featured.name || featured.original_name }</div>
+                        <div className="flex flex-col items-center justify-center p-4 text-[12px] border-0 w-full
+                          md:flex-row
+                        ">
+                            <div className="flex flex-col items-center justify-center border-0 space-y-2
+                              md:flex-row md:justify-start md:space-y-0
+                            ">
+                              {
+                                featured.number_of_seasons && featured.number_of_seasons > 0 && 
+                                  <>
+                                    <div className="mr-[10px] p-2 border border-green-500 text-green-500">
+                                      Seasons: { featured.number_of_seasons }
+                                    </div>                                    
+                                  </>
+                              }
+                              <Info title="" value={featured.genres} />
+                            </div>                          
 
-                          }
-                          <Info title="" value={featured.genres} />
-                          <span className="ml-[10px] mr-[10px] text-[11px]">●</span>
-                          <div className="flex items-center justify-start">
-                            <span className="mr-[10px]">{ Math.floor(featured.vote_average) } / 10</span> 
-                            <span className="mr-[10px]">-</span> 
-                            <span>Votes: {featured.vote_count} </span>
-                          </div>
+                            <div className="flex flex-1  items-center justify-center border-0 p-2
+                              md:justify-start
+                            ">
+                              <span className="hidden ml-[10px] mr-[10px] text-[11px] md:flex">●</span>
+
+                              <div className="flex items-center justify-start">
+                                <span className="mr-[10px]">{ Math.floor(featured.vote_average) } / 10</span> 
+                                <span className="mr-[10px]">-</span> 
+                                <span>Votes: {featured.vote_count} </span>
+                              </div>
+                            </div>
+                          
+
                         </div>
 
-                        <div className="w-full p-4 text-[15px] ">{ featured.overview }</div>
+                        <div className="w-full p-4 text-[15px] line-clamp-3 mb-[20px]
+                          md:mb-[5px]
+                        ">{ featured.overview }</div>
                         {
                           featured.created_by && featured.created_by.length > 0 && <Info title="Created By" value={ featured.created_by } />
                         }
@@ -182,9 +200,9 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
                   
                         <Info title="Audio Languages" value={featured.spoken_languages} />
 
-                        <div className="flex flex-col w-full items-center justify-start space-x-2 border-0 p-4 mt-4 space-y-2
-                          sm:space-y-0 sm:space-x-2 sm:flex-row
-                          lg:space-x-2">
+                        <div className="flex flex-col w-full items-center justify-start border-0 p-0 mt-4 space-y-2
+                        sm:space-y-0 sm:space-x-2 sm:flex-row
+                        lg:space-x-2">
                           {/* <CustomBtn title="Play" Icon={PlayCircleIcon} onClickHandler={() => console.log("PlayCircleIcon: ",data.id)} /> */}
                           {/* <CustomBtn title="Season" Icon={ChevronDownIcon} onClickHandler={() => console.log("Dropdown season: ",data.id)} /> */}
                           {

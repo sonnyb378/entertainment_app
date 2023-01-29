@@ -123,26 +123,49 @@ const Movie: NextPageWithLayout<{data:any}> = ({data}) => {
                 }
                 data-testid="movie_info_container"
               >
+                
+                <div className="flex items-center justify-start w-full absolute top-0 left-0 z-[2000] p-10">
+                    <ChevronLeftIcon className="w-[30px] h-[30px] mr-[10px] border border-btnprimary bg-btnprimary rounded-full p-1 
+                    hover:cursor-pointer hover:border-white" 
+                    onClick={ () => router.back() } />
+                    <span>Back</span>
+                </div>
 
-                <div className="flex flex-col flex-1 relative items-start justify-start w-full z-[1200] border-0 p-6 pb-[100px]
-                  md:w-[60%] md:relative 
-                  lg:top-0 lg:left-0
-                  xl:w-[70%] ">
-                  
-                  <div className="flex items-center justify-start w-full py-4">
-                      <ChevronLeftIcon className="w-[30px] h-[30px] mr-[10px] border border-btnprimary bg-btnprimary rounded-full p-1 
-                      hover:cursor-pointer hover:border-white" 
-                      onClick={ () => router.back() } />
-                      <span>Back</span>
-                  </div>
+                <div className="image-container relative w-full border-0 border-purple-500 h-[4/6]" data-testid="featured_backdrop"> 
+                  <Image 
+                      src={ `${process.env.NEXT_PUBLIC_TMDB_IMAGE_PATH_ORIGINAL}${data.backdrop_path}` } 
+                      layout="responsive"
+                      width={300}
+                      height={169}  
+                      alt={`${data.title}`} 
+                      priority={true}
+                      className={`object-cover z-[1000] opacity-40 border-2 border-red-500 object-center-top
+                      sm:opacity-50`}
+                  />
+                  <div className="flex w-full h-[100px] border-0 absolute z-[1100] bg-gradient-to-t from-black via-black bottom-0
+                    lg:h-[200px]
+                    xl:h-[250px]
+                    2xl:h-[300px]
+                  "></div>
+                </div>
 
-                  <div className="flex flex-col border-0 h-[100%] w-full
-                    xl:w-[70%] xl:ml-[100px] xl:mr-[100px]">
+          
+
+                <div className="flex flex-col flex-1 relative items-start justify-start w-full z-[1200] border-0 p-10 pb-[50px] -mt-[150px]
+                  md:-mt-[300px] md:pb-[80px]
+                  lg:-mt-[400px]
+                  xl:-mt-[500px] xl:w-[60%]
+                  2xl:-mt-[750px] 2xl:w-[50%] 2xl:pb-[100px]
+                ">
+
+                  <div className="flex flex-col items-center justify-start border-0 pb-[0px] h-[100%] w-full
+                        md:items-start">
                     
-                    <div className="w-full p-4 text-[30px] font-bold">{ data.title || data.original_title }</div>
-                    <div className="flex items-center justify-start">                    
+                    <div className="w-full p-4 text-[50px] font-bold text-center md:text-left">{ data.title || data.original_title }</div>
+                    <div className="flex flex-row items-center justify-center p-4 text-[12px] border-0 w-full space-y-0
+                      md:flex-row md:space-y-0 md:justify-start md:py-4 md:px-0">                                          
                       <Info title="" valueFor="runtime" value={data.runtime} />
-                      <span className="mr-[10px] text-[11px]">●</span>
+                      <span className="hidden ml-[10px] mr-[10px] text-[11px] md:flex">●</span>
                       <div className="flex items-center justify-start text-[12px]">
                         <span className="mr-[10px]">{ Math.floor(data.vote_average) } / 10</span> 
                         <span className="mr-[10px]">-</span> 
@@ -150,7 +173,9 @@ const Movie: NextPageWithLayout<{data:any}> = ({data}) => {
                       </div>
                     </div>
 
-                    <div className="w-full p-4 text-[15px] ">{ data.overview }</div>
+                    <div className="w-full p-4 text-[15px] line-clamp-3 mb-[20px]
+                          md:mb-[5px]
+                        ">{ data.overview }</div>
                     
                     <Info title="Release Date" value={data.release_date} />
                     <Info title="Country" value={data.production_countries} />
@@ -158,9 +183,9 @@ const Movie: NextPageWithLayout<{data:any}> = ({data}) => {
                     <Info title="Cast" value={ data.credits?.cast } />
                     <Info title="Genres" value={data.genres} />
 
-                    <div className="flex flex-col w-full items-center justify-start space-x-2 border-0 p-4 mt-4 space-y-2
-                    sm:space-y-0 sm:space-x-2 sm:flex-row
-                    lg:space-x-2">
+                    <div className="flex flex-col w-full items-center justify-start border-0 p-0 mt-4 space-y-2
+                        sm:space-y-0 sm:space-x-2 sm:flex-row
+                        lg:space-x-2">
                       {
                         user &&
                           <CustomBtn title="Play" Icon={PlayCircleIcon} onClickHandler={() => setVideoIsPlayed(true, {...data, media_type: "movie"})} />
@@ -181,10 +206,10 @@ const Movie: NextPageWithLayout<{data:any}> = ({data}) => {
                   </div>
                 </div>
 
-                <div className="flex w-full h-[50px] border-0 absolute z-[1100] bg-gradient-to-t from-black -bottom-[3px]"></div> 
+                {/* <div className="flex w-full h-[50px] border-0 absolute z-[1100] bg-gradient-to-t from-black -bottom-[30px]"></div>  */}
 
-                <div className="image-container absolute w-full h-[100%] border-0 border-purple-500 right-0
-                sm:w-[60%]
+                {/* <div className="image-container absolute w-full h-[100%] border-2 border-purple-500 left-0 top-0
+                
                 ">       
                   <div className="hidden -left-[5px] w-[100px] border-0 absolute z-[1100] h-[100%] bg-gradient-to-r from-black
                   sm:flex sm:-left-[5px]
@@ -197,10 +222,10 @@ const Movie: NextPageWithLayout<{data:any}> = ({data}) => {
                       width={300}
                       height={169}     
                       alt={`${data.title}`}
-                      className={`object-cover z-[1000] opacity-20 border-0 border-red-500 object-center-top
+                      className={`object-cover z-[1000] opacity-20 border-0 border-red-500 object-top
                       sm:opacity-70`}
                   /> 
-                </div> 
+                </div>  */}
 
               </section>
 

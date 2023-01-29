@@ -191,7 +191,6 @@ const Thumbnail:React.FC<{
                         <Image 
                             src={ no_result } 
                             layout="fill"
-                            priority={true}
                             alt="No Result"
                             className={`object-contain cursor-pointer !relative !h-[unset] z-[1000]`}
                         />                    
