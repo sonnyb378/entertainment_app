@@ -3,7 +3,6 @@ import useSWRInfinite from 'swr/infinite'
 import SearchResultItem, { IResult } from "../SearchResultItem/SearchResultItem";
 import dynamic from "next/dynamic";
 import Spinner from "../../Spinner/Spinner";
-// import ResultCardLoading from "../SearchResultItem/ResultCardLoading/ResultCardLoading";
 
 const ResultCardLoading = dynamic(() => import("../SearchResultItem/ResultCardLoading/ResultCardLoading"), {
     loading: () => <Spinner />
@@ -47,6 +46,9 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
         setSize(size + 1)
     }
 
+    const new_result = search_results.filter((data) => data.media_type !== "person" && data.backdrop_path !== null)
+    // console.log("new_result: ", new_result)
+
     if (isError) return  <div>Sorry an error occurred. Please try again...</div>
 
     return (
@@ -55,7 +57,7 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
                 isEmpty && <div className="mt-4">No Records Found</div>
             }
             {
-                search_results &&
+                new_result &&
             
                 <ul 
                     className="flex flex-wrap items-start justify-start border-0 mt-4 w-full relative" 
@@ -64,7 +66,7 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
                 >
                     
                     {
-                        search_results.map((result, i) => {
+                        new_result.map((result, i) => {
                             return (
                                 <SearchResultItem 
                                     key={i} 
