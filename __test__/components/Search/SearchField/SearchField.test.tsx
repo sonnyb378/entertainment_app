@@ -38,7 +38,9 @@ describe("<PopularCard />", () => {
         }
         router.mockReturnValue(mockRouter)
 
-        render(<SearchField />)
+
+
+        render(<SearchField show={false} scrolled={false} sizeHandler={ jest.fn()} />)
         const search = screen.getByTestId("search_container")
         expect(search).toBeInTheDocument();
     })
@@ -52,7 +54,7 @@ describe("<PopularCard />", () => {
         }
         router.mockReturnValue(mockRouter)
 
-        render(<SearchField />)
+        render(<SearchField  show={false} scrolled={false} sizeHandler={ jest.fn()} />)
         const search = screen.getByTestId("search_container")
         expect(search).toBeInTheDocument();
 
