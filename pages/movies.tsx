@@ -146,7 +146,8 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                     "></div>
                   </div>
 
-                  <div className="flex flex-col relative items-start transition-all duration-200 ease-in-out justify-center w-full z-[1200] border-0 p-10 h-[100%] top-0 left-0 -mt-[150px]
+                  <div className="flex flex-col relative items-start transition-all duration-200 ease-in-out justify-center w-full z-[1200] border-0 p-2 h-[100%] top-0 left-0 -mt-[150px]
+                      sm:p-10
                       md:-mt-[300px]
                       lg:-mt-[400px]
                       xl:-mt-[500px] xl:w-[60%]
@@ -155,7 +156,9 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                       <div className="flex flex-col items-center justify-start border-0 pb-[0px] h-[100%] w-full
                         md:items-start">
                         
-                        <div className="w-full p-4 text-[50px] font-bold text-center md:text-left">{ featured.title || featured.original_title }</div>
+                        <div className="w-full p-4 text-[30px] font-bold text-center leading-tight
+                        sm:text-center sm:text-[50px]
+                        md:text-left">{ featured.title || featured.original_title }</div>
                         <div className="flex flex-row items-center justify-center p-4 text-[12px] border-0 w-full space-y-0
                           md:flex-row md:space-y-0 md:justify-start md:py-4 md:px-0">
                           <Info title="" valueFor="runtime" value={featured.runtime} />
@@ -167,7 +170,8 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                           </div>
                         </div>
 
-                        <div className="w-full p-4 text-[15px] line-clamp-3 mb-[20px]
+                        <div className="w-full p-4 text-[15px] line-clamp-3 mb-[20px] text-center
+                          sm:text-left
                           md:mb-[5px]
                         ">{ featured.overview }</div>
                         
@@ -220,7 +224,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                 user={user} 
                 maxItems={trending.length} 
                 bookmarkData={[...bookmarks.data]}
-                baseWidth={290}
+                baseWidth={220}
                 target="t"
               />
 
@@ -234,7 +238,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                 user={user} 
                 maxItems={10} 
                 bookmarkData={[...bookmarks.data]}
-                baseWidth={290}
+                baseWidth={220}
                 target="p"
                 isThumbnail={false}
                 mediaType="movie"
@@ -254,7 +258,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                     user={user} 
                     maxItems={recommendationsArr.length} 
                     bookmarkData={[...bookmarks.data]}
-                    baseWidth={290}
+                    baseWidth={220}
                     target="r"
                   />
 
@@ -274,7 +278,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                           user={user} 
                           maxItems={ [...bookmarks.data].length } 
                           bookmarkData={[...bookmarks.data]}
-                          baseWidth={290}
+                          baseWidth={220}
                           target="m"
                         />
                       :

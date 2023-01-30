@@ -156,7 +156,8 @@ const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
               data-testid="tv_info_container"
             >
 
-                <div className="flex items-center justify-start w-full absolute top-0 left-0 z-[2000] p-10">
+                <div className="flex items-center justify-start w-full absolute top-0 left-0 z-[2000] p-2
+                sm:p-10">
                     <ChevronLeftIcon className="w-[30px] h-[30px] mr-[10px] border border-btnprimary bg-btnprimary rounded-full p-1 
                     hover:cursor-pointer hover:border-white" 
                     onClick={ () => router.back() } />
@@ -225,8 +226,9 @@ const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
                   </div>
 
                   <div className="w-full p-4 text-[15px] line-clamp-3 mb-[20px]
-                          md:mb-[5px]
-                        ">{ data.overview }</div>
+                    sm:text-left
+                    md:mb-[5px]
+                  ">{ data.overview }</div>
                   
                   <Info title="Created By" value={ data.created_by } />
                   <Info title="Cast" value={ data.credits?.cast } />
@@ -320,7 +322,7 @@ const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
                     user={user} 
                     maxItems={ recommendationsArr.length } 
                     bookmarkData={[...bookmarks.data]}
-                    baseWidth={290}
+                    baseWidth={220}
                     target="r"
                   />
                 </section>
@@ -337,7 +339,7 @@ const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
                           user={user} 
                           maxItems={ [...bookmarks.data].length } 
                           bookmarkData={[...bookmarks.data]}
-                          baseWidth={290}
+                          baseWidth={220}
                           target="m"
                         />
                       :

@@ -124,7 +124,9 @@ const Movie: NextPageWithLayout<{data:any}> = ({data}) => {
                 data-testid="movie_info_container"
               >
                 
-                <div className="flex items-center justify-start w-full absolute top-0 left-0 z-[2000] p-10">
+                <div className="flex items-center justify-start w-full absolute top-0 left-0 z-[2000] p-2
+                sm:p-10
+                ">
                     <ChevronLeftIcon className="w-[30px] h-[30px] mr-[10px] border border-btnprimary bg-btnprimary rounded-full p-1 
                     hover:cursor-pointer hover:border-white" 
                     onClick={ () => router.back() } />
@@ -161,7 +163,9 @@ const Movie: NextPageWithLayout<{data:any}> = ({data}) => {
                   <div className="flex flex-col items-center justify-start border-0 pb-[0px] h-[100%] w-full
                         md:items-start">
                     
-                    <div className="w-full p-4 text-[50px] font-bold text-center md:text-left">{ data.title || data.original_title }</div>
+                    <div className="w-full p-4 text-[40px] font-bold text-center leading-tight
+                        sm:text-center sm:text-[50px]
+                        md:text-left">{ data.title || data.original_title }</div>
                     <div className="flex flex-row items-center justify-center p-4 text-[12px] border-0 w-full space-y-0
                       md:flex-row md:space-y-0 md:justify-start md:py-4 md:px-0">                                          
                       <Info title="" valueFor="runtime" value={data.runtime} />
@@ -174,8 +178,9 @@ const Movie: NextPageWithLayout<{data:any}> = ({data}) => {
                     </div>
 
                     <div className="w-full p-4 text-[15px] line-clamp-3 mb-[20px]
-                          md:mb-[5px]
-                        ">{ data.overview }</div>
+                        sm:text-left
+                        md:mb-[5px]
+                      ">{ data.overview }</div>
                     
                     <Info title="Release Date" value={data.release_date} />
                     <Info title="Country" value={data.production_countries} />
@@ -239,7 +244,7 @@ const Movie: NextPageWithLayout<{data:any}> = ({data}) => {
                       user={user} 
                       maxItems={recommendationsArr.length} 
                       bookmarkData={[...bookmarks.data]}
-                      baseWidth={290}
+                      baseWidth={220}
                       target="r"
                     />
 
@@ -257,7 +262,7 @@ const Movie: NextPageWithLayout<{data:any}> = ({data}) => {
                             user={user} 
                             maxItems={ [...bookmarks.data].length } 
                             bookmarkData={ [...bookmarks.data] }
-                            baseWidth={290}
+                            baseWidth={220}
                             target="b"
                           />
                         :

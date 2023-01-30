@@ -191,6 +191,7 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
                         </div>
 
                         <div className="w-full p-4 text-[15px] line-clamp-3 mb-[20px]
+                          sm:text-left
                           md:mb-[5px]
                         ">{ featured.overview }</div>
                         {
@@ -260,7 +261,7 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
               user={user} 
               maxItems={trending.length} 
               bookmarkData={[...bookmarks.data]}
-              baseWidth={290}
+              baseWidth={220}
               target="t"
             />
 
@@ -274,7 +275,7 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
               user={user} 
               maxItems={10} 
               bookmarkData={[...bookmarks.data]}
-              baseWidth={290}
+              baseWidth={220}
               target="p"
               isThumbnail={false}
               mediaType="tv"
@@ -293,7 +294,7 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
                   user={user} 
                   maxItems={recommendationsArr.length} 
                   bookmarkData={[...bookmarks.data]}
-                  baseWidth={290}
+                  baseWidth={220}
                   target="r"
                 />
               </section>  
@@ -313,7 +314,7 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
                           user={user} 
                           maxItems={ [...bookmarks.data].length } 
                           bookmarkData={[...bookmarks.data]}
-                          baseWidth={290}
+                          baseWidth={220}
                           target="m"
                         />
                       :

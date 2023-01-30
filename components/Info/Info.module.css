@@ -1,5 +1,6 @@
 .info_container {
-  @apply flex px-4 my-1 w-full border-0
+  @apply flex flex-col px-4 my-1 w-full border-0
+  sm:flex-row
   md:w-full;
 }
 
@@ -8,11 +9,12 @@
 }
 
 .info_title {
-  @apply text-[12px] font-bold mr-[8px];
+  @apply text-[12px] font-bold mr-[8px] block mt-1
+  sm:mt-0;
 }
 
 .info_value {
-  @apply text-[12px] flex-1;
+  @apply text-[12px] flex-1 block;
 }
 
 .info_runtime {
