@@ -1,6 +1,11 @@
-.search_container {
-  @apply flex px-[2px] py-[2px] items-center justify-start w-[180px] bg-[#20344E] rounded-md mr-2 focus-within:border-2 border-btnprimary
+.inputfield_container {
+  @apply flex px-[2px] py-[2px] items-center justify-start w-[180px] bg-[#20344E] rounded-md focus-within:border-2 border-btnprimary
   sm:w-[280px];
+}
+
+.inputfield_container_mobile {
+  @apply flex items-center justify-start w-full relative border bg-[#20344E] rounded-md mr-0 p-2 m-0
+  focus-within:border-2 border-btnprimary;
 }
 
 .input_field {

@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../../firebase";
 import { useAppDispatch } from "../../../app/hooks";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 // import { IAuthState } from "../../../ts/states/auth_state";
 // import { selectAuth, setAuthData } from "../../../app/store/slices/auth";
 // import { useAppDispatch } from "../../../app/hooks";
@@ -21,7 +22,10 @@ export interface IHeader {
 const Header: React.FC<IHeader> = ({ children }) => {
     const [user] = useAuthState(auth);
     const [yValue, setYValue] = useState(0);
+    const [screenWidth, setScreenWidth] = useState(0)
+    const [show, setShow] = useState(false)
     const router = useRouter();
+
     // const dispatch = useAppDispatch();
 
     let userInitial = "";
@@ -36,12 +40,14 @@ const Header: React.FC<IHeader> = ({ children }) => {
 
     const scrollHandler = () => {
         setYValue(window.scrollY);
+        setScreenWidth(window.innerWidth);
     }
 
     useEffect(() => {
         window.addEventListener("scroll", scrollHandler)
-        // return () => window.removeEventListener("scroll", scrollHandler);
+        return () => window.removeEventListener("scroll", scrollHandler);
     },[])
+
 
     const signInHandler = () => {
         router.replace("/signin")
@@ -51,18 +57,25 @@ const Header: React.FC<IHeader> = ({ children }) => {
         router.replace("/register")
     }
 
+    const checkWidthHandler = (width:any) => {
+        setScreenWidth(width);
+    }
+
     return (
        
         <header className={ styles.container } data-testid="header"> 
-            <div className={ yValue <= 10 ? styles.filler_container : styles.filler_container_show }></div>
-            <div className={ yValue <= 10 ? styles.subcontainer : styles.subcontainer_scrolled }>
+            <div className={ yValue <= 80 ? styles.filler_container : styles.filler_container_show }></div>
+            <div className={ yValue <= 80 ? styles.subcontainer : styles.subcontainer_scrolled }>
                 <div className={styles.nav_container}>
                     <Logo urlPath={`${user ? "/movies" : "/"}`} />
                     {
                         user ? 
                             <>
                                 <Navigation /> 
-                                <SearchField />
+                                {
+                                  screenWidth <= 600 && <MagnifyingGlassIcon className="w-[30px] h-[30px] ml-2 mr-2 text-white cursor-pointer" onClick={ () => setShow(!show)  }/>
+                                }
+                                <SearchField show={show} scrolled={yValue > 80} sizeHandler={checkWidthHandler} />
                             </>
                         :                         
                             <div className="flex-1"></div>                        

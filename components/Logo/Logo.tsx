@@ -11,8 +11,8 @@ const Logo: React.FC<{ urlPath: string}> = ({ urlPath}) => {
         router.replace(urlPath);
     }
     return (
-        <div className="hover:cursor-pointer scale-[80%]
-        sm:scale-[80%]
+        <div className="hover:cursor-pointer scale-[90%]
+        sm:scale-[90%]
         md:scale-[90%]
         lg:scale-[100%]
         xl:scale-[100%]

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./SearchField.module.css";
 
 import { MagnifyingGlassIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
@@ -30,10 +30,11 @@ const getElements = () => {
     }
 }
 
-const Search: React.FC = () => {
+const Search: React.FC<{ show: boolean, scrolled: boolean, sizeHandler: (width:any) => void }> = ({ show, scrolled, sizeHandler }) => {
     const router = useRouter();
     const new_url = useAppSelector<IUrl>(selectCurrentUrl);
     const { search_input, xicon, righticon } = getElements();
+    const [screenWidth, setScreenWidth] = useState(360)
 
     useEffect(() => {
         const inputField = document.getElementById("search") as HTMLInputElement
@@ -48,13 +49,22 @@ const Search: React.FC = () => {
             if (typeof window !== "undefined") {
                 const xicon = document.getElementById("xcircleicon") 
                 const righticon = document.getElementById("chevronrighticon")
-
                 righticon?.classList.replace("flex", "hidden")            
                 xicon?.classList.replace("hidden", "flex")
-
             }
         }        
-       
+        setScreenWidth(window.innerWidth);
+        sizeHandler(window.innerWidth)
+    },[])
+
+    const resizeHandler = () => {
+        setScreenWidth(window.innerWidth);
+        sizeHandler(window.innerWidth)
+    }
+
+    useEffect(() => {
+        window.addEventListener("resize", resizeHandler)
+        return () => window.removeEventListener("resize", resizeHandler);
     },[])
         
     if (router.pathname !== "/search") {
@@ -128,36 +138,47 @@ const Search: React.FC = () => {
 
     }
 
+    // console.log("screenWidth: ", screenWidth)
+
     return(
-        <div className={ styles.search_container } id="search_container" data-testid="search_container">
-            <MagnifyingGlassIcon className="w-[30px] h-[30px] ml-2 mr-2 text-white" />
-            <input 
-                id="search" 
-                onChange={ searchHandler } 
-                className={styles.input_field}  
-                type="text" 
-                placeholder="Name, Cast, Company" 
-                data-testid="search_input" 
-                autoComplete="off"
-                required 
-            />
-  
-            <XCircleIcon 
-                id="xcircleicon" 
-                className="hidden w-[30px] h-[30px] ml-2 mr-2 text-white cursor-pointer hover:text-red-500" 
-                onClick={clearInputHandler}
-                data-testid="xcircleicon"
-            />
-             
-            <ChevronRightIcon 
-                id="chevronrighticon" 
-                className="flex w-[30px] h-[30px] ml-2 mr-2 text-white" 
-                data-testid="chevronrighticon"
-            />
-     
+        <div className={`${ 
+            screenWidth >= 600 ? 
+                "flex items-center justify-end" 
+                : 
+                `${!show && "hidden" } absolute justify-start items-center w-full mt-[150px] p-2 ${ scrolled ? "bg-primary" : "bg-black"}` 
+        } 
+        mr-2 border-0`} id="search_container" data-testid="search_container">
+
+            <div className={ screenWidth >= 600 ? styles.inputfield_container : styles.inputfield_container_mobile }>
+                <MagnifyingGlassIcon className="w-[30px] h-[30px] ml-2 mr-2 text-white" />          
+                <input 
+                    id="search" 
+                    onChange={ searchHandler } 
+                    className={styles.input_field}  
+                    type="text" 
+                    placeholder="Name, Cast, Company" 
+                    data-testid="search_input" 
+                    autoComplete="off"
+                    required 
+                />
+
+                <XCircleIcon 
+                    id="xcircleicon" 
+                    className="hidden w-[30px] h-[30px] ml-2 mr-2 text-white cursor-pointer hover:text-red-500" 
+                    onClick={clearInputHandler}
+                    data-testid="xcircleicon"
+                />
+                
+                <ChevronRightIcon 
+                    id="chevronrighticon" 
+                    className="flex w-[30px] h-[30px] ml-2 mr-2 text-white" 
+                    data-testid="chevronrighticon"
+                />
+            </div>
             
+        </div>   
         
-        </div>
+            
     )
 }
 
