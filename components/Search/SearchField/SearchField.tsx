@@ -145,7 +145,7 @@ const Search: React.FC<{ show: boolean, scrolled: boolean, sizeHandler: (width:a
             screenWidth >= 600 ? 
                 "flex items-center justify-end" 
                 : 
-                `${!show && "hidden" } absolute justify-start items-center w-full mt-[150px] p-2 ${ scrolled ? "bg-primary" : "bg-black"}` 
+                `${!show && "hidden" } absolute justify-start items-center w-full mt-[150px] p-2 -ml-2 ${ scrolled ? "bg-primary" : "bg-black"}` 
         } 
         mr-2 border-0`} id="search_container" data-testid="search_container">
 
