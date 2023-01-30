@@ -11,5 +11,5 @@
 }
 
 .sub_container {
-  @apply flex-col relative items-start justify-start w-full;
+  @apply flex flex-col relative items-start justify-start w-full;
 }

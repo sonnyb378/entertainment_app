@@ -61,8 +61,8 @@ const Thumbnail:React.FC<{
                 
             <div 
                 id={`expand_${result.id}`} 
-                className={`${ expand ? "flex opacity-100 z-[3000]" : "flex opacity-0 z-[1000] scale-[80%]"} 
-                flex-col overflow-hidden absolute items-center justify-start w-[120%] h-auto bg-black shadow-xl rounded-md border-2 
+                className={`${ expand ? "flex opacity-100 z-[3000]" : "flex opacity-0 z-[1152] scale-[80%]"} 
+                flex-col overflow-hidden absolute items-center justify-start w-[120%] h-auto bg-black shadow-xl rounded-md border-2
                 duration-200 transition-all -mt-[50px] border-btnprimary`}
                 onMouseLeave={(e:React.MouseEvent<HTMLElement>) => onLeaveHandler!(e, () => {
                     setExpand(false)

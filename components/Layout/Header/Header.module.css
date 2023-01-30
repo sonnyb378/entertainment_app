@@ -1,16 +1,17 @@
 .container {
-  @apply flex flex-col items-center justify-center w-full text-[#676767] px-1 relative z-[5000];
+  @apply flex flex-col items-center justify-center w-full text-[#676767] relative px-0 z-[5000] border-0;
 }
 
 .subcontainer {
-  @apply flex items-center justify-between w-full m-1 py-1 px-2 rounded-md bg-primary top-0 left-0 ease-out duration-200 transition-all 
+  @apply flex items-center justify-between w-full m-0 py-0 px-0 bg-primary relative ease-out duration-200 transition-all h-[100px]
+  bg-opacity-70
   sm:py-1 sm:px-2
   md:py-3 md:px-5
   xl:py-5 xl:px-8;
 }
 
 .subcontainer_scrolled {
-  @apply flex items-center justify-between w-full py-1 px-2 bg-primary fixed top-0 left-0 duration-200 ease-in transition-all z-[2000] 
+  @apply flex items-center justify-between w-full m-0 py-0 px-0 bg-primary fixed top-0 left-0 duration-200 ease-in transition-all z-[5000] h-[100px]
   sm:py-1 sm:px-2
   md:py-3 md:px-5
   xl:py-5 xl:px-8;
@@ -21,16 +22,16 @@
 }
 
 .filler_container {
-  @apply hidden items-center justify-between w-full py-1 px-2 bg-primary opacity-90 ease-out duration-200 transition-all 
-  h-[96px]
+  @apply hidden items-center justify-between w-full m-0 py-0 px-0 bg-primary opacity-90 ease-out duration-200 transition-all
+  h-[100px]
   sm:py-1 sm:px-2
   md:py-3 md:px-5
   xl:py-5 xl:px-8;
 }
 
 .filler_container_show {
-  @apply flex items-center justify-between w-full m-1 py-1 px-2 rounded-md bg-primary opacity-90 ease-out duration-200 transition-all 
-  h-[96px]
+  @apply flex items-center justify-between w-full m-0 py-0 px-0 rounded-md bg-primary opacity-10 ease-out duration-200 transition-all 
+  h-[100px]
   sm:py-1 sm:px-2
   md:py-3 md:px-5
   xl:py-5 xl:px-8;

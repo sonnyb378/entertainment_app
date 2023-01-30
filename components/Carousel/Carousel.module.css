@@ -1,11 +1,11 @@
 .prev_btn {
-  @apply flex left-0 items-center justify-center absolute h-[100%] w-[50px] bg-black opacity-0 p-2 border-0 z-[1150] 
-    cursor-pointer hover:opacity-80;
+  @apply flex left-0 items-center justify-center absolute h-[100%] w-[50px] bg-black opacity-[0%]  bg-opacity-0 p-2 border-0 z-[1150] 
+    cursor-pointer hover:bg-opacity-80 hover:opacity-80;
 }
 
 .next_btn {
-  @apply flex right-0 items-center justify-center absolute h-[100%] w-[53px] bg-black opacity-0 p-2 border-0 z-[1150]  
-    cursor-pointer hover:opacity-80;
+  @apply flex right-0 items-center justify-center absolute h-[100%] w-[53px] bg-black opacity-[0%] bg-opacity-0 p-2 border-0 z-[1150]  
+    cursor-pointer hover:bg-opacity-80 hover:opacity-80;
 }
 
 .filler {

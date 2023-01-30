@@ -22,7 +22,7 @@ const Header: React.FC<IHeader> = ({ children }) => {
     const [user] = useAuthState(auth);
     const [yValue, setYValue] = useState(0);
     const router = useRouter();
-    const dispatch = useAppDispatch();
+    // const dispatch = useAppDispatch();
 
     let userInitial = "";
     if (user?.email) {
@@ -34,10 +34,13 @@ const Header: React.FC<IHeader> = ({ children }) => {
         }
     }
 
+    const scrollHandler = () => {
+        setYValue(window.scrollY);
+    }
+
     useEffect(() => {
-        window.addEventListener("scroll", () => {
-           setYValue(window.scrollY);            
-        })
+        window.addEventListener("scroll", scrollHandler)
+        // return () => window.removeEventListener("scroll", scrollHandler);
     },[])
 
     const signInHandler = () => {
@@ -47,13 +50,12 @@ const Header: React.FC<IHeader> = ({ children }) => {
     const registerHandler = () => {
         router.replace("/register")
     }
-    
+
     return (
        
-        <header className={styles.container} data-testid="header">
-            {/* <div id="overlay" className={ styles.overlay }></div> */}
-            <div className={ yValue <= 80 ? styles.filler_container : styles.filler_container_show }></div>
-            <div className={ yValue <= 80 ? styles.subcontainer : styles.subcontainer_scrolled }>
+        <header className={ styles.container } data-testid="header"> 
+            <div className={ yValue <= 10 ? styles.filler_container : styles.filler_container_show }></div>
+            <div className={ yValue <= 10 ? styles.subcontainer : styles.subcontainer_scrolled }>
                 <div className={styles.nav_container}>
                     <Logo urlPath={`${user ? "/movies" : "/"}`} />
                     {
@@ -78,7 +80,7 @@ const Header: React.FC<IHeader> = ({ children }) => {
 
                 </div>
             </div>
-
+            
         </header>
     )
     

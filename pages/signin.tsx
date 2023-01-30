@@ -43,6 +43,7 @@ const Signin: NextPageWithLayout = (props) => {
           mainComponent.style.opacity = "100";
           mainComponent.style.transition = "all 1s";
           mainComponent.style.overflow = "hidden";
+          mainComponent.style.removeProperty("scale")
         }       
       }
       if (isRedirecting) {
@@ -150,7 +151,7 @@ const Signin: NextPageWithLayout = (props) => {
         <div className="flex flex-col items-center justify-start w-full">
           <section className="flex flex-col items-center justify-center w-full">
             
-            <div className="flex flex-col items-start justify-between p-8 bg-black bg-opacity-60 w-[99%] rounded-lg">
+            <div className="flex flex-col items-start justify-between p-8 bg-black bg-opacity-60 w-[99%] rounded-lg mt-[20px]">
                 <h1 className="text-[2rem]
                 lg:text-[3rem]
                  ">Sign In</h1>
