@@ -39,6 +39,7 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
     const [user, loading] = useAuthState(auth);
     const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
     const [isRedirecting, setIsRedirecting] = useState(false)
+    const [screenWidth, setScreenWidth] = useState(360)
     const cookies = parseCookies()
 
     let isBookmarked = false;
@@ -93,6 +94,15 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
       })
     }, [videoIsPlayed, showData.id, showData.media_type, router])
   
+    const resizeHandler = () => {
+      setScreenWidth(window.innerWidth)
+    }
+
+    useEffect(() => {
+        window.addEventListener("resize", resizeHandler)
+        return () => window.removeEventListener("resize", resizeHandler);
+    },[])
+
     const saveBookmark = (data:any) => {
       dispatch(setDataBookmarks({
         id: data.id,
@@ -254,31 +264,33 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
           </section>
 
           <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]" data-testid="trending_tvshows">
-            <h1 className="ml-[50px] text-[20px]">Trending TV Shows</h1>
+            <h1 className={`${ screenWidth <= 500 ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>Trending TV Shows</h1>
 
             <Carousel 
               data={trending} 
               user={user} 
               maxItems={trending.length} 
               bookmarkData={[...bookmarks.data]}
-              baseWidth={220}
+              baseWidth={ screenWidth > 600 ? 290 : 224 }
               target="t"
+              screenWidth={screenWidth}
             />
 
           </section>
 
           <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]" data-testid="popular_tvshows">
-            <h1 className="ml-[50px] text-[20px]">Popular TV Shows</h1>
+            <h1 className={`${ screenWidth <= 500 ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>Popular TV Shows</h1>
 
             <Carousel 
               data={popular.slice(0,10)} 
               user={user} 
               maxItems={10} 
               bookmarkData={[...bookmarks.data]}
-              baseWidth={220}
+              baseWidth={ screenWidth > 600 ? 290 : 224 }
               target="p"
               isThumbnail={false}
               mediaType="tv"
+              screenWidth={ screenWidth }
             />
 
           </section>
@@ -287,15 +299,16 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
           {
             recommendationsArr && recommendationsArr.length > 0 &&
               <section className="flex flex-col px-[0px] z-[1000] border-0 w-full relative mt-[50px]" data-testid="recommended_tvshows">
-                <h1 className="ml-[50px] text-[20px]">Recommended TV Shows</h1>
+                <h1 className={`${ screenWidth <= 500 ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>Recommended TV Shows</h1>
 
                 <Carousel 
                   data={recommendationsArr} 
                   user={user} 
                   maxItems={recommendationsArr.length} 
                   bookmarkData={[...bookmarks.data]}
-                  baseWidth={220}
+                  baseWidth={screenWidth > 600 ? 290 : 224}
                   target="r"
+                  screenWidth={screenWidth}
                 />
               </section>  
           }
@@ -304,7 +317,7 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
           
               user &&
                 <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]" data-testid="mylist_container">
-                  <h1 className="ml-[50px] text-[20px]">My List</h1>
+                  <h1 className={`${ screenWidth <= 500 ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>My List</h1>
                   
                   {
                     
@@ -314,8 +327,10 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
                           user={user} 
                           maxItems={ [...bookmarks.data].length } 
                           bookmarkData={[...bookmarks.data]}
-                          baseWidth={220}
+                          baseWidth={screenWidth > 600 ? 290 : 224}
                           target="m"
+                          screenWidth={screenWidth}
+
                         />
                       :
                         <div className="flex items-center justify-start ml-[50px] mt-6 p-2">No bookmarks found</div>

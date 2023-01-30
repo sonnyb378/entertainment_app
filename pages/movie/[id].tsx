@@ -35,6 +35,7 @@ const Movie: NextPageWithLayout<{data:any}> = ({data}) => {
   const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
   const [user, loading] = useAuthState(auth);
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const [screenWidth, setScreenWidth] = useState(360)
   const cookies = parseCookies();
   
   let isBookmarked = false;
@@ -82,6 +83,15 @@ const Movie: NextPageWithLayout<{data:any}> = ({data}) => {
       genres.push(genre.id)
     })
   }
+
+  const resizeHandler = () => {
+    setScreenWidth(window.innerWidth)
+  }
+
+  useEffect(() => {
+      window.addEventListener("resize", resizeHandler)
+      return () => window.removeEventListener("resize", resizeHandler);
+  },[])
   
   const saveBookmark = (data:any) => {
     dispatch(setDataBookmarks({
@@ -149,9 +159,7 @@ const Movie: NextPageWithLayout<{data:any}> = ({data}) => {
                     xl:h-[250px]
                     2xl:h-[300px]
                   "></div>
-                </div>
-
-          
+                </div>      
 
                 <div className="flex flex-col flex-1 relative items-start justify-start w-full z-[1200] border-0 p-10 pb-[50px] -mt-[150px]
                   md:-mt-[300px] md:pb-[80px]
@@ -211,41 +219,23 @@ const Movie: NextPageWithLayout<{data:any}> = ({data}) => {
                   </div>
                 </div>
 
-                {/* <div className="flex w-full h-[50px] border-0 absolute z-[1100] bg-gradient-to-t from-black -bottom-[30px]"></div>  */}
-
-                {/* <div className="image-container absolute w-full h-[100%] border-2 border-purple-500 left-0 top-0
-                
-                ">       
-                  <div className="hidden -left-[5px] w-[100px] border-0 absolute z-[1100] h-[100%] bg-gradient-to-r from-black
-                  sm:flex sm:-left-[5px]
-                  "></div>       
-                  <Image 
-                      key={data.id}
-                      src={ `${process.env.NEXT_PUBLIC_TMDB_IMAGE_PATH_ORIGINAL}${data.backdrop_path}` } 
-                      layout="responsive"
-                      priority={true}  
-                      width={300}
-                      height={169}     
-                      alt={`${data.title}`}
-                      className={`object-cover z-[1000] opacity-20 border-0 border-red-500 object-top
-                      sm:opacity-70`}
-                  /> 
-                </div>  */}
+              
 
               </section>
 
               {
                 recommendationsArr && recommendationsArr.length > 0 &&              
                   <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative" data-testid="recommended_movies">
-                    <h1 className="ml-[50px] text-[20px]">Recommended Movies</h1>
+                    <h1 className={`${ screenWidth <= 500 ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>Recommended Movies</h1>
 
                     <Carousel 
                       data={recommendationsArr} 
                       user={user} 
                       maxItems={recommendationsArr.length} 
                       bookmarkData={[...bookmarks.data]}
-                      baseWidth={220}
+                      baseWidth={screenWidth > 600 ? 290 : 224 }
                       target="r"
+                      screenWidth={screenWidth}
                     />
 
                   </section>
@@ -253,7 +243,7 @@ const Movie: NextPageWithLayout<{data:any}> = ({data}) => {
               {
                 user &&
                   <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]" data-testid="bookmark_container">
-                    <h1 className="ml-[50px] text-[20px]">My List</h1>
+                    <h1 className={`${ screenWidth <= 500 ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>My List</h1>
                     
                     {
                       [...bookmarks.data] && [...bookmarks.data].length > 0 ?
@@ -262,8 +252,9 @@ const Movie: NextPageWithLayout<{data:any}> = ({data}) => {
                             user={user} 
                             maxItems={ [...bookmarks.data].length } 
                             bookmarkData={ [...bookmarks.data] }
-                            baseWidth={220}
+                            baseWidth={screenWidth > 600 ? 290 : 224 }
                             target="b"
+                            screenWidth={screenWidth}
                           />
                         :
                           <div className="flex items-center justify-start ml-[50px] mt-6 p-2">No bookmarks found</div>

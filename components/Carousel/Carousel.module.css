@@ -1,3 +1,14 @@
+.carousel {
+  @apply flex flex-row items-center justify-start mt-4 relative border-0 border-purple-500 min-w-[346px] h-[100%];
+}
+.carousel_overflow {
+  @apply flex flex-row items-center justify-start mt-4 relative border-0 border-purple-500 min-w-[346px] h-[100%] overflow-x-auto;
+}
+
+.carousel_ul {
+  @apply flex relative items-center justify-start transition-all duration-1000  translate-x-[500] border-0 border-green-500 h-[100%] space-x-0;
+}
+
 .prev_btn {
   @apply flex left-0 items-center justify-center absolute h-[100%] w-[50px] bg-black opacity-[0%]  bg-opacity-0 p-2 border-0 z-[1150] 
     cursor-pointer hover:bg-opacity-80 hover:opacity-80;
@@ -10,12 +21,4 @@
 
 .filler {
   @apply border-0 cursor-pointer h-[100%] w-[50px] p-[2px];
-}
-
-.carousel {
-  @apply flex flex-row items-center justify-start mt-4 relative border-0 border-purple-500 min-w-[346px] h-[100%];
-}
-
-.carousel_ul {
-  @apply flex relative items-center justify-start transition-all duration-1000 translate-x-[500] border-0 border-red-500 h-[100%] space-x-0;
 }

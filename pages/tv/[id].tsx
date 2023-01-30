@@ -47,6 +47,7 @@ const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
   const [isRedirecting, setIsRedirecting] = useState(false)
   const [isEpisodesLoading, setIsEpisodesLoading] = useState(false)
   const [episodes, setEpisodes] = useState<any>([])
+  const [screenWidth, setScreenWidth] = useState(360)
   
   const cookies = parseCookies();
 
@@ -114,6 +115,15 @@ const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
       genres.push(genre.id)
     })
   }
+
+  const resizeHandler = () => {
+    setScreenWidth(window.innerWidth)
+  }
+
+  useEffect(() => {
+      window.addEventListener("resize", resizeHandler)
+      return () => window.removeEventListener("resize", resizeHandler);
+  },[])
 
   const saveBookmark = (data:any) => {
     dispatch(setDataBookmarks({
@@ -315,22 +325,23 @@ const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
             {
               recommendationsArr && recommendationsArr.length > 0 &&            
                 <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative" data-testid="recommended_tvshows">
-                  <h1 className="ml-[50px] text-[20px]">Recommended TV Shows</h1>
+                  <h1 className={`${ screenWidth <= 500 ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>Recommended TV Shows</h1>
 
                   <Carousel 
                     data={recommendationsArr} 
                     user={user} 
                     maxItems={ recommendationsArr.length } 
                     bookmarkData={[...bookmarks.data]}
-                    baseWidth={220}
+                    baseWidth={screenWidth > 600 ? 290 : 224}
                     target="r"
+                    screenWidth={screenWidth}
                   />
                 </section>
             }
             {
               user &&
                 <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]" data-testid="bookmark_container">
-                  <h1 className="ml-[50px] text-[20px]">My List</h1>
+                  <h1 className={`${ screenWidth <= 500 ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>My List</h1>
                   
                   {
                     [...bookmarks.data] && [...bookmarks.data].length > 0 ?
@@ -339,8 +350,9 @@ const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
                           user={user} 
                           maxItems={ [...bookmarks.data].length } 
                           bookmarkData={[...bookmarks.data]}
-                          baseWidth={220}
+                          baseWidth={screenWidth > 600 ? 290 : 224}
                           target="m"
+                          screenWidth={screenWidth}
                         />
                       :
                         <div className="flex items-center justify-start ml-[50px] mt-6 p-2">No bookmarks found</div>

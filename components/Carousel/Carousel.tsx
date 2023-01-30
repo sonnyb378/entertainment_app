@@ -17,7 +17,8 @@ const Carousel: React.FC<{
     baseWidth?:number,
     target:string,
     isThumbnail?: boolean,
-    mediaType?:string
+    mediaType?:string,
+    screenWidth:number
 }> = ({
     data, 
     user, 
@@ -27,6 +28,7 @@ const Carousel: React.FC<{
     target,
     isThumbnail = true,
     mediaType = "movie",
+    screenWidth = 360
 }) => {
 
     const [visibleItem, setVisibleItem] = useState(6);
@@ -138,6 +140,7 @@ const Carousel: React.FC<{
             setMaxIndex(Math.ceil(MAX_ITEMS / visibleThumbnail))
         }    
     }, [])
+    
 
     const prevHandler = () => {
         if (currentIndex <= 0) return     
@@ -148,6 +151,8 @@ const Carousel: React.FC<{
         if (currentIndex+1 >= maxIndex) return
         setCurrentIndex(currentIndex + 1)
     }
+
+
 
 
     return(
@@ -171,27 +176,35 @@ const Carousel: React.FC<{
             </div>
               <div 
                 id={`${target}_carousel`} 
-                className={ styles.carousel }
+                className={ screenWidth <= 500 ?  styles.carousel_overflow :styles.carousel }
                 data-testid="carousel" 
               >
-                    <div
-                        onClick={prevHandler} 
-                        className={ styles.prev_btn }
-                        data-testid="prev_btn"
-                    >
-                        <ChevronLeftIcon className="w-[30px] h-[30px] border-0 text-white" />
-                    </div>
-                    <div 
-                        onClick={nextHandler}
-                        className={ styles.next_btn }
-                        data-testid="next_btn"
-                    >
-                        <ChevronRightIcon className="w-[30px] h-[30px] border-0 text-white" />
-                    </div>
+                {
+                    screenWidth > 500 ?
+                        <>
+                            <div
+                                onClick={prevHandler} 
+                                className={ styles.prev_btn }
+                                data-testid="prev_btn"
+                            >
+                                <ChevronLeftIcon className="w-[30px] h-[30px] border-0 text-white" />
+                            </div>
+                            <div 
+                                onClick={nextHandler}
+                                className={ styles.next_btn }
+                                data-testid="next_btn"
+                            >
+                                <ChevronRightIcon className="w-[30px] h-[30px] border-0 text-white" />
+                            </div>
+                        </>                        
+                    :
+                        ""
+                }
+                    
                     
                     <div id={`${target}_carousel_ul`} className={ styles.carousel_ul }>
                         <div
-                            className="border-0 cursor-pointer h-[100%] w-[50px] p-[2px]"
+                            className={`border-0 cursor-pointer h-[100%] ${ screenWidth <= 500 ? "w-[10px]" : "w-[50px]" }  p-[2px]`}
                             id="filler_start"
                             data-testid="filler_start"
                         ></div>
@@ -224,7 +237,7 @@ const Carousel: React.FC<{
 
                         }
                         <div
-                            className="border-0 cursor-pointer h-[100%] w-[50px] p-[2px]"
+                            className={`border-0 cursor-pointer h-[100%] ${ screenWidth <= 500 ? "w-[10px]" : "w-[50px]" } p-[2px]`}
                             id="filler_end"
                             data-testid="filler_end"
                         ></div>
