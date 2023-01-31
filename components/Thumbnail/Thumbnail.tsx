@@ -24,11 +24,13 @@ import { User } from "firebase/auth";
 const Thumbnail:React.FC<{ 
     user: User | null | undefined, 
     result:IResult,
-    bookmarkData?:any[]|null
+    bookmarkData?:any[]|null,
+    screenWidth: number
 }> = ({ 
         user, 
         result,
-        bookmarkData = null
+        bookmarkData = null,
+        screenWidth
     }) => {
         
         const { 
@@ -41,6 +43,7 @@ const Thumbnail:React.FC<{
         const [expand, setExpand] = useState(false);
         const [isHover, setIsHover] = useState(false);
         const [isBookmarked, setIsBookmarked] = useState(false);
+        const [touchMoved, setTouchMoved] = useState(false)
 
         const router = useRouter();
 
@@ -170,13 +173,28 @@ const Thumbnail:React.FC<{
             
             <div
                 id={`collapsed_${result.id}`}
-                onMouseEnter={() => setIsHover(true)}
+                
+                onTouchStart={ () =>  
+                    setTouchMoved(false) 
+                }
+                onTouchEnd={ () => { 
+                    if (!touchMoved) {
+                        router.push(`/${ result.media_type }/${ result.id}`)
+                    }
+                }}
+                onTouchMove={ () =>  setTouchMoved(true) }
+
+                onMouseEnter={() => screenWidth > 600 ? setIsHover(true) : ()=>{}}
                 onMouseOver={ (e:React.MouseEvent<HTMLElement>) => onEnterHandler!(e, () => {
-                    setExpand(true)
+                    if (screenWidth > 600) {
+                        setExpand(true)
+                    }
                 })}
                 onMouseLeave={(e:React.MouseEvent<HTMLElement>) => onLeaveHandler!(e, (timer:NodeJS.Timer) => {
-                    if (timer) clearTimeout(timer)
-                    setIsHover(false)
+                    if (screenWidth > 600) {
+                        if (timer) clearTimeout(timer)
+                        setIsHover(false)
+                    }
                 })}  
                 className={`flex ${ expand && "scale-[120%]" } flex-col items-start justify-start z-[2000] w-full relative duration-200 transition-all border-0  rounded-md overflow-hidden`}
                 data-testid={`collapsed_${result.id}`}

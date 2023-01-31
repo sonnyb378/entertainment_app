@@ -37,13 +37,15 @@ const PopularCard:React.FC<{
     indexCount: number,
     user: User | null | undefined, 
     result:IResult,
-    bookmarkData?:any[]|null
+    bookmarkData?:any[]|null,
+    screenWidth: number
 }> = ({ 
         visibleItems,
         indexCount,
         user, 
         result,
-        bookmarkData = null
+        bookmarkData = null,
+        screenWidth
     }) => {
         
         const { 
@@ -55,6 +57,7 @@ const PopularCard:React.FC<{
 
         const [expand, setExpand] = useState(false);
         const [isBookmarked, setIsBookmarked] = useState(false);
+        const [touchMoved, setTouchMoved] = useState(false);
 
         const router = useRouter();
         const dispatch = useAppDispatch();
@@ -210,11 +213,26 @@ const PopularCard:React.FC<{
                 <div
                     id={`collapsed_${result.id}`}
                     data-testid={`collapsed_${result.id}`}
+
+                    onTouchStart={ () =>  
+                        setTouchMoved(false) 
+                    }
+                    onTouchEnd={ () => { 
+                        if (!touchMoved) {
+                            router.push(`/${ result.media_type }/${ result.id}`)
+                        }
+                    }}
+                    onTouchMove={ () =>  setTouchMoved(true) }
+
                     onMouseOver={ (e:React.MouseEvent<HTMLElement>) => ctxOnEnterHandler(e, () => {
-                        setExpand(true)
+                        if (screenWidth > 600) {
+                            setExpand(true)
+                        }
                     })}
                     onMouseLeave={(e:React.MouseEvent<HTMLElement>) => ctxOnLeaveHandler(e, (timer:NodeJS.Timer) => {
-                        if (timer) clearTimeout(timer)
+                        if (screenWidth > 600) {
+                            if (timer) clearTimeout(timer)
+                        }
                     })}  
                     className={`flex ${ expand && "scale-[120%] opacity-0" } flex-col items-center justify-start relative duration-200 transition-all 
                         border-${borderSize} overflow-hidden w-[100%]

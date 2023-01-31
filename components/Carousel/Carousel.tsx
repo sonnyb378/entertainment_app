@@ -143,7 +143,7 @@ const Carousel: React.FC<{
     }, [])
     
     useEffect(() => {
-        if (screenWidth <= 500) {
+        if (screenWidth <= 600) {
             const carousel_ul = document.getElementById(`${target}_carousel_ul`)
             if (carousel_ul) {
                 carousel_ul.style.transform = `translateX(-${0}px)`;
@@ -167,7 +167,7 @@ const Carousel: React.FC<{
 
     return(
         <div className="flex flex-col border-0 w-full relative" data-testid="carousel_maincontainer">
-            <div id={`${target}_track`} className={`hidden ${ screenWidth <= 500 ? "ml-[10px]" : "ml-[50px]" } border-2
+            <div id={`${target}_track`} className={`hidden ${ screenWidth <= 600 ? "ml-[10px]" : "ml-[50px]" } border-2
                  sm:border-red-500 
                  md:border-blue-500 
                  lg:border-green-500 
@@ -186,11 +186,11 @@ const Carousel: React.FC<{
             </div>
               <div 
                 id={`${target}_carousel`} 
-                className={ screenWidth <= 500 ?  styles.carousel_overflow :styles.carousel }
+                className={ screenWidth <= 600 ?  styles.carousel_overflow :styles.carousel }
                 data-testid="carousel" 
               >
                 {
-                    screenWidth > 500 ?
+                    screenWidth > 600 ?
                         <>
                             <div
                                 onClick={prevHandler} 
@@ -214,7 +214,7 @@ const Carousel: React.FC<{
                     
                     <div id={`${target}_carousel_ul`} className={ styles.carousel_ul }>
                         <div
-                            className={`border-0 cursor-pointer h-[100%] ${ screenWidth <= 500 ? "w-[10px]" : "w-[50px]" }  p-[2px]`}
+                            className={`border-0 cursor-pointer h-[100%] ${ screenWidth <= 600 ? "w-[10px]" : "w-[50px]" }  p-[2px]`}
                             id="filler_start"
                             data-testid="filler_start"
                         ></div>
@@ -230,7 +230,7 @@ const Carousel: React.FC<{
                                         >
                                             {
                                                 isThumbnail ? 
-                                                    <Thumbnail user={user} result={item} bookmarkData={bookmarkData} />                            
+                                                    <Thumbnail user={user} result={item} bookmarkData={bookmarkData} screenWidth={screenWidth} />                            
                                                 :
                                                     <PopularCard 
                                                         visibleItems={visibleItem} 
@@ -238,6 +238,7 @@ const Carousel: React.FC<{
                                                         user={user} 
                                                         result={ item.media_type ? {...item} : {...item, media_type: mediaType } } 
                                                         bookmarkData={bookmarkData}
+                                                        screenWidth={screenWidth}
                                                     /> 
                                             }
                                         </div>
@@ -247,7 +248,7 @@ const Carousel: React.FC<{
 
                         }
                         <div
-                            className={`border-0 cursor-pointer h-[100%] ${ screenWidth <= 500 ? "w-[10px]" : "w-[50px]" } p-[2px]`}
+                            className={`border-0 cursor-pointer h-[100%] ${ screenWidth <= 600 ? "w-[10px]" : "w-[50px]" } p-[2px]`}
                             id="filler_end"
                             data-testid="filler_end"
                         ></div>
