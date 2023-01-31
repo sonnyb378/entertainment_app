@@ -165,7 +165,7 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
                         md:items-start
                       ">
                         
-                        <div className="w-full p-4 text-[50px] font-bold text-center
+                        <div className="w-full p-4 text-[50px] font-bold text-center leading-none
                           md:text-left
                         ">{ featured.name || featured.original_name }</div>
                         <div className="flex flex-col items-center justify-center p-4 text-[12px] border-0 w-full

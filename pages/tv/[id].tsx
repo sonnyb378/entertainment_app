@@ -203,7 +203,8 @@ const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
                 <div className="flex flex-col items-center justify-start border-0 pb-[0px] h-[100%] w-full
                         md:items-start">
                   
-                  <div className="w-full p-4 text-[50px] font-bold text-center md:text-left">{ data.name || data.original_name }</div>
+                  <div className="w-full p-4 text-[50px] font-bold text-center leading-none
+                  md:text-left">{ data.name || data.original_name }</div>
                   <div className="flex flex-col items-center justify-center p-4 text-[12px] border-0 w-full
                       md:flex-row">
                       <div className="flex flex-col items-center justify-center border-0 space-y-2
