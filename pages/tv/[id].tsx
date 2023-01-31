@@ -132,7 +132,7 @@ const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
   const saveBookmark = (data:any) => {
     dispatch(setDataBookmarks({
       id: data.id,
-      name: data.title || data.original_title,
+      name: data.title || data.original_title || data.name || data.original_name,
       backdrop_path: data.backdrop_path,
       poster_path: data.poster_path,
       media_type: "tv",
