@@ -23,6 +23,7 @@ const MyList: NextPageWithLayout = () => {
     // const user = useAppSelector<IAuthState>(selectAuth);  
     // const {user, userLoading} = useUserStatus()
     const [isRedirecting, setIsRedirecting] = useState(false)
+    const [screenWidth, setScreenWidth] = useState(360)
     const router = useRouter();
     const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
 
@@ -43,6 +44,19 @@ const MyList: NextPageWithLayout = () => {
         setIsRedirecting(true)
       }
     }, [user])
+
+    const resizeHandler = () => {
+      setScreenWidth(window.innerWidth)
+    }
+  
+    useEffect(() => {
+        window.addEventListener("resize", resizeHandler)
+        return () => window.removeEventListener("resize", resizeHandler);
+    },[])
+  
+    useEffect(() => {
+      setScreenWidth(window.innerWidth)
+    }, [])
 
     useEffect(() => {
       dispatch(setCurrentUrl({
@@ -79,7 +93,7 @@ const MyList: NextPageWithLayout = () => {
                             data-testid="thumbnail_container"            
                         >
                             <Thumbnail 
-                                user={user} result={result} bookmarkData={bookmarks.data}
+                                user={user} result={result} bookmarkData={bookmarks.data} screenWidth={screenWidth}
                             />                                                 
                         </li>  
                       })
