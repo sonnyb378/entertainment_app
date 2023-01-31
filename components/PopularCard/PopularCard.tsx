@@ -58,6 +58,7 @@ const PopularCard:React.FC<{
         const [expand, setExpand] = useState(false);
         const [isBookmarked, setIsBookmarked] = useState(false);
         const [touchMoved, setTouchMoved] = useState(false);
+        const [hasTouchStart, setHasTouchStart] = useState(false)
 
         const router = useRouter();
         const dispatch = useAppDispatch();
@@ -215,25 +216,36 @@ const PopularCard:React.FC<{
                     data-testid={`collapsed_${result.id}`}
 
                     onTouchStart={ () =>  
-                        setTouchMoved(false) 
+                        setHasTouchStart(true)
                     }
                     onTouchEnd={ () => { 
                         if (!touchMoved) {
                             router.push(`/${ result.media_type }/${ result.id}`)
+                        } else {
+                            setTouchMoved(false)
+                            setHasTouchStart(false)
                         }
                     }}
-                    onTouchMove={ () =>  setTouchMoved(true) }
+                    onTouchMove={ () =>  {
+                        if (!touchMoved) {
+                            setTouchMoved(true)
+                        }
+                     } }
 
-                    onMouseOver={ (e:React.MouseEvent<HTMLElement>) => ctxOnEnterHandler(e, () => {
-                        if (screenWidth > 600) {
-                            setExpand(true)
-                        }
-                    })}
-                    onMouseLeave={(e:React.MouseEvent<HTMLElement>) => ctxOnLeaveHandler(e, (timer:NodeJS.Timer) => {
-                        if (screenWidth > 600) {
-                            if (timer) clearTimeout(timer)
-                        }
-                    })}  
+                    onMouseOver={ 
+                        screenWidth > 600 && !hasTouchStart ?
+                            (e:React.MouseEvent<HTMLElement>) => ctxOnEnterHandler(e, () => setExpand(true))
+                        :
+                            () => {}
+                    }
+                    onMouseLeave={
+                        screenWidth > 600 && !hasTouchStart ? 
+                            (e:React.MouseEvent<HTMLElement>) => ctxOnLeaveHandler(e, (timer:NodeJS.Timer) => {
+                                if (timer) clearTimeout(timer)
+                            })
+                        :
+                            () => {}
+                    }  
                     className={`flex ${ expand && "scale-[120%] opacity-0" } flex-col items-center justify-start relative duration-200 transition-all 
                         border-${borderSize} overflow-hidden w-[100%]
                         sm:border-red-500 

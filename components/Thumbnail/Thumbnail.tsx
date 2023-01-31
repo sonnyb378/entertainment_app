@@ -44,6 +44,7 @@ const Thumbnail:React.FC<{
         const [isHover, setIsHover] = useState(false);
         const [isBookmarked, setIsBookmarked] = useState(false);
         const [touchMoved, setTouchMoved] = useState(false)
+        const [hasTouchStart, setHasTouchStart] = useState(false)
 
         const router = useRouter();
 
@@ -54,14 +55,16 @@ const Thumbnail:React.FC<{
         }, [bookmarkData, result.id])
 
         // console.log("thumbnail: ", result)
-        
+    
+   
+    
     return (
         <div
             className="flex flex-col items-center justify-start w-full relative"
             id="thumbnail"
             data-testid="thumbnail"
         >
-                
+             
             <div 
                 id={`expand_${result.id}`} 
                 className={`${ expand ? "flex opacity-100 z-[3000]" : "flex opacity-0 z-[1152] scale-[80%]"} 
@@ -174,28 +177,37 @@ const Thumbnail:React.FC<{
             <div
                 id={`collapsed_${result.id}`}
                 
-                onTouchStart={ () =>  
-                    setTouchMoved(false) 
-                }
+                onTouchStart={ () => {
+                    setHasTouchStart(true)
+                } }
                 onTouchEnd={ () => { 
                     if (!touchMoved) {
                         router.push(`/${ result.media_type }/${ result.id}`)
+                    } else {
+                        setTouchMoved(false)
+                        setHasTouchStart(false)
                     }
                 }}
-                onTouchMove={ () =>  setTouchMoved(true) }
+                onTouchMove={ () =>  {
+                    if (!touchMoved) {
+                        setTouchMoved(true)
+                    }
+                 } }
 
-                onMouseEnter={() => screenWidth > 600 ? setIsHover(true) : ()=>{}}
-                onMouseOver={ (e:React.MouseEvent<HTMLElement>) => onEnterHandler!(e, () => {
-                    if (screenWidth > 600) {
-                        setExpand(true)
-                    }
-                })}
-                onMouseLeave={(e:React.MouseEvent<HTMLElement>) => onLeaveHandler!(e, (timer:NodeJS.Timer) => {
-                    if (screenWidth > 600) {
-                        if (timer) clearTimeout(timer)
-                        setIsHover(false)
-                    }
-                })}  
+                onMouseEnter={  screenWidth > 600 && !hasTouchStart ? () => setIsHover(true) : () => {}}
+                onMouseOver={ screenWidth > 600 && !hasTouchStart  ?
+                        (e:React.MouseEvent<HTMLElement>) => onEnterHandler!(e, () => setExpand(true))
+                    :
+                        () => {}
+                }
+                onMouseLeave={ screenWidth > 600 && !hasTouchStart  ?
+                        (e:React.MouseEvent<HTMLElement>) => onLeaveHandler!(e, (timer:NodeJS.Timer) => {
+                            if (timer) clearTimeout(timer)
+                            setIsHover(false)
+                        })
+                    :
+                        () => {}
+                }  
                 className={`flex ${ expand && "scale-[120%]" } flex-col items-start justify-start z-[2000] w-full relative duration-200 transition-all border-0  rounded-md overflow-hidden`}
                 data-testid={`collapsed_${result.id}`}
             >
