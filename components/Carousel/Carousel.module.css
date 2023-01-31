@@ -2,7 +2,7 @@
   @apply flex flex-row items-center justify-start mt-4 relative border-0 border-purple-500 min-w-[346px] h-[100%];
 }
 .carousel_overflow {
-  @apply flex flex-row items-center justify-start mt-4 relative border-0 border-purple-500 min-w-[346px] h-[100%] overflow-x-auto;
+  @apply flex flex-row items-center justify-start mt-4 relative border-0 border-purple-500 min-w-[346px] overflow-y-hidden overflow-x-scroll scrollbar-hide;
 }
 
 .carousel_ul {

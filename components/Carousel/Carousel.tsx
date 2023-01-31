@@ -139,8 +139,18 @@ const Carousel: React.FC<{
             setTranslateWidth(newTrackWidth)
             setMaxIndex(Math.ceil(MAX_ITEMS / visibleThumbnail))
         }    
+
     }, [])
     
+    useEffect(() => {
+        if (screenWidth <= 500) {
+            const carousel_ul = document.getElementById(`${target}_carousel_ul`)
+            if (carousel_ul) {
+                carousel_ul.style.transform = `translateX(-${0}px)`;
+                setCurrentIndex(0)
+            }
+        }
+    }, [screenWidth])
 
     const prevHandler = () => {
         if (currentIndex <= 0) return     
@@ -157,13 +167,13 @@ const Carousel: React.FC<{
 
     return(
         <div className="flex flex-col border-0 w-full relative" data-testid="carousel_maincontainer">
-            <div id={`${target}_track`} className="hidden ml-[50px] border-2
+            <div id={`${target}_track`} className={`hidden ${ screenWidth <= 500 ? "ml-[10px]" : "ml-[50px]" } border-2
                  sm:border-red-500 
                  md:border-blue-500 
                  lg:border-green-500 
                  xl:border-purple-500
                  2xl:border-orange-500
-            "> 
+            `}> 
                 translateWidth: { translateWidth }, 
                 data length: {data?.length}, 
                 max index: {maxIndex}, 

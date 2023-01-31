@@ -217,7 +217,7 @@ const PopularCard:React.FC<{
                         if (timer) clearTimeout(timer)
                     })}  
                     className={`flex ${ expand && "scale-[120%] opacity-0" } flex-col items-center justify-start relative duration-200 transition-all 
-                        border-${borderSize} overflow-hidden w-[100%] 
+                        border-${borderSize} overflow-hidden w-[100%]
                         sm:border-red-500 
                         md:border-blue-500 
                         lg:border-green-500 

@@ -44,6 +44,7 @@ const Person: NextPageWithLayout = (props:any) => {
   const { videoIsPlayed, showData } = useAppContext(); 
   const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
   const [isRedirecting, setIsRedirecting] = useState(false)
+  const [screenWidth, setScreenWidth] = useState(360)
   
   const cookies = parseCookies();
   
@@ -98,6 +99,14 @@ const Person: NextPageWithLayout = (props:any) => {
       })
     }, [videoIsPlayed, router, showData.id, showData.media_type])
 
+    const resizeHandler = () => {
+      setScreenWidth(window.innerWidth)
+    }
+  
+    useEffect(() => {
+        window.addEventListener("resize", resizeHandler)
+        return () => window.removeEventListener("resize", resizeHandler);
+    },[])
 
     
     return (
@@ -156,8 +165,9 @@ const Person: NextPageWithLayout = (props:any) => {
                               user={user} 
                               maxItems={movieResult.length} 
                               bookmarkData={bookmarks.data}
-                              baseWidth={290}
+                              baseWidth={ screenWidth > 600 ? 290 : 224 }
                               target="movie"
+                              screenWidth={screenWidth}
                             />
                           </div>
                       </div>
@@ -174,8 +184,9 @@ const Person: NextPageWithLayout = (props:any) => {
                               user={user} 
                               maxItems={tvResult.length} 
                               bookmarkData={bookmarks.data}
-                              baseWidth={290}
+                              baseWidth={ screenWidth > 600 ? 290 : 224 }
                               target="tv"
+                              screenWidth={screenWidth}
                             />
                           </div>
                       </div>        
