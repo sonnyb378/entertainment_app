@@ -92,6 +92,10 @@ const Movie: NextPageWithLayout<{data:any}> = ({data}) => {
       window.addEventListener("resize", resizeHandler)
       return () => window.removeEventListener("resize", resizeHandler);
   },[])
+
+  useEffect(() => {
+    setScreenWidth(window.innerWidth)
+  }, [])
   
   const saveBookmark = (data:any) => {
     dispatch(setDataBookmarks({
@@ -161,17 +165,18 @@ const Movie: NextPageWithLayout<{data:any}> = ({data}) => {
                   "></div>
                 </div>      
 
-                <div className="flex flex-col flex-1 relative items-start justify-start w-full z-[1200] border-0 p-10 pb-[50px] -mt-[150px]
+                <div className="flex flex-col flex-1 relative items-start justify-start w-full z-[1200] border-0 p-2 pb-[50px] -mt-[150px]
+                  sm:p-10
                   md:-mt-[300px] md:pb-[80px]
                   lg:-mt-[400px]
                   xl:-mt-[500px] xl:w-[60%]
                   2xl:-mt-[750px] 2xl:w-[50%] 2xl:pb-[100px]
                 ">
 
-                  <div className="flex flex-col items-center justify-start border-0 pb-[0px] h-[100%] w-full
+                  <div className="flex flex-col items-center justify-start border-0 pb-[0px] h-[100%] w-full p-2
                         md:items-start">
                     
-                    <div className="w-full p-4 text-[40px] font-bold text-center leading-none
+                    <div className="w-full p-0 text-[40px] font-bold text-center leading-none mt-[50px]
                         sm:text-center sm:text-[50px]
                         md:text-left">{ data.title || data.original_title }</div>
                     <div className="flex flex-row items-center justify-center p-4 text-[12px] border-0 w-full space-y-0
@@ -185,16 +190,18 @@ const Movie: NextPageWithLayout<{data:any}> = ({data}) => {
                       </div>
                     </div>
 
-                    <div className="w-full p-4 text-[15px] line-clamp-3 mb-[20px]
+                    <div className="w-full p-0 text-[15px] line-clamp-3 mb-[20px]
                         sm:text-left
                         md:mb-[5px]
                       ">{ data.overview }</div>
                     
-                    <Info title="Release Date" value={data.release_date} />
-                    <Info title="Country" value={data.production_countries} />
-                    <Info title="Production Company" value={data.production_companies} />
-                    <Info title="Cast" value={ data.credits?.cast } />
-                    <Info title="Genres" value={data.genres} />
+                    <div className={`w-full mt-[15px]`}>
+                      <Info title="Release Date" value={data.release_date} />
+                      <Info title="Country" value={data.production_countries} />
+                      <Info title="Production Company" value={data.production_companies} />
+                      <Info title="Cast" value={ data.credits?.cast } />
+                      <Info title="Genres" value={data.genres} />
+                    </div>
 
                     <div className="flex flex-col w-full items-center justify-start border-0 p-0 mt-4 space-y-2
                         sm:space-y-0 sm:space-x-2 sm:flex-row

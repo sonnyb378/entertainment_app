@@ -125,6 +125,10 @@ const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
       return () => window.removeEventListener("resize", resizeHandler);
   },[])
 
+  useEffect(() => {
+    setScreenWidth(window.innerWidth)
+  }, [])
+
   const saveBookmark = (data:any) => {
     dispatch(setDataBookmarks({
       id: data.id,
@@ -193,19 +197,20 @@ const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
                   "></div>
                 </div>
 
-                <div className="flex flex-col flex-1 relative items-start justify-start w-full z-[1200] border-0 p-10 pb-[50px] -mt-[150px]
+                <div className="flex flex-col flex-1 relative items-start justify-start w-full z-[1200] border-0 p-2 pb-[50px] -mt-[150px]
+                  sm:p-10
                   md:-mt-[300px] md:pb-[80px]
                   lg:-mt-[400px]
                   xl:-mt-[500px] xl:w-[60%]
                   2xl:-mt-[750px] 2xl:w-[50%] 2xl:pb-[100px]
                 ">
 
-                <div className="flex flex-col items-center justify-start border-0 pb-[0px] h-[100%] w-full
+                <div className="flex flex-col items-center justify-start border-0 pb-[0px] h-[100%] w-full p-2
                         md:items-start">
                   
-                  <div className="w-full p-4 text-[50px] font-bold text-center leading-none
+                  <div className="w-full p-0 text-[50px] font-bold text-center leading-none mt-[50px]
                   md:text-left">{ data.name || data.original_name }</div>
-                  <div className="flex flex-col items-center justify-center p-4 text-[12px] border-0 w-full
+                  <div className="flex flex-col items-center justify-center py-4 text-[12px] border-0 w-full
                       md:flex-row">
                       <div className="flex flex-col items-center justify-center border-0 space-y-2
                           md:flex-row md:justify-start md:space-y-0
@@ -236,15 +241,16 @@ const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
                       </div>
                   </div>
 
-                  <div className="w-full p-4 text-[15px] line-clamp-3 mb-[20px]
+                  <div className="w-full p-0 text-[15px] line-clamp-3 mb-[20px]
                     sm:text-left
                     md:mb-[5px]
                   ">{ data.overview }</div>
                   
-                  <Info title="Created By" value={ data.created_by } />
-                  <Info title="Cast" value={ data.credits?.cast } />
-                  
-                  <Info title="Audio Languages" value={data.spoken_languages} />
+                  <div className={`w-full mt-[15px]`}>
+                    <Info title="Created By" value={ data.created_by } />
+                    <Info title="Cast" value={ data.credits?.cast } />                  
+                    <Info title="Audio Languages" value={data.spoken_languages} />
+                  </div>
 
                   <div className="flex flex-col w-full items-center justify-start border-0 p-0 mt-4 space-y-2
                         sm:space-y-0 sm:space-x-2 sm:flex-row
@@ -290,7 +296,7 @@ const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
               className="flex flex-col items-start justify-center px-[0px] z-[2000] border-0 w-full relative mb-[20px]" 
               data-testid="episodes_container"
             >              
-              <div className="flex flex-col py-6 border-0 border-red-500 w-full px-[50px]">
+              <div className={`flex flex-col py-6 border-0 border-red-500 w-full ${ screenWidth <=  500 ? "px-[5px]":"px-[50px]" }`}>
                 <h1 className="text-[20px]">                  
                   <SelectSeason data={data} onClickHandler={fetchSeasonEpisodes} />
                 </h1>
@@ -304,7 +310,7 @@ const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
                         {
                           episodes && episodes.length > 0 && episodes.map((episode:any, i:any) => {
                             return (
-                              <EpisodeCard key={i} data={episode}  />
+                              <EpisodeCard key={i} data={episode}  screenWidth={screenWidth} />
                             )
                           })
                         }

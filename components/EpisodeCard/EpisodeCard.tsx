@@ -8,10 +8,11 @@ import { PlayCircleIcon } from "@heroicons/react/24/solid"
 import no_result from "../../assets/no_result.png"
 
 export interface IEpisodeCard {
-    data:any
+    data:any,
+    screenWidth:number
 }
 
-const EpisodeCard:React.FC<IEpisodeCard> = ({ data }) => {
+const EpisodeCard:React.FC<IEpisodeCard> = ({ data, screenWidth }) => {
     const { setVideoIsPlayed } = useAppContext()
     return(
         <div className={`flex items-start justify-center p-2 rounded-md bg-[#40424A] my-2 border-4 border-[#40424A] relative
@@ -21,7 +22,7 @@ const EpisodeCard:React.FC<IEpisodeCard> = ({ data }) => {
             data-testid="episode_card"
         >
             {
-                data.runtime && data.overview !== "" &&
+                screenWidth > 600 && data.runtime && data.overview !== "" &&
                 <div 
                     id="episode_overlay" 
                     className="flex items-center justify-center absolute w-full h-[100%] bg-white top-0 left-0 rounded-[5px] opacity-0 bg-opacity-0 z-[1000]
@@ -48,23 +49,30 @@ const EpisodeCard:React.FC<IEpisodeCard> = ({ data }) => {
                 }                
             </div>
 
-            <div className="flex flex-col items-start justify-center w-full h-[169px]">
-                <h1 className="text-lg text-[#61A5C3]">S.{data.season_number}-Ep. { data.episode_number} : { data.name } </h1>
-                <div className="flex items-center justify-start text-[12px] space-x-2">
-                    <span>Air Date: {data.air_date}</span>
+            <div className="flex flex-col items-start justify-start w-full h-[169px]">
+                <h1 className="text-lg text-[#61A5C3] leading-none">S.{data.season_number}-Ep. { data.episode_number} : { data.name } </h1>
+                
+                <div className={`flex flex-col items-start justify-center text-[12px] space-x-0 border-0 mt-[10px]
+                    sm:flex-row sm:items-center sm:justify-start sm:space-x-2
+                `}>
+                    <span className="">Air Date: {data.air_date}</span>
                     
                     {
                         data.runtime &&
-                        <>
-                            <span className="ml-[5px] mr-[5px]">●</span>
+                        <div className={`flex flex-col items-start justify-center border-0 ${ screenWidth <= 500 ? "space-x-0" : "space-x-2" }
+                            sm:flex-row sm:items-center sm:justify-start
+                        `}>
+                            <span className="hidden ml-[5px] mr-[5px] sm:flex">●</span>
                             <span>{ Math.floor(data.vote_average) } / 10</span>
-                            <span className="ml-[0px] mr-[0px]">●</span>                    
+                            <span className="hidden ml-[0px] mr-[0px] sm:flex">●</span>                    
                             <Info title="" valueFor="runtime" value={data.runtime} />
-                        </>
+                        </div>
                     }
                     
                 </div>
-                <p className="text-sm mt-[8px] line-clamp-3">{ data.overview }</p>
+                <p className="hidden text-sm mt-[8px]
+                    sm:line-clamp-3
+                ">{ data.overview }</p>
             </div>
         </div>
     )

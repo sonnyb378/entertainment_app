@@ -103,6 +103,10 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
         return () => window.removeEventListener("resize", resizeHandler);
     },[])
 
+    useEffect(() => {
+      setScreenWidth(window.innerWidth)
+    }, [])
+
     const saveBookmark = (data:any) => {
       dispatch(setDataBookmarks({
         id: data.id,
@@ -155,20 +159,21 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
                     "></div>
                   </div>
 
-                  <div className="flex flex-col relative items-start transition-all duration-200 ease-in-out justify-center w-full z-[1200] border-0 p-10 h-[100%] top-0 left-0 -mt-[150px]
+                  <div className="flex flex-col relative items-start transition-all duration-200 ease-in-out justify-center w-full z-[1200] border-0 p-2 h-[100%] top-0 left-0 -mt-[150px]
+                      sm:p-10
                       md:-mt-[300px]
                       lg:-mt-[400px]
                       xl:-mt-[500px] xl:w-[60%]
                       2xl:-mt-[750px] 2xl:w-[50%] 2xl:pb-[100px]
                   ">   
-                      <div className="flex flex-col items-center justify-start border-0 pb-[0px] h-[100%] w-full
+                      <div className="flex flex-col items-center justify-start border-0 pb-[0px] h-[100%] w-full p-2
                         md:items-start
                       ">
                         
-                        <div className="w-full p-4 text-[50px] font-bold text-center leading-none
+                        <div className="w-full text-[50px] font-bold text-center leading-none mt-[50px] p-0
                           md:text-left
                         ">{ featured.name || featured.original_name }</div>
-                        <div className="flex flex-col items-center justify-center p-4 text-[12px] border-0 w-full
+                        <div className="flex flex-col items-center justify-center py-4 text-[12px] border-0 w-full
                           md:flex-row
                         ">
                             <div className="flex flex-col items-center justify-center border-0 space-y-2
@@ -200,16 +205,18 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
 
                         </div>
 
-                        <div className="w-full p-4 text-[15px] line-clamp-3 mb-[20px]
+                        <div className="w-full p-0 text-[15px] line-clamp-3 mb-[20px]
                           sm:text-left
                           md:mb-[5px]
                         ">{ featured.overview }</div>
-                        {
-                          featured.created_by && featured.created_by.length > 0 && <Info title="Created By" value={ featured.created_by } />
-                        }
-                        <Info title="Cast" value={ featured.credits?.cast } />
-                  
-                        <Info title="Audio Languages" value={featured.spoken_languages} />
+
+                        <div className={`w-full mt-[15px]`}>
+                          {
+                            featured.created_by && featured.created_by.length > 0 && <Info title="Created By" value={ featured.created_by } />
+                          }
+                          <Info title="Cast" value={ featured.credits?.cast } />
+                          <Info title="Audio Languages" value={featured.spoken_languages} />
+                        </div>
 
                         <div className="flex flex-col w-full items-center justify-start border-0 p-0 mt-4 space-y-2
                         sm:space-y-0 sm:space-x-2 sm:flex-row

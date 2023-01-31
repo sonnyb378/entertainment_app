@@ -42,10 +42,12 @@ export interface IResult {
 
 const SearchResultItem: React.FC<{ 
     result: IResult,
-    bookmarkData:any[]|null
+    bookmarkData:any[]|null,
+    screenWidth: number
 }> = ({ 
         result,
-        bookmarkData
+        bookmarkData,
+        screenWidth
     }) => {
     
     const [user, loading] = useAuthState(auth);
@@ -61,7 +63,7 @@ const SearchResultItem: React.FC<{
             data-testid="thumbnail_container"            
         >
             <Thumbnail 
-                user={user} result={result} bookmarkData={bookmarkData}
+                user={user} result={result} bookmarkData={bookmarkData} screenWidth={screenWidth}
             />                                                 
         </li>
     )

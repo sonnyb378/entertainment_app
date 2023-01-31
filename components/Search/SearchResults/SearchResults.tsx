@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import useSWRInfinite from 'swr/infinite'
 import SearchResultItem, { IResult } from "../SearchResultItem/SearchResultItem";
 import dynamic from "next/dynamic";
@@ -20,12 +20,26 @@ interface ISearchResultProps {
 
 const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
     const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
+    const [screenWidth, setScreenWidth] = useState(360)
 
     let search_results: IResult[];
 
     // const { data } = useBlackAdam(keyword);
     // search_results = data ? [].concat(...data.results as any) : [];
     // const isError = false;
+
+    const resizeHandler = () => {
+        setScreenWidth(window.innerWidth)
+    }
+    useEffect(() => {
+        window.addEventListener("resize", resizeHandler)
+        return () => window.removeEventListener("resize", resizeHandler);
+    },[])
+
+    useEffect(() => {
+        setScreenWidth(window.innerWidth)
+    },[])
+
 
     const PAGE_SIZE = 20;
     const { data, error, size, setSize } = useSWRInfinite((index) => [
@@ -52,7 +66,9 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
     if (isError) return  <div>Sorry an error occurred. Please try again...</div>
 
     return (
-        <div  className="flex flex-col items-start justify-center w-full p-5 relative" data-testid="search_results_container">
+        <div  className={`flex flex-col items-start justify-center w-full relative" data-testid="search_results_container 
+            ${ screenWidth <= 500 ? "p-0":"p-5"}
+        `}>
             {
                 isEmpty && <div className="mt-4">No Records Found</div>
             }
@@ -72,6 +88,7 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
                                     key={i} 
                                     result={result}
                                     bookmarkData={[...bookmarks.data]}
+                                    screenWidth={screenWidth}
                                 />
                             )                       
                         })

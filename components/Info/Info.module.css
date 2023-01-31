@@ -1,5 +1,5 @@
 .info_container {
-  @apply flex flex-col px-4 my-1 w-full border-0
+  @apply flex flex-col px-0 my-1 w-full border-0
   sm:flex-row
   md:w-full;
 }
@@ -18,5 +18,9 @@
 }
 
 .info_runtime {
+  @apply text-[12px] border border-green-700 px-[5px] py-[2px] ml-[0px] mr-[10px];
+}
+
+.info_runtime_mobile {
   @apply text-[12px] border border-green-700 px-[5px] py-[2px] ml-[15px] mr-[10px];
 }
