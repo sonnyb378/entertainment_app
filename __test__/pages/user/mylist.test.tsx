@@ -7,7 +7,6 @@ import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { setCurrentUrl } from '../../../app/store/slices/url'
 import { useRouter } from "next/router"
 
-
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 import * as React from "react";
@@ -24,18 +23,20 @@ jest.mock("react-firebase-hooks/auth", () => ({
     useAuthState: jest.fn()
 }))
 
-
 jest.mock("next/router", () => ({
     __esModule: true,
     useRouter: jest.fn()
 })) 
+
 jest.mock("../../../firebase", () => ({
     auth: jest.fn(),
 }))
+
 jest.mock("../../../app/hooks", () => ({
     useAppDispatch: jest.fn(),
     useAppSelector: jest.fn()
 }))
+
 jest.mock("../../../app/store/slices/auth", () => ({
     setAuthData: jest.fn()
 }))
@@ -80,9 +81,9 @@ describe("<Movies />", () => {
 
         const router = useRouter as jest.Mock;
         const mockRouter = {
-            pathname: "/mylist"
+            pathname: jest.fn()
         }
-        router.mockReturnValueOnce(mockRouter);
+        router.mockReturnValue(mockRouter);
 
         const mockAppSelector = useAppSelector as jest.Mock
         mockAppSelector
@@ -150,11 +151,11 @@ describe("<Movies />", () => {
 
         const router = useRouter as jest.Mock;
         const mockRouter = {
-            pathname: "/mylist",
+            pathname: jest.fn(),
             replace: jest.fn(),
             push: jest.fn()
         }
-        router.mockReturnValueOnce(mockRouter);
+        router.mockReturnValue(mockRouter);
 
         const { container } = render(<MyList />)
         const mylist_container = within(container).getByTestId("mylist_container")
@@ -186,11 +187,11 @@ describe("<Movies />", () => {
 
         const router = useRouter as jest.Mock;
         const mockRouter = {
-            pathname: "/mylist",
+            pathname: jest.fn(),
             replace: jest.fn(),
             push: jest.fn()
         }
-        router.mockReturnValueOnce(mockRouter);
+        router.mockReturnValue(mockRouter);
 
         const { container } = render(<MyList />)
         const mylist_container = within(container).getByTestId("mylist_container")

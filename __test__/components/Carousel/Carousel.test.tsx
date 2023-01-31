@@ -76,6 +76,7 @@ describe('<CustomBtn />', () => {
             bookmarkData={dataBookmark}
             baseWidth={290} 
             target="t"
+            screenWidth={800}
           />)
 
         const carousel = within(container).getByTestId("carousel_maincontainer");
@@ -105,6 +106,7 @@ describe('<CustomBtn />', () => {
             baseWidth={290} 
             target="t"
             isThumbnail={true}
+            screenWidth={800}
           />)
 
         const carousel = within(container).getByTestId("carousel_maincontainer");
@@ -136,6 +138,7 @@ describe('<CustomBtn />', () => {
             baseWidth={290} 
             target="t"
             isThumbnail={false}
+            screenWidth={800}
           />)
 
         const carousel = within(container).getByTestId("carousel_maincontainer");
@@ -171,6 +174,7 @@ describe('<CustomBtn />', () => {
             baseWidth={290} 
             target="t"
             isThumbnail={true}
+            screenWidth={800}
           />)
 
         const carousel = within(container).getByTestId("carousel_maincontainer");
@@ -212,6 +216,7 @@ describe('<CustomBtn />', () => {
             baseWidth={290} 
             target="t"
             isThumbnail={true}
+            screenWidth={800}
           />)
 
         const carousel = within(container).getByTestId("carousel_maincontainer");

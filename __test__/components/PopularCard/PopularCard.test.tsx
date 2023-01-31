@@ -63,6 +63,7 @@ describe("<PopularCard />", () => {
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
+            screenWidth={800}
         />)
         const card = screen.getByTestId("popular_card")
         expect(card).toBeInTheDocument();
@@ -80,6 +81,7 @@ describe("<PopularCard />", () => {
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
+            screenWidth={800}
         />)
         const popular_card = screen.getByTestId("popular_card")
         expect(popular_card).toBeInTheDocument();
@@ -100,6 +102,7 @@ describe("<PopularCard />", () => {
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
+            screenWidth={800}
         />)
         const popular_card = screen.getByTestId("popular_card")
         expect(popular_card).toBeInTheDocument();
@@ -120,6 +123,7 @@ describe("<PopularCard />", () => {
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
+            screenWidth={800}
         />)
         const popular_card = screen.getByTestId("popular_card")
         expect(popular_card).toBeInTheDocument();
@@ -145,6 +149,7 @@ describe("<PopularCard />", () => {
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
+            screenWidth={800}
         />)
         const popular_card = screen.getByTestId("popular_card")
         expect(popular_card).toBeInTheDocument();       
@@ -186,6 +191,7 @@ describe("<PopularCard />", () => {
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
+            screenWidth={800}
         />)
         const popular_card = screen.getByTestId("popular_card")
         expect(popular_card).toBeInTheDocument();       
@@ -220,6 +226,7 @@ describe("<PopularCard />", () => {
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
+            screenWidth={800}
         />)
         const popular_card = screen.getByTestId("popular_card")
         expect(popular_card).toBeInTheDocument();       
@@ -259,6 +266,7 @@ describe("<PopularCard />", () => {
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
+            screenWidth={800}
         />)
         const popular_card = screen.getByTestId("popular_card")
         expect(popular_card).toBeInTheDocument();   
@@ -283,6 +291,7 @@ describe("<PopularCard />", () => {
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
+            screenWidth={800}
         />)
         const popular_card = screen.getByTestId("popular_card")
         expect(popular_card).toBeInTheDocument();   
@@ -303,6 +312,7 @@ describe("<PopularCard />", () => {
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[item]}
+            screenWidth={800}
         />)
         const popular_card = screen.getByTestId("popular_card")
         expect(popular_card).toBeInTheDocument();   
@@ -331,6 +341,7 @@ describe("<PopularCard />", () => {
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
+            screenWidth={800}
         />)
         const popular_card = screen.getByTestId("popular_card")
         expect(popular_card).toBeInTheDocument();   
@@ -362,6 +373,7 @@ describe("<PopularCard />", () => {
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[item]}
+            screenWidth={800}
         />)
         const popular_card = screen.getByTestId("popular_card")
         expect(popular_card).toBeInTheDocument();   
@@ -392,6 +404,7 @@ describe("<PopularCard />", () => {
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[item]}
+            screenWidth={800}
         />)
         const popular_card = screen.getByTestId("popular_card")
         expect(popular_card).toBeInTheDocument();   

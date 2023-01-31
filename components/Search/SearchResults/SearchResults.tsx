@@ -66,9 +66,7 @@ const  SearchResults: React.FC<ISearchResultProps> = ({ keyword }) => {
     if (isError) return  <div>Sorry an error occurred. Please try again...</div>
 
     return (
-        <div  className={`flex flex-col items-start justify-center w-full relative" data-testid="search_results_container 
-            ${ screenWidth <= 500 ? "p-0":"p-5"}
-        `}>
+        <div  className={`flex flex-col items-start justify-center w-full relative ${ screenWidth <= 500 ? "p-0":"p-5"} `} data-testid="search_results_container" >
             {
                 isEmpty && <div className="mt-4">No Records Found</div>
             }

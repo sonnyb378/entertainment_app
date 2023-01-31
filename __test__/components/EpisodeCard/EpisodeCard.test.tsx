@@ -28,7 +28,7 @@ describe('<CustomBtn />', () => {
     });    
 
     it('must render <EpisodeCard />', () => {
-        const { debug, container } = render(<EpisodeCard data={fake_tv_episodes[0] } />)
+        const { debug, container } = render(<EpisodeCard data={fake_tv_episodes[0] } screenWidth={800} />)
         const card = within(container).getByTestId("episode_card")
         expect(card).toBeInTheDocument();
     })
@@ -41,7 +41,7 @@ describe('<CustomBtn />', () => {
         });
         jest.spyOn(AppContext, 'useAppContext').mockImplementation(mockContext);
 
-        const { debug, container } = render(<EpisodeCard data={ fake_tv_episodes[0] } />)
+        const { debug, container } = render(<EpisodeCard data={ fake_tv_episodes[0] } screenWidth={800} />)
         const card = within(container).getByTestId("episode_card")
         expect(card).toBeInTheDocument();
 

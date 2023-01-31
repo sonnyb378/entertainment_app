@@ -55,6 +55,7 @@ describe("<Thumbnail />", () => {
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
+            screenWidth={800}
         />)
         const thumbnail = within(container).getByTestId("thumbnail")
         expect(thumbnail).toBeInTheDocument();
@@ -76,6 +77,7 @@ describe("<Thumbnail />", () => {
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
+            screenWidth={800}
         />)
         const thumbnail = within(container).getByTestId("thumbnail")
         expect(thumbnail).toBeInTheDocument();
@@ -103,6 +105,7 @@ describe("<Thumbnail />", () => {
             user={user}
             result={ item?.media_type ? {...item, backdrop_path: null} : {...item, media_type: "movie", backdrop_path: null } }
             bookmarkData={[]}
+            screenWidth={800}
         />)
         const thumbnail = within(container).getByTestId("thumbnail")
         expect(thumbnail).toBeInTheDocument();
@@ -125,6 +128,7 @@ describe("<Thumbnail />", () => {
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
+            screenWidth={800}
         />)
         const thumbnail = within(container).getByTestId("thumbnail")
         expect(thumbnail).toBeInTheDocument();
@@ -173,6 +177,7 @@ describe("<Thumbnail />", () => {
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "person" } }
             bookmarkData={[]}
+            screenWidth={800}
         />)
         const thumbnail = within(container).getByTestId("thumbnail")
         expect(thumbnail).toBeInTheDocument();
@@ -199,6 +204,7 @@ describe("<Thumbnail />", () => {
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
+            screenWidth={800}
         />)
         const thumbnail = screen.getByTestId("thumbnail")
         expect(thumbnail).toBeInTheDocument();       
@@ -235,6 +241,7 @@ describe("<Thumbnail />", () => {
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
+            screenWidth={800}
         />)
         const thumbnail = screen.getByTestId("thumbnail")
         expect(thumbnail).toBeInTheDocument();       
@@ -264,6 +271,7 @@ describe("<Thumbnail />", () => {
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
+            screenWidth={800}
         />)
         const thumbnail = screen.getByTestId("thumbnail")
         expect(thumbnail).toBeInTheDocument();       
@@ -299,6 +307,7 @@ describe("<Thumbnail />", () => {
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
+            screenWidth={800}
         />)
         const thumbnail = screen.getByTestId("thumbnail")
         expect(thumbnail).toBeInTheDocument();   
@@ -321,6 +330,7 @@ describe("<Thumbnail />", () => {
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
+            screenWidth={800}
         />)
         const thumbnail = screen.getByTestId("thumbnail")
         expect(thumbnail).toBeInTheDocument();   
@@ -339,6 +349,7 @@ describe("<Thumbnail />", () => {
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[item]}
+            screenWidth={800}
         />)
         const thumbnail = screen.getByTestId("thumbnail")
         expect(thumbnail).toBeInTheDocument();   
@@ -365,6 +376,7 @@ describe("<Thumbnail />", () => {
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[]}
+            screenWidth={800}
         />)
         const thumbnail = screen.getByTestId("thumbnail")
         expect(thumbnail).toBeInTheDocument();   
@@ -394,6 +406,7 @@ describe("<Thumbnail />", () => {
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[item]}
+            screenWidth={800}
         />)
         const thumbnail = screen.getByTestId("thumbnail")
         expect(thumbnail).toBeInTheDocument();   
@@ -422,6 +435,7 @@ describe("<Thumbnail />", () => {
             user={user}
             result={ item?.media_type ? {...item} : {...item, media_type: "movie" } }
             bookmarkData={[item]}
+            screenWidth={800}
         />)
         const thumbnail = screen.getByTestId("thumbnail")
         expect(thumbnail).toBeInTheDocument();   
