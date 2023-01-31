@@ -140,7 +140,7 @@ const Signin: NextPageWithLayout = (props) => {
 
 
     return (
-      <div className={`flex flex-col items-center justify-start w-full h-screen
+      <div className={`flex flex-col items-center justify-start w-full 
       sm:w-[80%]
       md:w-[70%]
       lg:w-[60%]
@@ -148,11 +148,11 @@ const Signin: NextPageWithLayout = (props) => {
       2xl:w-[40%]
       `}
       data-testid="signin_container">
-        <div className="flex flex-col items-center justify-start w-full">
+        <div className="flex flex-col items-center justify-start w-full mb-[50px] border-0">
           <section className="flex flex-col items-center justify-center w-full">
             
             <div className="flex flex-col items-start justify-between p-8 bg-black bg-opacity-60 w-[99%] rounded-lg mt-[20px]">
-                <h1 className="text-[2rem]
+                <h1 className="text-[1.3rem]
                 lg:text-[3rem]
                  ">Sign In</h1>
                 <div className="flex flex-1 flex-col items-start justify-start w-full">
@@ -174,11 +174,14 @@ const Signin: NextPageWithLayout = (props) => {
                     {
                       !isSubmitted && email && password ?
 
-                      <SigninBtn title="Sign In" className={`flex items-center justify-center py-5 px-5 text-2xl rounded-md bg-btnprimary text-white w-full
+                      <SigninBtn title="Sign In" className={`flex items-center justify-center px-5 py-[15px] text-lg rounded-md bg-btnprimary text-white w-full
+                      sm:py-5 sm:text-2xl
                       hover:text-yellow-200 hover:bg-btnhighlight mt-[2rem]`} onClick={signinHandler}  />
                       :
-                      <div title="Sign In" className={`flex items-center justify-center py-5 px-5 text-2xl rounded-md bg-gray-500 text-btnprimary w-full
-                        mt-[2rem]`} >
+                      <div title="Sign In" className={`flex items-center justify-center py-5 px-5 text-xl rounded-md bg-gray-500 text-btnprimary w-full
+                        mt-[2rem]
+                        sm:text-2xl
+                      `} >
                           {
                             isSubmitted ?
                               <div className="flex items-center justify-center text-white" data-testid="spinning_component">
@@ -193,9 +196,11 @@ const Signin: NextPageWithLayout = (props) => {
                         </div>
                     }
                     
-                    <div className="flex flex-col items-center justify-center w-full mt-8">
+                    <div className="flex flex-col items-center justify-center w-full mt-2 sm:mt-8">
                       <span className="text-gray-500">-or-</span>
-                      <button data-testid="google_signin" onClick={signInWithGoogleHandler} className="flex items-center justify-center rounded-lg bg-red-900 p-5 w-full mt-2">
+                      <button data-testid="google_signin" onClick={signInWithGoogleHandler} className="flex items-center justify-center rounded-lg text-[13px] bg-red-900 py-[10px] w-full mt-2
+                        sm:p-5 sm:text-md
+                      ">
                         <Image src={googleLogo} alt="Google" className="object-contain"/>
                         <span className="ml-2" >Sign In with Google</span>
                       </button>
@@ -231,7 +236,7 @@ const Signin: NextPageWithLayout = (props) => {
       description: "Sign In - Wibix"
     }
     return (
-        <Main seo={meta} showHero={true}>
+        <Main seo={meta} showHero={false}>
           {page}   
         </Main>
     );

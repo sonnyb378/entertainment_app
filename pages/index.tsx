@@ -47,7 +47,7 @@ const Home: NextPageWithLayout = () => {
   return (
       <div className="flex flex-col items-center justify-start w-full" data-testid="homepage_container">      
 
-          <section className="flex flex-col items-start justify-start w-full h-screen py-20" data-testid="getting_started">
+          <section className="flex flex-col items-start justify-start w-full h-screen px-[10px] py-20" data-testid="getting_started">
             <div className="flex flex-col items-center justify-center w-full ">
               <div className="text-[3rem] text-center leading-none">All the TV Shows, All the Movies.</div>
               <div className="text-[1.8rem] text-center leading-none">Streamed to You!</div>

@@ -1,5 +1,5 @@
 .container {
-  @apply flex flex-col w-full p-10 py-0 z-[1500] relative text-[#676767] mt-[50px];
+  @apply flex flex-col w-full p-10 py-0 z-[1500] relative text-[#676767];
 }
 
 .bottom_container {

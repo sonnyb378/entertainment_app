@@ -152,17 +152,17 @@ const Register: NextPageWithLayout = () => {
 
     
     return (
-      <div className="flex flex-col items-center justify-start w-full h-screen
+      <div className="flex flex-col items-center justify-start w-full 
       sm:w-[80%]
       md:w-[70%]
       lg:w-[60%]
       xl:w-[50%]
       2xl:w-[40%]"
       data-testid="register_container">
-        <div className="flex flex-col items-center justify-start w-full">
+        <div className="flex flex-col items-center justify-start w-full p-0 border-0">
           <section className="flex flex-col items-center justify-center w-full">
             {
-                <section className="flex flex-col items-start justify-center p-4 border border-red-500 bg-black bg-opacity-70 mt-4 mb-6 text-btnhighlight w-[99%]">
+                <section className="hidden flex-col items-start justify-center p-4 border border-red-500 bg-black bg-opacity-70 mt-4 mb-6 text-btnhighlight w-[99%]">
                     <div>Registration disabled.</div> 
                     <div className="">
                         <span className="text-slate-400 font-bold mr-1">
@@ -175,8 +175,8 @@ const Register: NextPageWithLayout = () => {
                 </section>
             }
             
-            <div className="flex flex-col items-start justify-between p-8 bg-black bg-opacity-60 w-[99%] rounded-lg">
-                <h1 className="text-[2rem] 
+            <div className="flex flex-col items-start justify-between p-8 bg-black bg-opacity-60 w-[99%] rounded-lg mt-[20px]">
+                <h1 className="text-[1.3rem] 
                 lg:text-[3rem]">Sign Up</h1>
                 <div className="flex flex-col items-start justify-start w-full">
                     {
@@ -199,11 +199,14 @@ const Register: NextPageWithLayout = () => {
                     {
                         !isSubmitted && email && confirmEmail && password && confirmPassword ?
 
-                        <SigninBtn title="Sign Up" className="flex items-center justify-center py-5 px-5 text-2xl rounded-md bg-btnprimary text-white w-full
+                        <SigninBtn title="Sign Up" className="flex items-center justify-center py-[15px] px-5 text-xl rounded-md bg-btnprimary text-white w-full
+                        sm:py-5 sm:text-2xl
                         hover:text-yellow-200 hover:bg-btnhighlight mt-[2rem]" onClick={signupHandler}  />
                         :
-                        <div title="Sign Up" className={`flex items-center justify-center py-5 px-5 text-2xl rounded-md bg-gray-500 text-btnprimary w-full
-                        mt-[2rem]`}>
+                        <div title="Sign Up" className={`flex items-center justify-center py-[15px] px-5 text-xl rounded-md bg-gray-500 text-btnprimary w-full
+                        mt-[2rem]
+                        sm:text-2xl
+                        `}>
                             {
                             isSubmitted ?
                                 <div className="flex items-center justify-center text-white"  data-testid="spinning_component">
@@ -254,7 +257,7 @@ const Register: NextPageWithLayout = () => {
     }
 
     return (
-        <Main seo={meta} showHero={true}>
+        <Main seo={meta} showHero={false}>
           {page}   
         </Main>
     );
