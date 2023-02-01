@@ -22,6 +22,8 @@ import { fadeScreen } from "../lib/fadeScreen";
 import { IBookmarkData, removeDataBookmarks, selectBookmarkData, setDataBookmarks } from "../app/store/slices/bookmarks";
 import { auth } from "../firebase";
 import { useMovieDetail } from "../lib/hooks/useMovieDetail";
+import { screenBreakPoint, thumbnailBaseWidth } from "../lib/constants";
+import { isMobile } from "../lib/isMobile";
 // import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 // import { fake_trending, fake_featured } from "../model/fake_trending";
 // import { fake_popular } from "../model/fake_popular";
@@ -46,8 +48,6 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
     let recommendationsArr:any[] = [];
     const genres:any = [];
     
-    
-    // console.log(">> ", user, loading, cookies.token, isRedirecting )
 
     useEffect(() => {
       if (isRedirecting) {
@@ -234,14 +234,14 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
             </section>
 
             <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]" data-testid="trending_movies">
-              <h1 className={`${ screenWidth <= 500 ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>Trending Movies</h1>
+              <h1 className={`${ isMobile() ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>Trending Movies</h1>
 
               <Carousel 
                 data={trending} 
                 user={user} 
                 maxItems={trending.length} 
                 bookmarkData={[...bookmarks.data]}
-                baseWidth={ screenWidth > 600 ? 290 : 224 }
+                baseWidth={ screenWidth > screenBreakPoint.small ? thumbnailBaseWidth.large : thumbnailBaseWidth.small }
                 target="t"
                 screenWidth={screenWidth}
               />
@@ -249,14 +249,14 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
             </section>
 
             <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]" data-testid="popular_movies">
-              <h1 className={`${ screenWidth <= 500 ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>Popular Movies</h1>
+              <h1 className={`${ isMobile() ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>Popular Movies</h1>
 
               <Carousel 
                 data={popular.slice(0,10)} 
                 user={user} 
                 maxItems={10} 
                 bookmarkData={[...bookmarks.data]}
-                baseWidth={ screenWidth > 600 ? 290 : 224 }
+                baseWidth={ screenWidth > screenBreakPoint.small ? thumbnailBaseWidth.large : thumbnailBaseWidth.small }
                 target="p"
                 isThumbnail={false}
                 mediaType="movie"
@@ -270,14 +270,14 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
               recommendationsArr && recommendationsArr.length > 0 &&
             
                 <section className="flex flex-col px-[0px] z-[1000] border-0 w-full relative mt-[50px]" data-testid="recommended_movies">
-                  <h1 className={`${ screenWidth <= 500 ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>Recommended Movies</h1>
+                  <h1 className={`${ isMobile() ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>Recommended Movies</h1>
 
                   <Carousel 
                     data={recommendationsArr} 
                     user={user} 
                     maxItems={recommendationsArr.length} 
                     bookmarkData={[...bookmarks.data]}
-                    baseWidth={ screenWidth > 600 ? 290 : 224 }
+                    baseWidth={ screenWidth > screenBreakPoint.small ? thumbnailBaseWidth.large : thumbnailBaseWidth.small }
                     target="r"
                     screenWidth={screenWidth}
                   />
@@ -289,7 +289,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
               user &&
 
                 <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]" data-testid="mylist_container">
-                  <h1 className={`${ screenWidth <= 500 ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>My List</h1>
+                  <h1 className={`${ isMobile() ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>My List</h1>
                   
                   {
                     
@@ -299,7 +299,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
                           user={user} 
                           maxItems={ [...bookmarks.data].length } 
                           bookmarkData={[...bookmarks.data]}
-                          baseWidth={ screenWidth > 600 ? 290 : 224 }
+                          baseWidth={ screenWidth > screenBreakPoint.small ? thumbnailBaseWidth.large : thumbnailBaseWidth.small }
                           target="m"
                           screenWidth={screenWidth}
                         />

@@ -34,6 +34,8 @@ import nookies, { parseCookies } from "nookies"
 import { IAuthState } from "../../ts/states/auth_state";
 import { selectAuth } from "../../app/store/slices/auth";
 import { tvData } from "../../model/fake_tv_detail";
+import { screenBreakPoint, thumbnailBaseWidth } from "../../lib/constants";
+import { isMobile } from "../../lib/isMobile";
 // import { fake_tv_episodes } from "../../model/fake_tv_episodes";
 
 const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
@@ -181,7 +183,7 @@ const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
 
                 <div className="image-container relative w-full border-0 border-purple-500 h-[4/6]" data-testid="featured_backdrop"> 
                   <Image 
-                      src={ `${process.env.NEXT_PUBLIC_TMDB_IMAGE_PATH_ORIGINAL}${data.backdrop_path}` } 
+                      src={ `${process.env.NEXT_PUBLIC_TMDB_IMAGE_PATH_ORIGINAL}${data.backdrop_path ? data.backdrop_path : data.poster_path}` } 
                       layout="responsive"
                       width={300}
                       height={169}    
@@ -296,7 +298,7 @@ const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
               className="flex flex-col items-start justify-center px-[0px] z-[2000] border-0 w-full relative mb-[20px]" 
               data-testid="episodes_container"
             >              
-              <div className={`flex flex-col py-6 border-0 border-red-500 w-full ${ screenWidth <=  500 ? "px-[5px]":"px-[50px]" }`}>
+              <div className={`flex flex-col py-6 border-0 border-red-500 w-full ${ screenWidth <=  screenBreakPoint.small ? "px-[5px]":"px-[50px]" }`}>
                 <h1 className="text-[20px]">                  
                   <SelectSeason data={data} onClickHandler={fetchSeasonEpisodes} />
                 </h1>
@@ -332,14 +334,14 @@ const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
             {
               recommendationsArr && recommendationsArr.length > 0 &&            
                 <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative" data-testid="recommended_tvshows">
-                  <h1 className={`${ screenWidth <= 500 ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>Recommended TV Shows</h1>
+                  <h1 className={`${ isMobile() ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>Recommended TV Shows</h1>
 
                   <Carousel 
                     data={recommendationsArr} 
                     user={user} 
                     maxItems={ recommendationsArr.length } 
                     bookmarkData={[...bookmarks.data]}
-                    baseWidth={screenWidth > 600 ? 290 : 224}
+                    baseWidth={screenWidth > screenBreakPoint.small ? thumbnailBaseWidth.large : thumbnailBaseWidth.small }
                     target="r"
                     screenWidth={screenWidth}
                   />
@@ -348,7 +350,7 @@ const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
             {
               user &&
                 <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]" data-testid="bookmark_container">
-                  <h1 className={`${ screenWidth <= 500 ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>My List</h1>
+                  <h1 className={`${ isMobile() ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>My List</h1>
                   
                   {
                     [...bookmarks.data] && [...bookmarks.data].length > 0 ?
@@ -357,7 +359,7 @@ const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
                           user={user} 
                           maxItems={ [...bookmarks.data].length } 
                           bookmarkData={[...bookmarks.data]}
-                          baseWidth={screenWidth > 600 ? 290 : 224}
+                          baseWidth={screenWidth > screenBreakPoint.small ? thumbnailBaseWidth.large : thumbnailBaseWidth.small }
                           target="m"
                           screenWidth={screenWidth}
                         />
@@ -397,17 +399,29 @@ const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
 
    export const getStaticPaths: GetStaticPaths = async () => {
 
-    const [reqTrending] = await Promise.all([
+    const [reqTrending, reqPopular] = await Promise.all([
       await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}trending/tv/day?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}`, {
         headers: { "Accept-Encoding": "gzip,deflate,compress" } 
-      }).then(res => res.data)
+      }).then(res => res.data),
+      await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}tv/popular?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US&region=US&page=1`, {
+        headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+      }).then(res => res.data)   
     ])
 
-    const [resTrending] = await Promise.all([
-      reqTrending
+    const [resTrending, resPopular] = await Promise.all([
+      reqTrending, reqPopular
     ])
 
-    const paths = resTrending.results.map((tv: any) => ({
+    let pathsArr:any[] = []
+
+    if (resTrending && resTrending.results.length > 0) {
+      pathsArr = [...resTrending.results]
+    }
+    if (resPopular && resPopular.results.length > 0) {
+      pathsArr = [...resPopular.results]
+    }
+
+    const paths = pathsArr.map((tv: any) => ({
       params: { id: tv.id.toString() },
     }))
 

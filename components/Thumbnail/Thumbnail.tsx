@@ -18,6 +18,8 @@ import { removeDataBookmarks, setDataBookmarks } from "../../app/store/slices/bo
 
 import no_result from "../../assets/no_result.png"
 import { User } from "firebase/auth";
+import { screenBreakPoint } from "../../lib/constants";
+import { isMobile } from "../../lib/isMobile";
 
 // const no_result = require("../../assets/no_result.png")
 
@@ -44,7 +46,6 @@ const Thumbnail:React.FC<{
         const [isHover, setIsHover] = useState(false);
         const [isBookmarked, setIsBookmarked] = useState(false);
         const [touchMoved, setTouchMoved] = useState(false)
-        const [hasTouchStart, setHasTouchStart] = useState(false)
 
         const router = useRouter();
 
@@ -177,15 +178,11 @@ const Thumbnail:React.FC<{
             <div
                 id={`collapsed_${result.id}`}
                 
-                onTouchStart={ () => {
-                    setHasTouchStart(true)
-                } }
                 onTouchEnd={ () => { 
                     if (!touchMoved) {
                         router.push(`/${ result.media_type }/${ result.id}`)
                     } else {
                         setTouchMoved(false)
-                        setHasTouchStart(false)
                     }
                 }}
                 onTouchMove={ () =>  {
@@ -194,13 +191,13 @@ const Thumbnail:React.FC<{
                     }
                  } }
 
-                onMouseEnter={  screenWidth > 600 && !hasTouchStart ? () => setIsHover(true) : () => {}}
-                onMouseOver={ screenWidth > 600 && !hasTouchStart  ?
+                onMouseEnter={  !isMobile() ? () => setIsHover(true) : () => {} }
+                onMouseOver={ !isMobile()  ?
                         (e:React.MouseEvent<HTMLElement>) => onEnterHandler!(e, () => setExpand(true))
                     :
                         () => {}
                 }
-                onMouseLeave={ screenWidth > 600 && !hasTouchStart  ?
+                onMouseLeave={ !isMobile()  ?
                         (e:React.MouseEvent<HTMLElement>) => onLeaveHandler!(e, (timer:NodeJS.Timer) => {
                             if (timer) clearTimeout(timer)
                             setIsHover(false)
@@ -208,7 +205,15 @@ const Thumbnail:React.FC<{
                     :
                         () => {}
                 }  
-                className={`flex ${ expand && "scale-[120%]" } flex-col items-start justify-start z-[2000] w-full relative duration-200 transition-all border-0  rounded-md overflow-hidden`}
+                onClick={ !isMobile() ?  () => { 
+                    router.push(`/${ result.media_type }/${ result.id}`) 
+                    } 
+                    : 
+                    () => {} 
+                }
+
+                className={`flex ${ expand && "scale-[120%]" } flex-col items-start justify-start z-[2000] w-full relative duration-200 transition-all border-2 border-black  rounded-md overflow-hidden
+                ${ !isMobile() ? "hover:border-2 hover:border-btnprimary" : ""}`}
                 data-testid={`collapsed_${result.id}`}
             >
                 <span className={`${isHover ? "flex" : "hidden"} z-[2000] items-center justify-center absolute top-2 left-2 px-2 text-[10px] bg-black`}>

@@ -6,6 +6,8 @@ import { useAppContext } from "../../context/state"
 import { PlayCircleIcon } from "@heroicons/react/24/solid"
 
 import no_result from "../../assets/no_result.png"
+import { screenBreakPoint } from "../../lib/constants";
+import { isMobile } from "../../lib/isMobile";
 
 export interface IEpisodeCard {
     data:any,
@@ -22,14 +24,14 @@ const EpisodeCard:React.FC<IEpisodeCard> = ({ data, screenWidth }) => {
             data-testid="episode_card"
         >
             {
-                screenWidth > 600 && data.runtime && data.overview !== "" &&
+                data.runtime && data.overview !== "" &&
                 <div 
                     id="episode_overlay" 
                     className="flex items-center justify-center absolute w-full h-[100%] bg-white top-0 left-0 rounded-[5px] opacity-0 bg-opacity-0 z-[1000]
                     hover:opacity-100 hover:bg-opacity-10">
                     <PlayCircleIcon 
                         onClick={ () => setVideoIsPlayed(true, {...data, season_number: data.season_number, media_type: "tv" } ) }
-                        className="w-[80px] h-[80px] bg-btnprimary rounded-full p-0 m-0 drop-shadow-md" 
+                        className={`${ isMobile() ? "opacity-0" : "opacity-100" } w-[80px] h-[80px] bg-btnprimary rounded-full p-0 m-0 drop-shadow-md`} 
                         data-testid="play_button"
                     />
                 </div>
@@ -59,7 +61,7 @@ const EpisodeCard:React.FC<IEpisodeCard> = ({ data, screenWidth }) => {
                     
                     {
                         data.runtime &&
-                        <div className={`flex flex-col items-start justify-center border-0 ${ screenWidth <= 500 ? "space-x-0" : "space-x-2" }
+                        <div className={`flex flex-col items-start justify-center border-0 ${ screenWidth <= screenBreakPoint.small ? "space-x-0" : "space-x-2" }
                             sm:flex-row sm:items-center sm:justify-start
                         `}>
                             <span className="hidden ml-[5px] mr-[5px] sm:flex">●</span>

@@ -22,6 +22,8 @@ import { IBookmarkData, removeDataBookmarks, selectBookmarkData, setDataBookmark
 import { useTVDetail } from "../lib/hooks/useTVDetail";
 import { auth } from "../firebase";
 import { parseCookies } from "nookies"
+import { screenBreakPoint, thumbnailBaseWidth } from "../lib/constants";
+import { isMobile } from "../lib/isMobile";
 
 // import nookies from "nookies";
 
@@ -271,14 +273,14 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
           </section>
 
           <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]" data-testid="trending_tvshows">
-            <h1 className={`${ screenWidth <= 500 ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>Trending TV Shows</h1>
+            <h1 className={`${ isMobile() ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>Trending TV Shows</h1>
 
             <Carousel 
               data={trending} 
               user={user} 
               maxItems={trending.length} 
               bookmarkData={[...bookmarks.data]}
-              baseWidth={ screenWidth > 600 ? 290 : 224 }
+              baseWidth={ screenWidth > screenBreakPoint.small ? thumbnailBaseWidth.large : thumbnailBaseWidth.small }
               target="t"
               screenWidth={screenWidth}
             />
@@ -286,14 +288,14 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
           </section>
 
           <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]" data-testid="popular_tvshows">
-            <h1 className={`${ screenWidth <= 500 ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>Popular TV Shows</h1>
+            <h1 className={`${ isMobile() ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>Popular TV Shows</h1>
 
             <Carousel 
               data={popular.slice(0,10)} 
               user={user} 
               maxItems={10} 
               bookmarkData={[...bookmarks.data]}
-              baseWidth={ screenWidth > 600 ? 290 : 224 }
+              baseWidth={ screenWidth > screenBreakPoint.small ? thumbnailBaseWidth.large : thumbnailBaseWidth.small }
               target="p"
               isThumbnail={false}
               mediaType="tv"
@@ -306,14 +308,14 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
           {
             recommendationsArr && recommendationsArr.length > 0 &&
               <section className="flex flex-col px-[0px] z-[1000] border-0 w-full relative mt-[50px]" data-testid="recommended_tvshows">
-                <h1 className={`${ screenWidth <= 500 ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>Recommended TV Shows</h1>
+                <h1 className={`${ isMobile() ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>Recommended TV Shows</h1>
 
                 <Carousel 
                   data={recommendationsArr} 
                   user={user} 
                   maxItems={recommendationsArr.length} 
                   bookmarkData={[...bookmarks.data]}
-                  baseWidth={screenWidth > 600 ? 290 : 224}
+                  baseWidth={screenWidth > screenBreakPoint.small ? thumbnailBaseWidth.large : thumbnailBaseWidth.small }
                   target="r"
                   screenWidth={screenWidth}
                 />
@@ -324,7 +326,7 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
           
               user &&
                 <section className="flex flex-col px-[0px] z-[2000] border-0 w-full relative mt-[50px]" data-testid="mylist_container">
-                  <h1 className={`${ screenWidth <= 500 ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>My List</h1>
+                  <h1 className={`${ isMobile() ? " ml-[10px]" : " ml-[50px]" } text-[20px]`}>My List</h1>
                   
                   {
                     
@@ -334,7 +336,7 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
                           user={user} 
                           maxItems={ [...bookmarks.data].length } 
                           bookmarkData={[...bookmarks.data]}
-                          baseWidth={screenWidth > 600 ? 290 : 224}
+                          baseWidth={screenWidth > screenBreakPoint.small ? thumbnailBaseWidth.large : thumbnailBaseWidth.small }
                           target="m"
                           screenWidth={screenWidth}
 

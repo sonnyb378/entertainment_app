@@ -30,6 +30,8 @@ import num_8 from "../../assets/num_8.png"
 import num_9 from "../../assets/num_9.png"
 import num_10 from "../../assets/num_10.png"
 import { User } from "firebase/auth";
+import { screenBreakPoint } from "../../lib/constants";
+import { isMobile } from "../../lib/isMobile";
 
 
 const PopularCard:React.FC<{ 
@@ -223,7 +225,6 @@ const PopularCard:React.FC<{
                             router.push(`/${ result.media_type }/${ result.id}`)
                         } else {
                             setTouchMoved(false)
-                            setHasTouchStart(false)
                         }
                     }}
                     onTouchMove={ () =>  {
@@ -233,19 +234,26 @@ const PopularCard:React.FC<{
                      } }
 
                     onMouseOver={ 
-                        screenWidth > 600 && !hasTouchStart ?
+                        !isMobile() ?
                             (e:React.MouseEvent<HTMLElement>) => ctxOnEnterHandler(e, () => setExpand(true))
                         :
                             () => {}
                     }
                     onMouseLeave={
-                        screenWidth > 600 && !hasTouchStart ? 
+                        !isMobile() ? 
                             (e:React.MouseEvent<HTMLElement>) => ctxOnLeaveHandler(e, (timer:NodeJS.Timer) => {
                                 if (timer) clearTimeout(timer)
                             })
                         :
                             () => {}
                     }  
+                    onClick={ !isMobile() ?  () => { 
+                        router.push(`/${ result.media_type }/${ result.id}`) 
+                        } 
+                        : 
+                        () => {} 
+                    }
+
                     className={`flex ${ expand && "scale-[120%] opacity-0" } flex-col items-center justify-start relative duration-200 transition-all 
                         border-${borderSize} overflow-hidden w-[100%]
                         sm:border-red-500 
