@@ -179,28 +179,39 @@ const Thumbnail:React.FC<{
 
             
             <div
-                id={`collapsed_${result.id}`}
-                
-                onTouchEnd={ () => { 
-                    if (!touchMoved) {
-                        router.push(`/${ result.media_type }/${ result.id}`)
-                    } else {
-                        setTouchMoved(false)
-                    }
-                }}
-                onTouchMove={ () =>  {
-                    if (!touchMoved) {
-                        setTouchMoved(true)
-                    }
-                 } }
+                id={`collapsed_${result.id}`}                
+                onTouchEnd={ 
+                    isMobile() ? 
+                        () => { 
+                            if (!touchMoved) {
+                                router.push(`/${ result.media_type }/${ result.id}`)
+                            } else {
+                                setTouchMoved(false)
+                            }
+                        }
+                    : 
+                        () => {}
+                }
+                onTouchMove={ 
+                    isMobile() ? 
+                        () =>  {
+                            if (!touchMoved) {
+                                setTouchMoved(true)
+                            }
+                        } 
+                    : 
+                        () => {}
+                }
 
-                onMouseEnter={  !isMobile() ? () => setIsHover(true) : () => {} }
-                onMouseOver={ !isMobile()  ?
+                onMouseEnter={ !isMobile() ? () => setIsHover(true) : () => {} }
+                onMouseOver={ 
+                    !isMobile()  ?
                         (e:React.MouseEvent<HTMLElement>) => ctxOnEnterHandler(e, () => setExpand(true))
                     :
                         () => {}
                 }
-                onMouseLeave={ !isMobile()  ?
+                onMouseLeave={ 
+                    !isMobile()  ?
                         (e:React.MouseEvent<HTMLElement>) => ctxOnLeaveHandler(e, (timer:NodeJS.Timer) => {
                             if (timer) clearTimeout(timer)
                             setIsHover(false)
@@ -208,12 +219,14 @@ const Thumbnail:React.FC<{
                     :
                         () => {}
                 }  
-                onClick={ !isMobile() ?  () => { 
-                    router.push(`/${ result.media_type }/${ result.id}`) 
-                    } 
-                    : 
-                    () => {} 
-                }
+                // onClick={ 
+                //     !isMobile() ?  
+                //         () => { 
+                //             router.push(`/${ result.media_type }/${ result.id}`) 
+                //         } 
+                //     : 
+                //         () => {} 
+                // }
 
                 className={`flex ${ expand && "scale-[120%]" } flex-col items-start justify-start z-[2000] w-full relative duration-200 transition-all border-2 border-black  rounded-md overflow-hidden
                 ${ !isMobile() ? "hover:border-2 hover:border-btnprimary" : ""}`}

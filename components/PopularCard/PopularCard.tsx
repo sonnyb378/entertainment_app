@@ -219,21 +219,33 @@ const PopularCard:React.FC<{
                     id={`collapsed_${result.id}`}
                     data-testid={`collapsed_${result.id}`}
 
-                    onTouchStart={ () =>  
-                        setHasTouchStart(true)
+                    onTouchStart={ 
+                        isMobile() ?
+                            () => setHasTouchStart(true)
+                        : 
+                            () => {}
                     }
-                    onTouchEnd={ () => { 
-                        if (!touchMoved) {
-                            router.push(`/${ result.media_type }/${ result.id}`)
-                        } else {
-                            setTouchMoved(false)
-                        }
-                    }}
-                    onTouchMove={ () =>  {
-                        if (!touchMoved) {
-                            setTouchMoved(true)
-                        }
-                     } }
+                    onTouchEnd={ 
+                        isMobile() ?
+                            () => { 
+                                if (!touchMoved) {
+                                    router.push(`/${ result.media_type }/${ result.id}`)
+                                } else {
+                                    setTouchMoved(false)
+                                }
+                            }
+                        : () => {}
+                    }
+                    onTouchMove={ 
+                        isMobile() ?
+                            () =>  {
+                                if (!touchMoved) {
+                                    setTouchMoved(true)
+                                }
+                            }
+                        : 
+                            () => {}
+                    }
 
                     onMouseOver={ 
                         !isMobile() ?
@@ -249,12 +261,14 @@ const PopularCard:React.FC<{
                         :
                             () => {}
                     }  
-                    onClick={ !isMobile() ?  () => { 
-                        router.push(`/${ result.media_type }/${ result.id}`) 
-                        } 
-                        : 
-                        () => {} 
-                    }
+                    // onClick={ 
+                    //     isMobile() ?  
+                    //         () => { 
+                    //             router.push(`/${ result.media_type }/${ result.id}`) 
+                    //         } 
+                    //     : 
+                    //         () => {} 
+                    // }
 
                     className={`flex ${ expand && "scale-[120%] opacity-0" } flex-col items-center justify-start relative duration-200 transition-all 
                         border-${borderSize} overflow-hidden w-[100%]
