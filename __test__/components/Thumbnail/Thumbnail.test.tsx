@@ -284,7 +284,7 @@ describe("<Thumbnail />", () => {
 
         const opacity = expand.classList.contains("opacity-0")
         expect(opacity).toBeTruthy()
-        const scale = expand.classList.contains("scale-[80%]")
+        const scale = expand.classList.contains("scale-[50%]")
         expect(scale).toBeTruthy()
 
         const collapsed = within(container).getByTestId(`collapsed_${item.id}`)
