@@ -279,7 +279,6 @@ const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
                               <Image
                                 src={`${process.env.NEXT_PUBLIC_TMDB_IMAGE_PATH}${network.logo_path}`}
                                 layout="responsive"
-                                priority={true}  
                                 width={300}
                                 height={169}  
                                 className="object-contain !position !h-[unset]"

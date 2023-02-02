@@ -249,7 +249,10 @@ const Thumbnail:React.FC<{
                         </div>                                                  
                     }
                     {
-                        result.media_type !== "person" ? <MediaTypeShow result={result} /> : <MediaTypePerson result={result} />
+                        result.media_type !== "person" ? 
+                            <MediaTypeShow result={result} /> 
+                        : 
+                            <MediaTypePerson result={result} />
                     }
                 </div>
                 
