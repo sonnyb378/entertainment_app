@@ -51,7 +51,9 @@ const MyList: NextPageWithLayout = () => {
   
     useEffect(() => {
         window.addEventListener("resize", resizeHandler)
-        return () => window.removeEventListener("resize", resizeHandler);
+        return () => {
+          window.removeEventListener("resize", resizeHandler);
+        }
     },[])
   
     useEffect(() => {

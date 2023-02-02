@@ -40,14 +40,16 @@ const PopularCard:React.FC<{
     user: User | null | undefined, 
     result:IResult,
     bookmarkData?:any[]|null,
-    screenWidth: number
+    screenWidth: number,
+    closeExpanded?:boolean
 }> = ({ 
         visibleItems,
         indexCount,
         user, 
         result,
         bookmarkData = null,
-        screenWidth
+        screenWidth,
+        closeExpanded = true
     }) => {
         
         const { 
@@ -109,7 +111,7 @@ const PopularCard:React.FC<{
                 
                 <div 
                     id={`expand_${result.id}`} 
-                    className={`${ expand ? "flex opacity-100 z-[5000] mr-[10px]" : "flex opacity-0 z-[1000] scale-[80%]"} 
+                    className={`${ expand ? "flex opacity-100 z-[5000] mr-[10px]" : "flex opacity-0 z-[1000] scale-[10%]"} 
                     flex-col overflow-hidden absolute items-center justify-start w-[120%] h-auto bg-black shadow-xl rounded-md border-2 
                     duration-200 transition-all -mt-[50px] border-btnprimary ml-[12px] `}
                     onMouseLeave={(e:React.MouseEvent<HTMLElement>) => ctxOnLeaveHandler(e, () => {
@@ -264,68 +266,72 @@ const PopularCard:React.FC<{
                     `}
                 >
 
-                    {
-                        result.poster_path ? 
-                            <div className="flex items-center justify-center w-full h-[100%] relative border-0 border-green-500">
-                                <div className={`image-container relative h-[100%] -mb-[0px] border-${borderSize} border-orange-500 z-[1103]
+                    
+
+                        {
+                            result.poster_path ? 
+                                <div className="flex items-center justify-center w-full h-[100%] relative border-0 border-green-500">
+                                    <div className={`image-container relative h-[100%] -mb-[0px] border-${borderSize} border-orange-500 z-[1103]
+                                            ${
+                                                visibleItems > 1 ?
+                                                    indexCount+1 !== 10 ? 
+                                                        "w-[80%] left-[30px] "+
+                                                        "sm:w-[80%] sm:left-[40px] "+
+                                                        "md:w-[80%] md:left-[35px]"
+                                                    : 
+                                                        "w-[80%] left-[10px] "+
+                                                        ""
+                                                    
+                                                :
+                                                    indexCount+1 !== 10 ? "w-[90%] left-[50px]" : "w-[90%] left-[20px]"
+                                            }
+                                        `}>
+                                            
+                                            <Image 
+                                                src={number_image}
+                                                layout="fill"
+                                                alt=""
+                                                className={`z-[1001] !relative !h-[unset] object-cover`}
+                                            />
+                                            
+                                    </div>
+                                    <div className={`image-container relative h-[100%] w-[70%] border-0 border-btnprimary rounded-sm overflow-hidden 
+                                        z-[1101] 
                                         ${
                                             visibleItems > 1 ?
                                                 indexCount+1 !== 10 ? 
-                                                    "w-[80%] left-[30px] "+
-                                                    "sm:w-[80%] sm:left-[40px] "+
-                                                    "md:w-[80%] md:left-[35px]"
+                                                    "right-[20px] "+
+                                                    "sm:right-[40px] "+
+                                                    "md:right-[30px]" 
                                                 : 
-                                                    "w-[80%] left-[10px] "+
+                                                    "right-[20px] "+
                                                     ""
-                                                
                                             :
-                                                indexCount+1 !== 10 ? "w-[90%] left-[50px]" : "w-[90%] left-[20px]"
-                                        }
+                                                indexCount+1 !== 10 ? "right-[50px]" : "right-[50px]"
+                                        }   
                                     `}>
-                                        
                                         <Image 
-                                            src={number_image}
+                                            src={`${process.env.NEXT_PUBLIC_TMDB_IMAGE_PATH}${result.poster_path}`}
                                             layout="fill"
-                                            alt=""
-                                            className={`z-[1001] !relative !h-[unset] object-cover`}
+                                            alt={`${result.title}`}
+                                            className={`object-contain cursor-pointer !relative !h-[unset]`}
                                         />
-                                        
+                                    </div>
                                 </div>
-                                <div className={`image-container relative h-[100%] w-[70%] border-0 border-btnprimary rounded-sm overflow-hidden 
-                                    z-[1101] 
-                                    ${
-                                        visibleItems > 1 ?
-                                            indexCount+1 !== 10 ? 
-                                                "right-[20px] "+
-                                                "sm:right-[40px] "+
-                                                "md:right-[30px]" 
-                                            : 
-                                                "right-[20px] "+
-                                                ""
-                                        :
-                                            indexCount+1 !== 10 ? "right-[50px]" : "right-[50px]"
-                                    }   
-                                `}>
+                                
+                            :                                     
+                                <div className="image-container relative w-full border-0" data-testid="backdrop_image_container">
                                     <Image 
-                                        src={`${process.env.NEXT_PUBLIC_TMDB_IMAGE_PATH}${result.poster_path}`}
+                                        src={ no_result } 
                                         layout="fill"
-                                        alt={`${result.title}`}
-                                        className={`object-contain cursor-pointer !relative !h-[unset]`}
-                                    />
-                                </div>
-                            </div>
-                            
-                        :                                     
-                            <div className="image-container relative w-full border-0" data-testid="backdrop_image_container">
-                                <Image 
-                                    src={ no_result } 
-                                    layout="fill"
-                                    priority={true}
-                                    alt="No Result"
-                                    className={`object-contain cursor-pointer !relative !h-[unset] z-[1000]`}
-                                />                    
-                            </div>                                                  
-                    }
+                                        priority={true}
+                                        alt="No Result"
+                                        className={`object-contain cursor-pointer !relative !h-[unset] z-[1000]`}
+                                    />                    
+                                </div>                                                  
+                        }
+
+                    
                     
                 </div>
                 

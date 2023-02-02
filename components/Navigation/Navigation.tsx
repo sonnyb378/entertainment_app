@@ -30,8 +30,12 @@ const Navigation: React.FC = () => {
         
         if (target.id !== "ul_navigation") {
             const str = target.textContent?.trim().toLowerCase().split(" ").join("");
-            const url = str === "mylist" ? `/user/${str}` : `/${str}`
-            router.replace(url)
+            let url: string = "/movies"
+            url = str === "mylist" ? `/user/${str}` : `/${str}`
+            if (router.pathname !== url) {
+                // console.log(router.pathname, url)
+                router.replace(url)
+            }
         }        
     }
 

@@ -102,7 +102,9 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
 
     useEffect(() => {
         window.addEventListener("resize", resizeHandler)
-        return () => window.removeEventListener("resize", resizeHandler);
+        return () => {
+          window.removeEventListener("resize", resizeHandler);
+        }
     },[])
 
     useEffect(() => {
@@ -339,7 +341,6 @@ const TVShows: NextPageWithLayout<{ data:any }> = ({ data }) => {
                           baseWidth={screenWidth > screenBreakPoint.small ? thumbnailBaseWidth.large : thumbnailBaseWidth.small }
                           target="m"
                           screenWidth={screenWidth}
-
                         />
                       :
                         <div className="flex items-center justify-start ml-[50px] mt-6 p-2">No bookmarks found</div>

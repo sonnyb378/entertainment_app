@@ -124,7 +124,9 @@ const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
 
   useEffect(() => {
       window.addEventListener("resize", resizeHandler)
-      return () => window.removeEventListener("resize", resizeHandler);
+      return () => {
+        window.removeEventListener("resize", resizeHandler);
+      }
   },[])
 
   useEffect(() => {
@@ -172,13 +174,13 @@ const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
               data-testid="tv_info_container"
             >
 
-                <div className="flex items-center justify-start w-full absolute top-0 left-0 z-[2000] p-2
+                {/* <div className="flex items-center justify-start w-full absolute top-0 left-0 z-[2000] p-2
                 sm:p-10">
                     <ChevronLeftIcon className="w-[30px] h-[30px] mr-[10px] border border-btnprimary bg-btnprimary rounded-full p-1 
                     hover:cursor-pointer hover:border-white" 
                     onClick={ () => router.back() } />
                     <span>Back</span>
-                </div>
+                </div> */}
 
 
                 <div className="image-container relative w-full border-0 border-purple-500 h-[4/6]" data-testid="featured_backdrop"> 

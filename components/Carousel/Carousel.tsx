@@ -37,6 +37,8 @@ const Carousel: React.FC<{
     const [maxIndex, setMaxIndex] = useState(3)
     const [translateWidth, setTranslateWidth] = useState(0)
     const [currentIndex, setCurrentIndex] = useState(0)
+
+    const [closeExpanded, setCloseExpanded] = useState(false)
     
     const THUMBNAIL_BASEWIDTH = baseWidth;
     const MAX_ITEMS = maxItems;
@@ -170,7 +172,16 @@ const Carousel: React.FC<{
 
 
     return(
-        <div className="flex flex-col border-0 w-full relative" data-testid="carousel_maincontainer">
+        <div 
+            className="flex flex-col border-0 w-full relative" 
+            data-testid="carousel_maincontainer"
+            onMouseEnter={ () => {
+                setCloseExpanded(false)
+            }}
+            onMouseLeave={ () => {
+                setCloseExpanded(true)
+            }}
+        >
             <div id={`${target}_track`} className={`hidden ${ isMobile() ? "ml-[10px] mr-[10px]" : "ml-[50px]" } border-2
                  sm:border-red-500 
                  md:border-blue-500 
@@ -236,7 +247,9 @@ const Carousel: React.FC<{
                                         >
                                             {
                                                 isThumbnail ? 
-                                                    <Thumbnail user={user} result={item} bookmarkData={bookmarkData} screenWidth={screenWidth} />                            
+                                                    <Thumbnail user={user} result={item} bookmarkData={bookmarkData} screenWidth={screenWidth} 
+                                                        closeExpanded={closeExpanded}
+                                                    />                            
                                                 :
                                                     <PopularCard 
                                                         visibleItems={visibleItem} 
@@ -245,6 +258,7 @@ const Carousel: React.FC<{
                                                         result={ item.media_type ? {...item} : {...item, media_type: mediaType } } 
                                                         bookmarkData={bookmarkData}
                                                         screenWidth={screenWidth}
+                                                        closeExpanded={closeExpanded}
                                                     /> 
                                             }
                                         </div>
