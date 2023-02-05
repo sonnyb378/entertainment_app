@@ -32,6 +32,7 @@ import num_10 from "../../assets/num_10.png"
 import { User } from "firebase/auth";
 import { screenBreakPoint } from "../../lib/constants";
 import { isMobile } from "../../lib/isMobile";
+import Link from "next/link";
 
 
 const PopularCard:React.FC<{ 
@@ -197,13 +198,11 @@ const PopularCard:React.FC<{
                             
                             <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
                                 hover:text-btnhighlight hover:border-btnhighlight">
-                                <ChevronDownIcon 
-                                    className="w-[20px] h-[20px]" 
-                                    onClick={() => {
-                                        router.push(`/${ result.media_type }/${ result.id}`)
-                                    }} 
-                                    data-testid="view_detail_button"
-                                />
+                                    <Link href={`/${ result.media_type }/${ result.id}`}>
+                                        <a>
+                                            <ChevronDownIcon className="w-[20px] h-[20px]" data-testid="view_detail_button" />
+                                        </a>
+                                    </Link>
                             </div>
                         </div>               
                         {

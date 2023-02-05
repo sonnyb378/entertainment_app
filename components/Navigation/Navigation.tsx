@@ -24,7 +24,6 @@ const Navigation: React.FC = () => {
         if (typeof window !== "undefined") {
             window.addEventListener("resize", () => {
                 const nav_container = document.getElementById("navigation_container")!
-                // console.log(nav_container)
                 if (showDropdown && nav_container && nav_container.clientWidth >= 318) {
                     setShowDropdown(false)
                 }
@@ -43,7 +42,6 @@ const Navigation: React.FC = () => {
             let url: string = "/movies"
             url = str === "mylist" ? `/user/${str}` : `/${str}`
             if (router.pathname !== url) {
-                // console.log(router.pathname, url)
                 router.replace(url)
             }
         }        
@@ -52,8 +50,6 @@ const Navigation: React.FC = () => {
     const toggleDropDown = () => {
         setShowDropdown(!showDropdown)
     }
-
-    
     
     return (
         <nav className="flex-1 items-center justify-start w-full pl-2 relative" id="navigation_container" data-testid="navigation_container">

@@ -10,6 +10,7 @@ import { setAuthData } from "../../app/store/slices/auth";
 import { setCurrentUrl } from "../../app/store/slices/url";
 import { useRouter } from "next/router"
 import nookies, { setCookie } from "nookies"
+import Link from "next/link";
 
 export interface IAvatar {
     userInitial?: string
@@ -65,8 +66,10 @@ const Avatar: React.FC<IAvatar> = ({ userInitial }) => {
                 <div className={ styles.avatar } data-testid="initial_container">{ userInitial || "" }</div>
                 <div ref={dropDownRef} className={ show ? styles.dropdown_show : styles.dropdown_hide} id="signin_dropdown" >
                     <ul className={ styles.menu }>
-                        <li className={ styles.menu_item } onClick={ myListHandler } data-testid='mylist_btn'>
-                            <BookmarkIcon className="w-[20px] h-[20px] mr-2" />My List
+                        <li className={ styles.menu_item } data-testid='mylist_btn'>
+                            <Link href="/user/mylist">
+                                <a><BookmarkIcon className="w-[20px] h-[20px] mr-2" />My List</a>
+                            </Link>                            
                         </li>
                         <li className={ styles.menu_item } onClick={ logoutHandler } data-testid='logout_btn'>
                             <ArrowRightOnRectangleIcon className="w-[20px] h-[20px] mr-2" />Logout
