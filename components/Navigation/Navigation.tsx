@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import styles from "./Navigation.module.css";
 
 import { useRouter } from "next/router"
@@ -9,6 +9,16 @@ import { ChevronDownIcon, FilmIcon, TvIcon, BookmarkIcon } from "@heroicons/reac
 const Navigation: React.FC = () => {
     const router = useRouter();
     const [showDropdown, setShowDropdown] = useState(false)
+
+    const navDropdownRef = useRef<HTMLUListElement | null>(null)
+
+    const closeNavDropdown = (e:any) => {
+        if (navDropdownRef.current && showDropdown && !navDropdownRef.current.contains(e.target)) {
+            setShowDropdown(false)
+        }
+    }
+
+    document.addEventListener("mousedown", closeNavDropdown)
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -57,7 +67,7 @@ const Navigation: React.FC = () => {
                 <ChevronDownIcon className="flex w-[20px] h-[20px] items-start ml-2" />
             </button>
 
-            <ul className={ !showDropdown ? styles.navigation : styles.show_navigation } onClick={redirectHandler} data-testid="toggle_nav" id="ul_navigation">
+            <ul ref={navDropdownRef} className={ !showDropdown ? styles.navigation : styles.show_navigation } onClick={redirectHandler} data-testid="toggle_nav" id="ul_navigation">
                 <li data-testid="nav_movies">
                     <FilmIcon className="w-[20px] h-[20px] mr-1 md:hidden" />Movies
                 </li>

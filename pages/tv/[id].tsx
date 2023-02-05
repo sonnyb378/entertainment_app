@@ -301,7 +301,7 @@ const TV: NextPageWithLayout<{ data:any }> = ({ data }) => {
             >              
               <div className={`flex flex-col py-6 border-0 border-red-500 w-full ${ screenWidth <=  screenBreakPoint.small ? "px-[5px]":"px-[50px]" }`}>
                 <h1 className="text-[20px]">                  
-                  <SelectSeason data={data} onClickHandler={fetchSeasonEpisodes} />
+                  <SelectSeason data={data} onClickHandler={ fetchSeasonEpisodes } />
                 </h1>
 
                 {

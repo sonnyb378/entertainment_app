@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "./Avatar.module.css";
 
 import { BookmarkIcon } from "@heroicons/react/24/solid";
@@ -19,6 +19,16 @@ const Avatar: React.FC<IAvatar> = ({ userInitial }) => {
     const router = useRouter();
     const [show, setShow] = useState(false)
     const dispatch = useAppDispatch()        
+
+    const dropDownRef = useRef<HTMLDivElement | null>(null)
+
+    const closeAvatar = (e:any) => {
+        if (dropDownRef.current && show && !dropDownRef.current.contains(e.target)) {
+            setShow(false)
+        }
+    }
+
+    document.addEventListener("mousedown", closeAvatar)
 
     useEffect(() => {
         window.addEventListener("resize", () => {
@@ -46,12 +56,14 @@ const Avatar: React.FC<IAvatar> = ({ userInitial }) => {
         setShow(!show)
     }
 
+
+
     return (
         
             
             <div className={ styles.container } data-testid="avatar" onClick={toggleDropdown}>            
                 <div className={ styles.avatar } data-testid="initial_container">{ userInitial || "" }</div>
-                <div className={ show ? styles.dropdown_show : styles.dropdown_hide} id="signin_dropdown" >
+                <div ref={dropDownRef} className={ show ? styles.dropdown_show : styles.dropdown_hide} id="signin_dropdown" >
                     <ul className={ styles.menu }>
                         <li className={ styles.menu_item } onClick={ myListHandler } data-testid='mylist_btn'>
                             <BookmarkIcon className="w-[20px] h-[20px] mr-2" />My List
