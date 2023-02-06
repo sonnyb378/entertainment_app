@@ -34,7 +34,6 @@ import { screenBreakPoint } from "../../lib/constants";
 import { isMobile } from "../../lib/isMobile";
 import Link from "next/link";
 
-
 const PopularCard:React.FC<{ 
     visibleItems: number,
     indexCount: number,
@@ -116,6 +115,7 @@ const PopularCard:React.FC<{
                     flex-col overflow-hidden absolute items-center justify-start w-[120%] h-auto bg-black shadow-xl rounded-md border-2 
                     duration-200 transition-all -mt-[50px] border-btnprimary ml-[12px] `}
                     onMouseLeave={(e:React.MouseEvent<HTMLElement>) => ctxOnLeaveHandler(e, () => {
+                        console.log("ctxOnLeaveHandler")
                         setExpand(false)
                     })}
                     data-testid={`expand_${result.id}`}
@@ -197,12 +197,10 @@ const PopularCard:React.FC<{
                             }
                             
                             <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
-                                hover:text-btnhighlight hover:border-btnhighlight">
-                                    <Link href={`/${ result.media_type }/${ result.id}`}>
-                                        <a>
-                                            <ChevronDownIcon className="w-[20px] h-[20px]" data-testid="view_detail_button" />
-                                        </a>
-                                    </Link>
+                                hover:text-btnhighlight hover:border-btnhighlight" onClick={ () => {
+                                    router.push(`/${ result.media_type }/${result.id}`)
+                                }}>
+                                    <ChevronDownIcon className="w-[20px] h-[20px]" data-testid="view_detail_button" />
                             </div>
                         </div>               
                         {

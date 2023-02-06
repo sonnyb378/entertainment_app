@@ -66,7 +66,6 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
     // const featuredIsLoading = false;    
   
     const { movie_detail: featured, isLoading: featuredIsLoading } = useMovieDetail(`${feature_id}`); 
-
     if (!featuredIsLoading) {
       featured.recommendations && featured.recommendations.results && featured.recommendations.results.slice(0,20).map((item:any) => {
         recommendationsArr.push(item)

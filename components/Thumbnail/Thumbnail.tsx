@@ -44,7 +44,6 @@ const Thumbnail:React.FC<{
             ctxOnLeaveHandler
         } = useAppContext();
 
-       
         const [expand, setExpand] = useState(false);
         const [isHover, setIsHover] = useState(false);
         const [isBookmarked, setIsBookmarked] = useState(false);
@@ -161,12 +160,10 @@ const Thumbnail:React.FC<{
                             }
                             
                             <div className="flex items-center justify-center p-2 rounded-full border-2 border-white bg-gray-900 cursor-pointer
-                                hover:text-btnhighlight hover:border-btnhighlight">
-                                    <Link href={`/${ result.media_type }/${ result.id}`}>
-                                        <a>
-                                            <ChevronDownIcon className="w-[20px] h-[20px]" data-testid="view_detail_button" />
-                                        </a>
-                                    </Link>
+                                hover:text-btnhighlight hover:border-btnhighlight" onClick={ () => {
+                                    router.push(`/${ result.media_type }/${result.id}`)
+                                }}>
+                                    <ChevronDownIcon className="w-[20px] h-[20px]" data-testid="view_detail_button" />
                             </div>
                         </div>               
                         {
