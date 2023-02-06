@@ -17,7 +17,7 @@ export interface IEpisodeCard {
 const EpisodeCard:React.FC<IEpisodeCard> = ({ data, screenWidth }) => {
     const { setVideoIsPlayed } = useAppContext()
     return(
-        <div className={`flex items-start justify-center p-2 rounded-md bg-[#40424A] my-2 border-4 border-[#40424A] relative
+        <div className={`flex items-start justify-center p-2 w-full rounded-md bg-[#40424A] my-2 border-4 border-[#40424A] relative
             ${ data.runtime && data.overview !== "" && "hover:cursor-pointer" }
             hover:border-4 hover:border-[#3F546E]
             `}

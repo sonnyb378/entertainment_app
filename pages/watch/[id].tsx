@@ -14,6 +14,7 @@ import { selectAuth } from "../../app/store/slices/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
 import nookies, { parseCookies} from "nookies"
+import { screenBreakPoint } from "../../lib/constants";
 
 
 const WatchShow: NextPageWithLayout<{ data: any }> = ({ data }) => {
@@ -22,6 +23,7 @@ const WatchShow: NextPageWithLayout<{ data: any }> = ({ data }) => {
     const [user, loading] = useAuthState(auth);
     const router = useRouter()
     const [showControl, setShowControls] = useState(true)
+    const [screenWidth, setScreenWidth] = useState(360)
     const { setVideoIsPlayed } = useAppContext()
     
     const { info } = data
@@ -37,6 +39,17 @@ const WatchShow: NextPageWithLayout<{ data: any }> = ({ data }) => {
             setIsRedirecting(true)
         }
     }, [user])
+
+    const resizeHandler = () => {
+        setScreenWidth(window.innerWidth)
+    }
+  
+    useEffect(() => {
+        window.addEventListener("resize", resizeHandler)
+        return () => {
+            window.removeEventListener("resize", resizeHandler);
+        }
+    },[])
 
     useEffect(() => {
         setVideoIsPlayed(false, {})
@@ -72,11 +85,24 @@ const WatchShow: NextPageWithLayout<{ data: any }> = ({ data }) => {
             </div>
 
             <div className={`${ showControl ? "flex" : "hidden"} flex-col items-start justify-between absolute w-full h-[100%] border-0 z-[1000]`}>
-                <div className="flex w-full h-[100px] p-6 items-center justify-between ">
+                <div className="flex w-full h-[100px] p-6 items-center justify-between">
                     <ArrowLeftIcon 
-                        className="w-[60px] h-[60px] p-2 rounded-full hover:bg-gray-500 hover:cursor-pointer" 
+                        className="w-[35px] h-[35px] p-2 rounded-full hover:bg-gray-500 hover:cursor-pointer
+                        sm:w-[60px] sm:h-[60px] " 
                         onClick={ backHandler }
-                    />                    
+                    />     
+                    {
+                        screenWidth <= screenBreakPoint.small ? 
+                            <div className="flex flex-1 items-center justify-start text-[15px] border-0
+                            sm:text-[22px]">
+                                {
+                                    info.title || info.name || info.original_title || info.original_name
+                                }
+                            </div>
+                        :
+                                ""
+                    }  
+                                 
                 </div>
                 <div className="flex flex-col w-full p-6">
                     <div className="flex w-full items-center justify-center mb-[25px]">
@@ -85,23 +111,36 @@ const WatchShow: NextPageWithLayout<{ data: any }> = ({ data }) => {
                     <div className="flex items-center justify-between">
                         <div>
                             <ul className="flex items-center justify-center space-x-2">
-                                <li><PauseIcon className="w-[50px] h-[50px]" /></li>
-                                <li><ArrowUturnLeftIcon className="w-[40px] h-[40px]" /></li>
-                                <li><ArrowUturnRightIcon className="w-[40px] h-[40px]" /></li>
-                                <li><SpeakerWaveIcon className="w-[50px] h-[50px]" /></li>
+                                <li><PauseIcon className="w-[20px] h-[20px]
+                                sm:w-[50px] sm:h-[50px]" /></li>
+                                <li><ArrowUturnLeftIcon className="w-[18px] h-[18px]
+                                sm:w-[40px] sm:h-[40px]" /></li>
+                                <li><ArrowUturnRightIcon className="w-[18px] h-[18px]
+                                sm:w-[40px] sm:h-[40px]" /></li>
+                                <li><SpeakerWaveIcon className="w-[20px] h-[20px]
+                                sm:w-[50px] sm:h-[50px]" /></li>
                             </ul>
                         </div>
-                        <div className="flex flex-1 items-center justify-center text-[20px] border-0">
-                            {
-                                info.title || info.name || info.original_title || info.original_name
-                            }
-                        </div>
+                        {
+                            screenWidth > screenBreakPoint.small ?
+                                <div className="flex flex-1 items-center justify-center text-[20px] border-0">
+                                    {
+                                        info.title || info.name || info.original_title || info.original_name
+                                    }
+                                </div>
+                            :
+                            ""
+                        }
+                        
                         <div className="flex items-center justify-center">
                             <ul className="flex items-center justify-center space-x-2">
-                                <li><EllipsisHorizontalCircleIcon className="w-[50px] h-[50px]" /></li>
-                                <li><ArrowTopRightOnSquareIcon className="w-[50px] h-[50px]" /></li>
+                                <li><EllipsisHorizontalCircleIcon className="w-[20px] h-[20px]
+                                sm:w-[50px] sm:h-[50px]" /></li>
+                                <li><ArrowTopRightOnSquareIcon className="w-[20px] h-[20px]
+                                sm:w-[50px] sm:h-[50px]" /></li>
                             </ul>                            
                         </div>
+
                     </div>
                 </div>
             </div>
