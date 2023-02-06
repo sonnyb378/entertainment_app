@@ -66,9 +66,7 @@ const Avatar: React.FC<IAvatar> = ({ userInitial }) => {
                 <div className={ styles.avatar } data-testid="initial_container">{ userInitial || "" }</div>
                 <div ref={dropDownRef} className={ show ? styles.dropdown_show : styles.dropdown_hide} id="signin_dropdown" >
                     <ul className={ styles.menu }>
-                        <li className={ styles.menu_item } data-testid='mylist_btn' onClick={ () => {
-                            router.push(`/user/mylist`)
-                        }}>
+                        <li className={ styles.menu_item } data-testid='mylist_btn' onClick={ myListHandler }>
                             <BookmarkIcon className="w-[20px] h-[20px] mr-2" />My List                            
                         </li>
                         <li className={ styles.menu_item } onClick={ logoutHandler } data-testid='logout_btn'>
