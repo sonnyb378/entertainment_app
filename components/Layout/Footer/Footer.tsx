@@ -40,7 +40,7 @@ const Footer: React.FC<IFooter> = () => {
                         <Image src={instagram} alt="Instagram" width={25} height={25} className="object-contain" />
                         <Image src={facebook} alt="Facebook" width={25} height={25} className="object-contain" />
                     </div>
-                    <div className="flex items-center justify-center w-full
+                    <div className="flex items-center justify-center w-full text-[#d1d0d0]
                     lg:justify-start">
                         { year } Wibix. All Rights Reserved.
                     </div>

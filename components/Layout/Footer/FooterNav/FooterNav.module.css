@@ -7,7 +7,7 @@
 }
 
 .title {
-  @apply text-2xl text-[#afafaf] mb-6 h-[2rem];
+  @apply text-2xl text-[#cecece] mb-6 h-[2rem];
 }
 
 .no_title {
@@ -15,5 +15,5 @@
 }
 
 .items {
-  @apply text-[#676767];
+  @apply text-[#bbbbbb];
 }

@@ -19,7 +19,7 @@ const FooterNav: React.FC<IFooterNav> = ({ title, items }) => {
                 {
                     items.map((item) => {
                         return (
-                            <li key={item.title} role="footer_items">
+                            <li key={item.title}>
                                 { item.title }
                             </li>
                         )
