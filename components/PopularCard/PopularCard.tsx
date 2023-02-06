@@ -115,7 +115,6 @@ const PopularCard:React.FC<{
                     flex-col overflow-hidden absolute items-center justify-start w-[120%] h-auto bg-black shadow-xl rounded-md border-2 
                     duration-200 transition-all -mt-[50px] border-btnprimary ml-[12px] `}
                     onMouseLeave={(e:React.MouseEvent<HTMLElement>) => ctxOnLeaveHandler(e, () => {
-                        console.log("ctxOnLeaveHandler")
                         setExpand(false)
                     })}
                     data-testid={`expand_${result.id}`}
