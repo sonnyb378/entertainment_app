@@ -11,16 +11,17 @@ describe("<FooterNav />", () => {
         jest.clearAllMocks();
     })
 
-    it("must display the footer nav", () => {
+    it("must display footer nav", () => {
         const items = [{
             title: "Item Title",
             url: "./item_url"
         }]
-        render(<FooterNav title="Nav Title" items={items} />)
-        const footerNavComponent = screen.getByTestId("footernav_container")
+        
+        const {container} = render(<FooterNav title="Nav Title" items={items} />)
+        const footerNavComponent = within(container).getByTestId("footernav_container")
         expect(footerNavComponent).toBeInTheDocument();
         
-        const liItems = within(footerNavComponent).getAllByRole("footer_items")
+        const liItems = within(container).getAllByRole("listitem")
         expect(liItems.length > 0).toBeTruthy();
 
     })

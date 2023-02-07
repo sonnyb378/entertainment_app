@@ -15,13 +15,18 @@ import Avatar from '../../../components/Avatar/Avatar';
 import { parseCookies, setCookie } from "nookies"
 import * as Nookies from "nookies";
 import { setCurrentUrl } from "../../../app/store/slices/url";
-
+import { useState } from "react";
 
 jest.mock('axios');
 jest.mock('nookies', () => ({
     __esModule: true,
     parseCookies: jest.fn(),
     setCookie: jest.fn()
+}))
+
+jest.mock('react', ()=>({
+    ...jest.requireActual('react'),
+    useState: jest.fn()
 }))
 
 jest.mock('next/router', () => ({
@@ -52,8 +57,13 @@ jest.mock("../../../app/hooks", () => ({
 
 describe("<Avatar />", () => {
 
-    afterAll(() => {
-        jest.clearAllMocks()
+    beforeEach(() => {
+        const mockUseState = useState as jest.Mock;
+        mockUseState.mockImplementation(jest.requireActual('react').useState);
+    })
+
+    afterEach(() => {
+        jest.clearAllMocks();
     })
 
     it("must display <Avatar />", () => {
@@ -64,17 +74,21 @@ describe("<Avatar />", () => {
 
     it("must redirect to /user/mylist if 'My List' is clicked", () => {
 
+        const mockSetState = jest.fn()
+        jest.spyOn(React, 'useState')
+        .mockImplementationOnce(() => [true, mockSetState])
+
         const router = useRouter as jest.Mock;
         const mockRouter = {
             push: jest.fn()
         }
         router.mockReturnValue(mockRouter);
 
-        render(<Avatar />)
-        const avatarComponent = screen.getByTestId("avatar")
+        const { debug, container } = render(<Avatar />)
+        const avatarComponent = within(container).getByTestId("avatar")
         expect(avatarComponent).toBeInTheDocument();
 
-        const myListButton = within(avatarComponent).getByTestId("mylist_btn")
+        const myListButton = within(container).getByTestId("mylist_btn")
         expect(myListButton).toBeInTheDocument();
 
         fireEvent.click(myListButton)
@@ -84,6 +98,11 @@ describe("<Avatar />", () => {
     })
 
     it("must logout user", () => {
+
+        const mockSetState = jest.fn()
+        jest
+        .spyOn(React, 'useState')
+        .mockImplementationOnce(() => [true, mockSetState])
 
         const mockSetCookie = setCookie as jest.Mock;
         mockSetCookie.mockReturnValue(jest.fn());
@@ -103,11 +122,11 @@ describe("<Avatar />", () => {
         }
         router.mockReturnValue(mockRouter);
 
-        render(<Avatar />)
-        const avatarComponent = screen.getByTestId("avatar")
+        const { container } = render(<Avatar />)
+        const avatarComponent = within(container).getByTestId("avatar")
         expect(avatarComponent).toBeInTheDocument();
 
-        const logoutButton = within(avatarComponent).getByTestId("logout_btn")
+        const logoutButton = within(container).getByTestId("logout_btn")
         expect(logoutButton).toBeInTheDocument();
 
         fireEvent.click(logoutButton)
@@ -118,23 +137,22 @@ describe("<Avatar />", () => {
     })
 
     it("must toggle dropdown", () => {
-        const { debug } = render(<Avatar />)
-        const avatarComponent = screen.getByTestId("avatar")
+        const { debug, container } = render(<Avatar />)
+        const avatarComponent = within(container).getByTestId("avatar")
         expect(avatarComponent).toBeInTheDocument();
 
-
-        const dropdownHide = avatarComponent.querySelector(".dropdown_hide");
-        expect(dropdownHide).toBeInTheDocument();
-
-        fireEvent.click(avatarComponent)
-
-        const dropdownShow = avatarComponent.querySelector(".dropdown_show");
-        expect(dropdownShow).toBeInTheDocument();
+        const dropdownHide = container.querySelector(".dropdown_hide");
+        expect(dropdownHide).toBeTruthy();
 
         fireEvent.click(avatarComponent)
 
-        const dropdownHide2 = avatarComponent.querySelector(".dropdown_hide");
-        expect(dropdownHide2).toBeInTheDocument();
+        const dropdownShow = container.querySelector(".dropdown_show");
+        expect(dropdownShow).toBeTruthy();
+
+        fireEvent.click(avatarComponent)
+
+        const dropdownHide2 = container.querySelector(".dropdown_hide");
+        expect(dropdownHide2).toBeTruthy();
 
     })
 

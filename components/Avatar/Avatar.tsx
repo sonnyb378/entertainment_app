@@ -23,7 +23,7 @@ const Avatar: React.FC<IAvatar> = ({ userInitial }) => {
     const dispatch = useAppDispatch()        
 
     const dropdownRef = useRef<HTMLDivElement | null>(null)
-
+ 
     const closeDropdown = useCallback((e:any) => {
         
         if(dropdownRef.current && showAvatarDropdown && !dropdownRef.current.contains(e.target) && e.target.parentElement.id !== "avatar") {
@@ -78,7 +78,7 @@ const Avatar: React.FC<IAvatar> = ({ userInitial }) => {
                     <div className={ styles.avatar } data-testid="initial_container">{ userInitial || "" }</div>                    
                 </div>
                 
-                <div ref={dropdownRef} className={ showAvatarDropdown ? styles.dropdown_show : styles.dropdown_hide } id="signin_dropdown" >
+                <div ref={dropdownRef} className={ showAvatarDropdown ? styles.dropdown_show : styles.dropdown_hide } data-testid="signin_dropdown" id="signin_dropdown" >
                     <ul className={ styles.menu }>
                         <li className={ styles.menu_item } data-testid='mylist_btn' onClick={ myListHandler }>
                             <BookmarkIcon className="w-[20px] h-[20px] mr-2" />My List                            
