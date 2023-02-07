@@ -73,7 +73,9 @@ const Header: React.FC<IHeader> = ({ children }) => {
                             <>
                                 <Navigation /> 
                                 {
-                                  screenWidth <= 600 && <MagnifyingGlassIcon className="w-[30px] h-[30px] ml-2 mr-2 text-white cursor-pointer" onClick={ () => setShow(!show)  }/>
+                                  screenWidth <= 600 && <MagnifyingGlassIcon className="w-[30px] h-[30px] ml-2 mr-2 text-white cursor-pointer border-0" onClick={ (e:React.MouseEvent) => {
+                                    setShow(!show)
+                                }  }/>
                                 }
                                 <SearchField show={show} scrolled={yValue > 80} sizeHandler={checkWidthHandler} />
                             </>

@@ -19,7 +19,7 @@
 }
 
 .nav_container {
-  @apply flex flex-1 items-center justify-between w-full relative px-2;
+  @apply flex flex-1 items-center justify-between w-full relative px-2 border-0;
 }
 
 .filler_container {

@@ -1,5 +1,5 @@
 .container {
-  @apply flex flex-col items-end justify-start p-0 m-2 hover:text-yellow-400 relative z-[3000];
+  @apply flex flex-col items-end justify-start p-0 m-2 hover:text-yellow-400 relative z-[3000] border-0;
 }
 
 .avatar {
@@ -7,11 +7,11 @@
 }
 
 .dropdown_hide {
-  @apply hidden;
+  @apply hidden mt-[40px] absolute border-0;
 }
 
 .dropdown_show {
-  @apply flex items-center justify-center absolute bg-gray-500 rounded-md  w-[200px] mt-[40px] p-2;
+  @apply flex items-center justify-center absolute bg-gray-500 rounded-md  w-[200px] mt-[48px] -ml-[150px] p-2 border-0 z-[5000];
 }
 
 .menu {

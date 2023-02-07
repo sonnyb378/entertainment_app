@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import styles from "./Navigation.module.css";
 
 import { useRouter } from "next/router"
@@ -12,25 +12,31 @@ const Navigation: React.FC = () => {
 
     const navDropdownRef = useRef<HTMLUListElement | null>(null)
 
-    const closeNavDropdown = (e:any) => {
-        if (navDropdownRef.current && showDropdown && !navDropdownRef.current.contains(e.target)) {
+    const closeNavDropdown = useCallback((e:any) => {
+        if (navDropdownRef.current && showDropdown && !navDropdownRef.current.contains(e.target) 
+            && (e.target.parentElement.id !== "browse_btn" && e.target.parentElement.id !== "navigation_container")) {
+            setShowDropdown(false)
+        }
+    }, [showDropdown])
+
+    useEffect(() => {
+        document.addEventListener("mousedown", closeNavDropdown)
+        return () => document.removeEventListener("mousedown", closeNavDropdown)
+    }, [closeNavDropdown])
+
+    const resizeHandler = () => {
+        const nav_container = document.getElementById("navigation_container")!
+        if (showDropdown && nav_container && nav_container.clientWidth >= 318) {
             setShowDropdown(false)
         }
     }
 
-    document.addEventListener("mousedown", closeNavDropdown)
-
     useEffect(() => {
         if (typeof window !== "undefined") {
-            window.addEventListener("resize", () => {
-                const nav_container = document.getElementById("navigation_container")!
-                if (showDropdown && nav_container && nav_container.clientWidth >= 318) {
-                    setShowDropdown(false)
-                }
-            })
-
+            window.addEventListener("resize", resizeHandler)
         }
-    },[showDropdown])
+        return () => window.removeEventListener("resize", resizeHandler)
+    }, [showDropdown])
 
     function redirectHandler (e: React.MouseEvent<HTMLUListElement>) {
         e.preventDefault();
@@ -58,6 +64,7 @@ const Navigation: React.FC = () => {
                 onClick={ toggleDropDown } 
                 className={`flex items-center justify-start text-white hover:text-yellow-500 md:hidden`} 
                 data-testid="toggle_dropdown_btn"
+                id="browse_btn"
             >
                 <h1 className="">Browse</h1>
                 <ChevronDownIcon className="flex w-[20px] h-[20px] items-start ml-2" />

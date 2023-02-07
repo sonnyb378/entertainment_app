@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import styles from "./Avatar.module.css";
 
 import { BookmarkIcon } from "@heroicons/react/24/solid";
@@ -16,28 +16,39 @@ export interface IAvatar {
     userInitial?: string
 }
 
+
 const Avatar: React.FC<IAvatar> = ({ userInitial }) => {
     const router = useRouter();
-    const [show, setShow] = useState(false)
+    const [showAvatarDropdown, setShowAvatarDropdown] = useState(false)
     const dispatch = useAppDispatch()        
 
-    const dropDownRef = useRef<HTMLDivElement | null>(null)
+    const dropdownRef = useRef<HTMLDivElement | null>(null)
 
-    const closeAvatar = (e:any) => {
-        if (dropDownRef.current && show && !dropDownRef.current.contains(e.target)) {
-            setShow(false)
+    const closeDropdown = useCallback((e:any) => {
+        
+        if(dropdownRef.current && showAvatarDropdown && !dropdownRef.current.contains(e.target) && e.target.parentElement.id !== "avatar") {
+            setShowAvatarDropdown(false)
         }
-    }
-
-    document.addEventListener("mousedown", closeAvatar)
+    }, [showAvatarDropdown])
 
     useEffect(() => {
-        window.addEventListener("resize", () => {
-            if (show) {
-                setShow(false)
-            }
-        })
-    },[show])
+        document.addEventListener("mousedown", closeDropdown)
+        return () => document.removeEventListener("mousedown", closeDropdown)
+    }, [closeDropdown])
+
+
+    // window.addEventListener("resize", () => {
+    //     if (showAvatarDropdown) {
+    //         setShowAvatarDropdown(false)
+    //     }
+    // })
+    // useEffect(() => {
+    //     window.addEventListener("resize", () => {
+    //         if (showAvatarDropdown) {
+    //             setShowAvatarDropdown(false)
+    //         }
+    //     })
+    // },[])
 
     const logoutHandler = () => {
         signOut(auth);
@@ -49,22 +60,25 @@ const Avatar: React.FC<IAvatar> = ({ userInitial }) => {
         }))
     }
 
-    const myListHandler = () => { 
+    const myListHandler = () => {
         router.push("/user/mylist")
     }
 
-    const toggleDropdown = () => {
-        setShow(!show)
+    const toggleDropdown = () => {  
+        setShowAvatarDropdown(!showAvatarDropdown)
     }
-
-
+    
+    
 
     return (
         
-            
-            <div className={ styles.container } data-testid="avatar" onClick={toggleDropdown}>            
-                <div className={ styles.avatar } data-testid="initial_container">{ userInitial || "" }</div>
-                <div ref={dropDownRef} className={ show ? styles.dropdown_show : styles.dropdown_hide} id="signin_dropdown" >
+            <div className="flex flex-col border-0">
+                
+                <div className={ styles.container } data-testid="avatar" id="avatar" onClick={ toggleDropdown }>            
+                    <div className={ styles.avatar } data-testid="initial_container">{ userInitial || "" }</div>                    
+                </div>
+                
+                <div ref={dropdownRef} className={ showAvatarDropdown ? styles.dropdown_show : styles.dropdown_hide } id="signin_dropdown" >
                     <ul className={ styles.menu }>
                         <li className={ styles.menu_item } data-testid='mylist_btn' onClick={ myListHandler }>
                             <BookmarkIcon className="w-[20px] h-[20px] mr-2" />My List                            
@@ -74,6 +88,9 @@ const Avatar: React.FC<IAvatar> = ({ userInitial }) => {
                         </li>
                     </ul>
                 </div>
+                    
+                
+               
             </div>
         
        

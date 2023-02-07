@@ -101,9 +101,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
 
     useEffect(() => {
         window.addEventListener("resize", resizeHandler)
-        return () => {
-          window.removeEventListener("resize", resizeHandler)
-        };
+        return () => window.removeEventListener("resize", resizeHandler)
     },[])
 
     useEffect(() => {
