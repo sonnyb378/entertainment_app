@@ -47,10 +47,11 @@ const WatchShow: NextPageWithLayout<{ data: any }> = ({ data }) => {
     useEffect(() => {
         window.addEventListener("resize", resizeHandler)
         return () => window.removeEventListener("resize", resizeHandler);
-    },[])
+    },[screenWidth])
 
     useEffect(() => {
         setVideoIsPlayed(false, {})
+        setScreenWidth(window.innerWidth)
     }, [])
     
     const videoControlsHandler = (callback: (...args: [any]) => void, delay: number) => {
@@ -67,6 +68,7 @@ const WatchShow: NextPageWithLayout<{ data: any }> = ({ data }) => {
         router.back()
     }
 
+
     return(
         <div
             onMouseMove={ videoControlsHandler(
@@ -76,7 +78,6 @@ const WatchShow: NextPageWithLayout<{ data: any }> = ({ data }) => {
             className={`flex flex-col items-start justify-start w-full h-[100%] relative border-0 bg-black`}
             data-testid="show_container"
             >
-
             <div
                 className="flex relative z-[1000] w-full h-screen items-center justify-center">
                 <video autoPlay muted loop src="/train.mp4" className="absolute z-[100] w-full h-[100%] object-center" />
@@ -88,7 +89,8 @@ const WatchShow: NextPageWithLayout<{ data: any }> = ({ data }) => {
                         className="w-[35px] h-[35px] p-2 rounded-full hover:bg-gray-500 hover:cursor-pointer
                         sm:w-[60px] sm:h-[60px] " 
                         onClick={ backHandler }
-                    />     
+                    /> 
+                    { screenWidth }    
                     {
                         screenWidth <= screenBreakPoint.small ? 
                             <div className="flex flex-1 items-center justify-start text-[15px] border-0
