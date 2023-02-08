@@ -11,6 +11,7 @@ import youtube from "../../../assets/youtube.svg";
 import twitter from "../../../assets/twitter.svg";
 import instagram from "../../../assets/instagram.svg";
 import facebook from "../../../assets/facebook.svg";
+import pixabay from "../../../assets/pixabay.svg";
 
 
 export interface IFooter {
@@ -20,9 +21,11 @@ export interface IFooter {
 const Footer: React.FC<IFooter> = () => {
     const dt = new Date();
     const year = dt.getFullYear();
+
     return (
         <footer className={styles.container} data-testid="footer_container">
-            <section className="flex flex-col items-start justify-center border-b-2 border-[#707070] py-0 w-full md:flex-row md:justify-start md:pb-8">
+            <section className="flex flex-col items-start justify-center border-0 border-[#707070] py-0 w-full 
+            md:flex-row md:justify-center md:pb-8">
 
                 <FooterNav title="About Us" items={aboutusNav} />
                 <FooterNav title="Browse" items={browseNav} />
@@ -45,9 +48,25 @@ const Footer: React.FC<IFooter> = () => {
                         { year } Wibix. All Rights Reserved.
                     </div>
                 </div>
-                <div className="flex items-center justify-center w-full 
-                lg:justify-end">
+                <div className="flex flex-col items-center justify-center w-full border-0
+                lg:flex-col lg:justify-center lg:items-end">
                     <LanguageSelector />
+                    <div className="flex items-center justify-center border-0 h-[50px] mt-[10px]">
+                        <span className="text-sm mr-[5px] text-[#5f5f5f]">Videos are from</span>
+                        <div className="w-[100px] border-0 hover:cursor-pointer" >
+                            <a href="https://pixabay.com" target="_blank" rel="noreferrer nofollow">
+                                <Image 
+                                    src={pixabay} 
+                                    layout="responsive"
+                                    alt="Pixabay" 
+                                    width={100} 
+                                    height={30} 
+                                    className="object-contain" 
+                                />
+                            </a>
+                        </div>
+                        
+                    </div>
                 </div>
             </section>
         </footer>
