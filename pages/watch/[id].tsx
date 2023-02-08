@@ -26,7 +26,7 @@ const WatchShow: NextPageWithLayout<{ data: any }> = ({ data }) => {
     const [screenWidth, setScreenWidth] = useState(360)
     const { setVideoIsPlayed } = useAppContext()
     
-    const { info } = data
+    const { info, vid } = data
 
     const cookies = parseCookies()
 
@@ -80,7 +80,7 @@ const WatchShow: NextPageWithLayout<{ data: any }> = ({ data }) => {
             >
             <div
                 className="flex relative z-[1000] w-full h-screen items-center justify-center">
-                <video autoPlay muted loop src="/train.mp4" className="absolute z-[100] w-full h-[100%] object-center" />
+                <video autoPlay muted loop src={`${vid.hits[0].videos.tiny.url}`} className="absolute z-[100] w-full h-[100%] object-center" />
             </div>
 
             <div className={`${ showControl ? "flex" : "hidden"} flex-col items-start justify-between absolute w-full h-[100%] border-0 z-[1000]`}>
@@ -90,7 +90,6 @@ const WatchShow: NextPageWithLayout<{ data: any }> = ({ data }) => {
                         sm:w-[60px] sm:h-[60px] " 
                         onClick={ backHandler }
                     /> 
-                    { screenWidth }    
                     {
                         screenWidth <= screenBreakPoint.small ? 
                             <div className="flex flex-1 items-center justify-start text-[15px] border-0
@@ -175,19 +174,24 @@ WatchShow.getLayout = (page) => {
         url = `tv/${context.query.t}/season/${context.query.s}/episode/${context.query.e}`
     }
     
-    const [reqShow] = await Promise.all([
+    const [reqShow, reqVid] = await Promise.all([
         await axios.get(`${process.env.NEXT_PUBLIC_TMDB_API_URL}${url}?api_key=${process.env.NEXT_PUBLIC_TMDB_APIKEY_V3}&language=en-US`, {
+            headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+            }).then(res => res.data),
+        await axios.get(`${process.env.NEXT_PUBLIC_PIXABAY_VIDEO_URL}/?key=${process.env.NEXT_PUBLIC_PIXABAY_APIKEY}&id=90408`, {
             headers: { "Accept-Encoding": "gzip,deflate,compress" } 
             }).then(res => res.data)
     ]) 
-    const [resShow] = await Promise.all([
-        reqShow
+    const [resShow, resVid] = await Promise.all([
+        reqShow,
+        reqVid
     ])
 
     return {
         props: {
             data: {
                 info: { ...resShow },
+                vid: resVid
             }
         }
     }

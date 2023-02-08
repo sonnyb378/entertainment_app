@@ -3,11 +3,14 @@ import { BookmarkIcon as BookmarkIconSolid } from "@heroicons/react/24/solid";
 import { BookmarkIcon as BookmarkIconOutline } from "@heroicons/react/24/outline";
 import { IResult } from "../../Search/SearchResultItem/SearchResultItem";
 import { User } from "firebase/auth";
+import Image from "next/image";
 // import { IAuthState } from "../../../ts/states/auth_state";
 // import Image from "next/image";
 // import { useAppDispatch } from "../../../app/hooks";
 // import { removeDataBookmarks, setDataBookmarks } from "../../../app/store/slices/bookmarks";
 // import { useState } from "react";
+
+import no_result from "../../../assets/no_result.png"
 
 const Video: React.FC<{ 
     result:IResult, 
@@ -19,7 +22,14 @@ const Video: React.FC<{
 
     return (
         <div className="image-container relative w-full" data-testid="video_container " >   
-            <video autoPlay muted loop src={src} className="relative z-[100] w-full h-auto rounded-lg" />
+            {/* <video autoPlay muted loop src={src} className="relative z-[100] w-full h-auto rounded-lg" /> */}
+            <Image 
+                src={ no_result } 
+                layout="fill"
+                // priority={ true }
+                alt=""
+                className={`object-contain cursor-pointer !relative !h-[unset] z-[1000]`}
+            />  
             {
                 expand && user && result.id &&
                 <div className="flex absolute top-0 right-0 items-center justify-end z-[1000] w-full p-2 space-x-2">

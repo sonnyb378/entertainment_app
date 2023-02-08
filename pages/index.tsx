@@ -21,14 +21,20 @@ import { auth } from "../firebase";
 import { GetServerSideProps } from "next";
 
 import nookies, { parseCookies } from "nookies"
+import axios from "axios";
 
-const Home: NextPageWithLayout = () => {
+const Home: NextPageWithLayout<{ data:any }> = ({ data }) => {
 
   const [isRedirecting, setIsRedirecting] = useState(false)
   const [user, loading] = useAuthState(auth);
   const router = useRouter();
     
   const cookies = parseCookies();
+
+  const { ninja, train } = data;
+
+  // console.log("ninja: ", ninja.hits[0].videos.small.url)
+  // console.log("train: ", train.hits[0].videos.small.url)
 
   useEffect(() => {
     if (isRedirecting) {
@@ -71,7 +77,7 @@ const Home: NextPageWithLayout = () => {
               {/* 664 x452 */}
               <div className="flex items-start justify-center relative mt-12 overflow-hidden lg:w-[50%]"> 
                 <Image src={tvframe} loading="lazy" alt="Enjoy on your TV"  className="object-cover w-full absolute"/>
-                <video autoPlay muted loop src="/ninja.mp4" className="opacity-80 w-[81%] mt-[5px] absolute h-auto" />            
+                <video autoPlay muted loop src={`${ninja.hits[0].videos.tiny.url}`} className="opacity-80 w-[81%] mt-[5px] absolute h-auto" />            
               </div>
 
             </div>                 
@@ -111,7 +117,7 @@ const Home: NextPageWithLayout = () => {
                   <div className="image-container absolute w-full">
                     <Image src={imac_gloss}  loading="lazy" alt="Stream on your desktop" className="object-contain z-[101] !absolute !w-full !h-[unset]"/>
                   </div>   
-                  <video autoPlay muted loop src="/train.mp4" className="absolute z-[100] w-full h-auto rounded-lg" /> 
+                  <video autoPlay muted loop src={`${train.hits[0].videos.tiny.url}`} className="absolute z-[100] w-full h-auto rounded-lg" /> 
                   <div className="image-container">
                     <Image src={imac}  loading="lazy" alt="Stream on your desktop" className="object-contain z-[99] !absolute !w-full !h-[unset]"/>
                   </div>
@@ -155,7 +161,6 @@ Home.getLayout = (page) => {
 export const getServerSideProps: GetServerSideProps = async (context:any) => {
 
   const cookies = nookies.get(context)
-
   if (cookies.token) {
     return {
       redirect: {
@@ -164,8 +169,27 @@ export const getServerSideProps: GetServerSideProps = async (context:any) => {
       },
     }
   } else {
+
+    const [reqNinja, reqTrain] = await Promise.all([
+      await axios.get(`${process.env.NEXT_PUBLIC_PIXABAY_VIDEO_URL}/?key=${process.env.NEXT_PUBLIC_PIXABAY_APIKEY}&id=83274`,{
+        headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+      }).then(res => res.data),
+      await axios.get(`${process.env.NEXT_PUBLIC_PIXABAY_VIDEO_URL}/?key=${process.env.NEXT_PUBLIC_PIXABAY_APIKEY}&id=90408`, {
+        headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+      }).then(res => res.data)   
+    ])
+  
+    const [resNinja, resTrain] = await Promise.all([
+      reqNinja, reqTrain
+    ])
+
     return {
-      props: {}
+      props: {
+        data: {
+          ninja: resNinja,
+          train: resTrain
+        }
+      }
     }
   }
 
