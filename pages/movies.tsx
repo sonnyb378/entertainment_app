@@ -42,7 +42,7 @@ const Movies: NextPageWithLayout<{ data: any }> = ({ data }) => {
     const bookmarks = useAppSelector<IBookmarkData>(selectBookmarkData);
     const { videoIsPlayed, setVideoIsPlayed, showData } = useAppContext();
 
-    
+
     const cookies = parseCookies()
 
     let recommendationsArr:any[] = [];
